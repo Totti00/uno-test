@@ -1,14 +1,10 @@
 const gameModel = require('../models/gameModel');
 
-exports.createRoom = async (req, res) => {
-    const room = new gameModel(req.body);
+exports.getCards = async (req, res) => {
     try {
-        res.json(await room.save());
-    } catch (e) {
-        res.json(e);
+        const cards = await gameModel.find({}).lean().exec();
+        res.status(200).send(cards);
+    } catch (error) {
+        res.status(500).send(error.message);
     }
-}
-
-exports.disconnect = async (req, res) => {
-
 }

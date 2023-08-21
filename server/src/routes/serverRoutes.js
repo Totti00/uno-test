@@ -6,6 +6,8 @@ router.route('/')
     .get((req,res)=>{
         res.sendFile('index.html', { root: global.appRoot + '/www' })
     })
-    .post(serverController.createRoom);
+
+router.route('/cards')
+    .get(serverController.getCards)
 
 module.exports = router;

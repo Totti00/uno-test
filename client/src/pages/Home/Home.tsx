@@ -9,7 +9,7 @@ const Home = () => {
 
             <Row align="middle"
                  gutter={[0, 16]}
-                 style={{ position: "absolute", bottom: "18%", width: "50%", textAlign: "center", left: 0, right: 0, margin: "auto" }}
+                 style={{ position: "absolute", bottom: "18%", width: "50%", textAlign: "center", left: 0, right: 0, marginLeft: "auto", marginRight: "auto" }}
                  justify="space-between"
             >
                 <Button style={{ width: 150, height: 50, fontSize: 18 }} size="large" onClick={() => navigate("/lobby")}>Join room</Button>

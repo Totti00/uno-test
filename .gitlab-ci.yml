@@ -1,8 +1,6 @@
-stages:
-    - build
+image: node:latest
 
-Build-nodejs-app:
-    image: node:12.13.0-alpine
+Build:
     stage: build
     script:
         -npm install

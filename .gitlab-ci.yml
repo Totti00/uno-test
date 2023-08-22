@@ -1,0 +1,11 @@
+stages:
+    -build
+
+Build-nodejs-app:
+    image: node:latest
+    stage: build
+    script:
+        -npm install
+    artifacts:
+        paths:
+            - /home/gitlab-runner/

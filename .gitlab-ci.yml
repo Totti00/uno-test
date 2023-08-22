@@ -1,5 +1,5 @@
 stages:
-    -build
+    - build
 
 Build-nodejs-app:
     image: node:latest

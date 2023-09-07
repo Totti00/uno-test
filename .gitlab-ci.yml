@@ -9,15 +9,9 @@ Client Build:
     script:
         - cd "client"
         - npm install
-    artifacts:
-        paths:
-            - /home/gitlab-runner/client/
 
 Server Build:
     stage: server-build
     script:
         - cd "server"
         - npm install
-    artifacts:
-        paths:
-            - /home/gitlab-runner/server/

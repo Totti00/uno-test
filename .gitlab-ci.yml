@@ -1,0 +1,17 @@
+image: node:latest
+
+stages:
+    - client-build
+    - server-build
+
+Client Build:
+    stage: client-build
+    script:
+        - cd "client"
+        - npm install
+
+Server Build:
+    stage: server-build
+    script:
+        - cd "server"
+        - npm install

@@ -3,7 +3,7 @@ image: node:latest
 Build:
     stage: build
     script:
-        -npm install
+        - npm install
     artifacts:
         paths:
             - /home/gitlab-runner/

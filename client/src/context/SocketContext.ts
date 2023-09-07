@@ -40,7 +40,7 @@ export interface SocketContextActionsPayload {
 }
 
 export const socketReducer = (state: SocketContextState, action: SocketContextActionsPayload) => {
-    console.log('Message received - Action: ' + action.type + ' - Payload: ', action.payload);
+    //console.log('Message received - Action: ' + action.type + ' - Payload: ', action.payload);
     switch (action.type) {
         case 'update_socket':
             return {...state, socket: action.payload as Socket};
@@ -50,8 +50,6 @@ export const socketReducer = (state: SocketContextState, action: SocketContextAc
             return {...state, users: action.payload as Array<string>};
         case 'remove_user':
             return {...state, users: state.users.filter((user) => user !== action.payload as string)};
-        case 'room':
-            return {...state, room: action.payload as string};
         case 'update_rooms':
             return {...state, rooms: action.payload as any};
         case 'new_turn':

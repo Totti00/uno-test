@@ -1,6 +1,7 @@
 import {PropsWithChildren, useEffect, useReducer} from "react";
 import {useSocket} from "../hooks/useSocket";
 import {defaultSocketContextState, SocketContextProvider, socketReducer} from "./SocketContext";
+import {useNavigate} from "react-router-dom";
 
 export interface SocketContextComponentProps extends PropsWithChildren { }
 
@@ -8,7 +9,7 @@ const SocketContextComponent: React.FunctionComponent<SocketContextComponentProp
     const { children } = props;
 
     const [socketState, socketDispatch] = useReducer(socketReducer, defaultSocketContextState);
-
+    const navigate = useNavigate()
 
     const socket = useSocket('ws://localhost:3000', {
         reconnectionAttempts: 5,
@@ -31,6 +32,13 @@ const SocketContextComponent: React.FunctionComponent<SocketContextComponentProp
         });
 
         socket.on('update_rooms', (rooms: any) => socketDispatch({type: "update_rooms", payload: rooms?.data}));
+
+        socket.on('start_game', (isFirst: boolean, roomName: string) => navigate("/game", {
+            state: {
+                isFirst: isFirst,
+                roomName: roomName
+            }
+        }));
     }
 
     const sendHandshake = async () => {

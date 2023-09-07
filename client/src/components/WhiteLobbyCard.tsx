@@ -51,7 +51,7 @@ const WhiteLobbyCard = ({ roomName, players, join = false }: WhiteLobbyCard) => 
                 status="warning"
                 title="This room do not exist anymore."
                 extra={
-                    <Button type="primary" key="console" onClick={() => navigate("/")}>
+                    <Button type="primary" key="console" onClick={() => navigate("/home")}>
                         Go to the homepage
                     </Button>
                 }

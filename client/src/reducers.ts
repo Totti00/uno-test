@@ -44,9 +44,10 @@ export const gameSlice = createSlice({
             state.tableStack = [];
             state.lastPlayerDrawed = false;
             state.inGame = true;
-
+            //console.info("Starting cards: ", startingCards);
             const playersFinal: Player[] = [];
             let myIdx = 0;
+
             while (myIdx < players.length) {
                 if (players[myIdx].id === state.playerId) break;
                 myIdx++;
@@ -81,6 +82,19 @@ export const gameSlice = createSlice({
             state.players = playersFinal;
             state.drawingStack = cardsToDistribute.concat(generateDrawingCards(20));
             state.orderOffset = myIdx;
+
+            // console.info("Players in reducers.ts: ", state.players);
+             //console.info("Drawing stack in reducers.ts: ", state.drawingStack);
+            // console.info("Table stack in reducers.ts: ", state.tableStack);
+            // console.info("Current player in reducers.ts: ", state.currentPlayer);
+            // console.info("Next player in reducers.ts: ", state.nextPlayer);
+            // console.info("Order offset in reducers.ts: ", state.orderOffset);
+            // console.info("Direction in reducers.ts: ", state.direction);
+            // console.info("Last player drawed in reducers.ts: ", state.lastPlayerDrawed);
+            // console.info("In game in reducers.ts: ", state.inGame);
+            // console.info("In lobby in reducers.ts: ", state.inLobby);
+            // console.info("Starting cards in reducers.ts: ", startingCards);
+             //console.info("Cards to distribute in reducers.ts: ", cardsToDistribute);
         },
 
         ready(state) {
@@ -199,3 +213,38 @@ export const {
     setPlayerId,
     setInLobby,
 } = gameSlice.actions;
+
+
+
+
+
+const initState = {
+    cards: [],
+}
+
+const userState = {
+    name: "",
+}
+
+export const fillCards = createSlice({
+    name: 'cards',
+    initialState: initState,
+    reducers: {
+        updateCards: (state, action) => {
+            state.cards = action.payload;
+        }
+    },
+})
+
+export const userName = createSlice({
+    name: 'user',
+    initialState: userState,
+    reducers: {
+        updateUserName: (state, action) => {
+            state.name = action.payload
+        }
+    },
+})
+
+export const { updateCards } = fillCards.actions
+export const { updateUserName } = userName.actions

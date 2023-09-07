@@ -33,7 +33,7 @@ export function canPlayCard(
     const isNewDawingCard =
         newCard?.action && newCard.action.indexOf("draw") !== -1;
 
-    //No Card Played Yet
+    //No CardTSX Played Yet
     if (!oldCard) return true;
 
     if (!haveToDraw && newCard.action === "colorchange") return true;

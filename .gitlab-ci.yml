@@ -1,10 +1,23 @@
 image: node:latest
 
-Build:
-    stage: build
+stages:
+    - client-build
+    - server-build
+
+Client Build:
+    stage: client-build
     script:
         - cd "client"
         - npm install
     artifacts:
         paths:
-            - /home/gitlab-runner/
+            - /home/gitlab-runner/client/
+
+Server Build:
+    stage: server-build
+    script:
+        - cd "server"
+        - npm install
+    artifacts:
+        paths:
+            - /home/gitlab-runner/server/

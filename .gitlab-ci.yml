@@ -1,8 +1,9 @@
 image: node:latest
 
 Build:
-    stage: build
+    stage: client-build
     script:
+        - cd "client"
         - npm install
     artifacts:
         paths:

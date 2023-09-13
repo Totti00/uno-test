@@ -12,6 +12,8 @@ import WaitingLobby from "../pages/Lobby/WaitingLobby.tsx";
 import SocketContextComponent from "../context/SocketContextComponent";
 import Game from "../pages/Game/Game";
 import ErrorRoute from "./ErrorRoute";
+import StartPage from "../pages/Start/StartPage.jsx";
+import CreateUser from "../pages/CreateUser/CreateUser.jsx";
 import {useState} from "react";
 
 const AppRoute = (props: any) =>{
@@ -31,16 +33,15 @@ const AppRoute = (props: any) =>{
             <AnimatePresence mode='wait'>
                 <SocketContextComponent>
                     <Routes>
+                        <Route path="/" element={<StartPage />} />
+                        <Route path="/create-user" element={<CreateUser />} />
                         <Route path="/home" element={<Home />} />
                         <Route path="/lobby" element={<Lobby />} />
                         <Route path="/create" element={<CreateLobby />} />
                         <Route path="/waiting" element={<WaitingLobby {...props} />} />
                         <Route path="/game" element={<Game {...props}/>} />
-                        <Route path="rules" element={<Rules />} />
+                        <Route path="/rules" element={<Rules />} />
                         <Route path="*" element={<ErrorRoute />} />
-                        {/*{loadingAssets ? (*/}
-                        {/*    <Loading onLoaded={onLoaded} />*/}
-                        {/*) : (<Route path="/" element={<Home />} />)}*/}
                     </Routes>
                 </SocketContextComponent>
             </AnimatePresence>

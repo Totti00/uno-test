@@ -1,9 +1,10 @@
-import { Button, List, Result } from 'antd';
+import { Button, List } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {joinRoom} from "../hooks/functions.ts";
 import {useContext} from "react";
 import socketContext from "../context/SocketContext.ts";
+import {Player} from "../utils/interfaces.ts";
 
 const Card = styled.div`
   height: 25em;
@@ -37,31 +38,21 @@ const JoinButton = styled(Button)`
 `
 interface WhiteLobbyCard {
     roomName: string,
-    players: Array<string> | undefined,
+    players: Player[] | undefined,
     join?: boolean
 }
 
 const WhiteLobbyCard = ({ roomName, players, join = false }: WhiteLobbyCard) => {
     const { socket } = useContext(socketContext).socketState;
     const navigate = useNavigate()
-
+    console.info("roomName: ", roomName);
     return (
-        players === undefined ?
-            <Result
-                status="warning"
-                title="This room do not exist anymore."
-                extra={
-                    <Button type="primary" key="console" onClick={() => navigate("/home")}>
-                        Go to the homepage
-                    </Button>
-                }
-            /> :
             <Card>
                 <Front>
                     <Title style={{ color: "#000000" }}>{roomName}</Title>
                     <List
                         header={<div>Players inside: {players?.length} </div>}
-                        dataSource={players}
+                        dataSource={players?.map((player: Player) => player.name)}
                         renderItem={(item: string) => <List.Item style={{ textAlign: "center" }}>{item}</List.Item>}
                     />
                     {join &&

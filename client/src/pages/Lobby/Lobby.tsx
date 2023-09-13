@@ -1,35 +1,117 @@
-import {Button, Row} from "antd";
-import {LeftOutlined, ReloadOutlined} from "@ant-design/icons";
+import { Row} from "antd";
+import {LeftOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
-import {useContext, useEffect} from "react"
-import socketContext from "../../context/SocketContext";
-import WhiteLobbyCard from "../../components/WhiteLobbyCard";
+import {useEffect, useState} from "react"
+import Table from "../../components/Table";
+import Typography from "../../components/Typography";
+import Button from "../../components/Button";
+import Grid from "@mui/material/Grid";
+import API from "../../api/API.ts";
+import styled from "styled-components";
+import {setInLobby, setPlayerId} from "../../reducers.ts";
+import {useDispatch} from "react-redux";
+import {GameServer} from "../../utils/interfaces.ts";
+
+const CTableRow = styled.div`
+  justify-content: space-around;
+  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-radius: 2rem;
+  height: 45px;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+const CTableCell = styled.p`
+  height: 30px;
+  width: calc(100% / 3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Lobby = () => {
-    const { socket, users, rooms } = useContext(socketContext).socketState;
     const navigate = useNavigate()
+    const dispatch = useDispatch();
 
-    const reloadPage = () =>
-        socket?.emit("get_rooms", () => { });
+    const [selectedServer, setSelectedServer] = useState<number | null>(null);
+    const [selectOne, setSelectOne] = useState(false); //for show button
+    const [servers, setServers] = useState<GameServer[]>([]);
 
     useEffect(() => {
-        reloadPage()
+        API.playOnline();
+        (async () => {
+            const servers = await API.getServers();
+            setServers(servers);
+        })();
+        const interval = setInterval(async () => {
+            const servers = await API.getServers();
+            setServers(servers);
+        }, 2000);
+        return () => clearInterval(interval);
     }, []);
+
+    const handleJoinServer = async () => {
+        if (selectedServer !== null && selectedServer !== undefined) {
+            const serverId = servers[selectedServer].id;
+            const playerId = await API.joinServer(serverId);
+            dispatch(setPlayerId(playerId));
+            dispatch(setInLobby(true));
+            navigate("/waiting");
+        }
+    };
 
     return (
         <div style={{ margin: 20 }}>
             <Row justify="space-between" align="middle">
-                <Button icon={<LeftOutlined />} type="primary" onClick={() => navigate("/home")}>Back</Button>
-                <Button icon={<ReloadOutlined />} type="primary" onClick={() => reloadPage()}>Refresh</Button>
+                <Button icon={<LeftOutlined/>} type="primary" onClick={() => navigate(-1)}>Back</Button>
             </Row>
-            <Row justify="center" style={{ marginTop: 22 }}>
+            {/*<Row justify="center" style={{ marginTop: 22 }}>
                 title={`Choose a room ____________. \n\nUsers Online: ${users.length}`}
-            </Row>
-            <Row justify={"center"} style={{ marginTop: 22 }} gutter={[32, 32]}>
-                {Object.keys(rooms).map((roomName, index) =>
-                    <WhiteLobbyCard join roomName={roomName} players={rooms[roomName]} key={index} />
-                )}
-            </Row>
+            </Row>*/}
+            {/*<Row justify={"center"} style={{ marginTop: 22 }} gutter={[32, 32]}>*/}
+            {/*    {Object.keys(rooms).map((roomName, index) =>*/}
+            {/*        <WhiteLobbyCard join roomName={roomName} players={rooms[roomName]} key={index} />*/}
+            {/*    )}*/}
+            {/*</Row>*/}
+
+            <Grid item xs={12}>
+                <Table>
+                    {servers.map((server, index) => {
+                        //console.info(server);
+                        return (
+                            <CTableRow
+                                key={index}
+                                onClick={() => {
+                                    setSelectedServer(index);
+                                    setSelectOne(true);
+                                }}
+                                style={
+                                    index === selectedServer
+                                        ? {
+                                            backgroundColor: "rgba(0,0,0,.5)",
+                                            borderRadius: "1rem",
+                                        }
+                                        : {}
+                                }
+                            >
+                                <>
+                                    <CTableCell>{server.name}</CTableCell>
+                                    <CTableCell>{server.cntPlayers}</CTableCell>
+                                </>
+                            </CTableRow>
+                        );
+                    })}
+                </Table>
+            </Grid>
+            <Grid item xs={12}>
+                {((selectOne) ? (
+                    <Button onClick={handleJoinServer}>
+                        <Typography>Join Game</Typography>
+                    </Button>
+                ): (<> </>))}
+            </Grid>
         </div>
     )
 }

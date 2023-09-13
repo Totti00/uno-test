@@ -1,30 +1,26 @@
-import { shuffle, wrapMod } from "./helpers";
-import { Card, Player } from "./interfaces";
-const data = require("./data.json");
-
-export interface IMoveEvent {
-  curPlayer: number;
-  nxtPlayer: number;
-  card?: Card;
-  draw?: number;
-  cardsToDraw?: Card[];
-}
-
-export interface IStartEvent {
-  cards: Card[];
-  players: Player[];
-  playerId: string;
-}
+const { wrapMod, shuffle } = require("./helpers.cjs");
+const { nanoid } = require("nanoid");
+const {getCards} = require("./Cards.cjs");
 
 class GameServer {
-  players: Player[] = [];
-  curPlayer: number = 0;
-  direction: 1 | -1 = 1;
-  tableStk: Card[] = [];
-  drawingStk: Card[] = [];
-  sumDrawing: number = 0;
-  lastPlayerDrew: boolean = false;
-  playersFinished: number[] = [];
+  serverId;
+  serverName;
+
+  players = [];
+  curPlayer = 0;
+  direction = 1;
+  tableStk = [];
+  drawingStk = [];
+  sumDrawing = 0;
+  lastPlayerDrew = false;
+  playersFinished = [];
+  gameRunning = false;
+
+  constructor(serverName, numberOfPlayers = 4) {
+    this.serverId = nanoid();
+    this.serverName = serverName;
+    this.numberOfPlayers = numberOfPlayers;
+  }
 
   init() {
     this.players = [];
@@ -35,49 +31,55 @@ class GameServer {
     this.sumDrawing = 0;
     this.playersFinished = [];
     this.lastPlayerDrew = false;
+    this.gameRunning = false;
   }
 
-  joinPlayer(player: Player) {
+  joinPlayer(player) {
+    const playerId = nanoid();
+
     this.players.push({
       ...player,
-      id: (this.players.length + 1).toString(),
+      id: playerId,
       cards: [],
     });
+    return playerId;
+  }
 
-    return this.players.length.toString();
+  leavePlayer(playerId) {
+    if (!this.gameRunning) {
+      this.players = this.players.filter((p) => p.id !== playerId);
+    } else {
+      const player = this.players.find((p) => p.id === playerId);
+      player.disconnected = true;
+    }
   }
 
   start() {
-    const cards = [...data.cards];
+    const cards = getCards();
+    /*cards.toArray().forEach((item, index) => {
+      console.info(`Item ${index}:`, item);
+    });*/
     shuffle(cards);
     shuffle(this.players);
-    const NUM_CARDS = 4;
+
+    const NUM_CARDS = 7;
     this.players.forEach((player, idx) => {
-      player.cards = cards.slice(
-        idx * NUM_CARDS,
-        (idx + 1) * NUM_CARDS
-      ) as Card[];
+      player.cards = cards.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS);
     });
     this.drawingStk = cards.slice(
       this.players.length * NUM_CARDS,
       cards.length
-    ) as Card[];
-
-    // this.fireEvent("start", {
-    //   cards: this.players.filter((p) => !p.isBot)[0].cards,
-    //   playerId: this.players.filter((p) => !p.isBot)[0].id,
-    //   players: this.players.map((p) => ({ ...p, cards: [] })),
-    // });
+    );
   }
 
-  move(draw: boolean, card: Card | null) {
-    let moveEventObj: IMoveEvent = { nxtPlayer: 0, curPlayer: 0 };
+  move(draw, card) {
+    let moveEventObj = { nxtPlayer: 0, curPlayer: 0 };
 
     if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew))
       return false;
 
     if (draw) {
-      let drawCnt = 3;
+      let drawCnt = 1;
       if (this.sumDrawing) {
         drawCnt = this.sumDrawing;
         this.sumDrawing = 0;
@@ -123,10 +125,9 @@ class GameServer {
 
     this.curPlayer = nxtPlayer;
     return moveEventObj;
-    // this.fireEvent("move", moveEventObj as IMoveEvent);
   }
 
-  getNextPlayer(card: Card | null) {
+  getNextPlayer(card) {
     let nxtPlayer = this.curPlayer;
 
     if (card?.action === "reverse") this.direction *= -1;
@@ -139,43 +140,41 @@ class GameServer {
       );
     else if (card?.action !== "wild")
       nxtPlayer = wrapMod(
-        this.curPlayer + 1 * this.direction,
+        this.curPlayer + this.direction,  //this.curPlayer + 1 * this.direction,
         this.players.length
       );
 
     //if nxtPlayer is out of the game (no cards left with him)
     while (this.players[nxtPlayer].cards.length === 0) {
-      nxtPlayer = wrapMod(nxtPlayer + 1 * this.direction, this.players.length);
+      nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length); //this.curPlayer + 1 * this.direction,
     }
 
     return nxtPlayer;
   }
 
-  moveBot() {
-    setTimeout(() => {
-      for (let i = 0; i < this.players[this.curPlayer].cards.length; i++) {
-        const card = this.players[this.curPlayer].cards[i];
-
-        if (canPlayCard(this.tableStk[0], card, this.lastPlayerDrew))
-          return this.move(false, card);
-      }
-
-      return this.move(true, null);
-    }, 1500);
+  onFinish(cb) {
+    this.onFinish = cb;
   }
 
   finishGame() {
-    // this.fireEvent("finish", {
-    //   players: this.playersFinished.map((idx) => this.players[idx]), //return players array in order they finished
-    // });
+    const lastPlayer = this.players.filter(
+      (player) =>
+        !this.playersFinished.some(
+          (playerFinished) => playerFinished.id === player.id
+        )
+    );
+    this.playersFinished.push(lastPlayer.id);
+    const playersFinishingOrder = this.playersFinished.map(
+      (idx) => this.players[idx]
+    );
+
+    this.init();
+
+    this.onFinish(playersFinishingOrder);
   }
 }
 
-export function canPlayCard(
-  oldCard: Card,
-  newCard: Card,
-  lastPlayerDrew?: boolean
-) {
+function canPlayCard(oldCard, newCard, lastPlayerDrew) {
   const isOldDawingCard =
     oldCard?.action && oldCard.action.indexOf("draw") !== -1;
   const haveToDraw = isOldDawingCard && !lastPlayerDrew;
@@ -201,4 +200,4 @@ export function canPlayCard(
   return false;
 }
 
-export default GameServer;
+module.exports = GameServer;

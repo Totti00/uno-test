@@ -1,59 +1,81 @@
 import { Button, Popconfirm, Row } from "antd"
-import {useContext, useEffect} from "react";
-import socketContext from "../../context/SocketContext.ts";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
+import { useNavigate, Navigate} from "react-router-dom";
 import { LeftOutlined } from "@ant-design/icons"
-import {deleteRoom, leaveRoom, fetchCards, startGame} from "../../hooks/functions"
 import WhiteLobbyCard from "../../components/WhiteLobbyCard.tsx";
-import {useDispatch} from "react-redux";
-import {setInLobby, setPlayerId} from "../../reducers.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {init, setInLobby} from "../../reducers.ts";
+import {RootState} from "../../store/store.ts";
+import API from "../../api/API.ts";
+import {Player} from "../../utils/interfaces.ts";
 
 const WaitingLobby = () => {
-    const { socket, rooms } = useContext(socketContext).socketState;
     const navigate = useNavigate()
-    const { state } = useLocation();
     const dispatch = useDispatch();
+    const [players, setPlayers] = useState<Player[]>([]);
+    const [server, setServer] = useState<string>("");
+    const inLobby = useSelector((state: RootState) => state.game.inLobby);
 
     useEffect(() => {
-        fetchCards(dispatch, rooms[state?.roomName])
-        dispatch(setPlayerId(socket?.id));
-        dispatch(setInLobby(true));
-    }, [dispatch, navigate, rooms, socket, state?.roomName]);
+        if (!inLobby) return;
+        let timeout: string | number | NodeJS.Timeout | null | undefined = null;
+        let unsubInit: (() => void) | null = null;
+        (async () => {
+            const serverPlayers = await API.getServerPlayers();
+            setPlayers(serverPlayers);
+            API.onPlayersUpdated((players) => setPlayers(players));
+            unsubInit = API.onGameInit(({ players, cards }) => {
+                dispatch(init({ cards, players }));
+                timeout = setTimeout(() => navigate("/game"), 2000);
+            });
+            const server = await API.getServerByPlayerId(serverPlayers[0].name);
+            setServer(server);
+        })();
+
+        return () => {
+            if (timeout) clearTimeout(timeout);
+            if (unsubInit) unsubInit();
+            dispatch(setInLobby(false));
+        };
+    },[]);
+
+    if (location.pathname === "/waiting-lobby" && !inLobby)
+        return <Navigate replace to="/main-menu" />;
+
+    const handleJoinServer = async () => {
+        API.leaveServer();
+        navigate("/home");
+    };
 
     return (
         <div style={{ margin: 30 }}>
             <Row justify="space-between">
-                {state?.type === "admin" ?
                     <Popconfirm
                         title="Leave room alert"
-                        description="Are you sure to exit and delete this room?"
-                        onConfirm={() => deleteRoom(socket, state?.roomName, navigate)}
+                        description="Are you sure to exit?"
+                        onConfirm={handleJoinServer}
                         okText="Yes"
                         cancelText="No"
                     >
                         <Button icon={<LeftOutlined />} type="primary" >Back</Button>
-                    </Popconfirm> :
-                    <Button icon={<LeftOutlined />} type="primary" onClick={() => {
-                        leaveRoom(socket, state?.roomName, false, navigate)
-                    }}>Back</Button>
-                }
+                    </Popconfirm>
+                    <Button icon={<LeftOutlined />} type="primary" >Back</Button>
             </Row>
             <Row justify="center" style={{ marginTop: 0 }}>
-                <WhiteLobbyCard roomName={state?.roomName} players={rooms[state?.roomName]} />
+                <WhiteLobbyCard roomName={server} players={players} />
             </Row>
-            <Row justify="center" style={{ marginTop: 22 }}>
-                {rooms[state?.roomName] && state?.type === "admin" && rooms[state?.roomName].length === 2 &&
-                    <Button
-                        onClick={() => startGame(socket, state?.roomName, navigate)}
-                        //onClick = {() => fetchCards(dispatch, socket, state?.roomName, navigate, rooms[state?.roomName])}
-                        style={{ width: 200 }}
-                        type="primary"
-                        size="large"
-                    >
-                        Start Game
-                    </Button>
-                }
-            </Row>
+            {/*<Row justify="center" style={{ marginTop: 22 }}>*/}
+            {/*    {players.length === 4 &&*/}
+            {/*        <Button*/}
+            {/*            onClick={() => startGame(socket, state?.roomName, navigate)}*/}
+            {/*            style={{ width: 200 }}*/}
+            {/*            type="primary"*/}
+            {/*            size="large"*/}
+            {/*        >*/}
+            {/*            Start Game*/}
+            {/*        </Button>*/}
+            {/*    }*/}
+            {/*</Row>*/}
         </div >
     )
 }

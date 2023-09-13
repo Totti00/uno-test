@@ -58,8 +58,7 @@ const Loading: React.FC<LoadingProps> = ({ onLoaded }) => {
     const onClick = () => {
         if (completed) {
             onLoaded();
-            console.info("vadoooo");
-            navigate("/home");
+            navigate("/");
         }
     };
 

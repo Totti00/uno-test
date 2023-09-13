@@ -1,4 +1,4 @@
-import DrawingStack from "./jsx/DrawingStack.jsx";
+//import DrawingStack from "./jsx/DrawingStack.jsx";
 import {Button, Result} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useContext} from "react";
@@ -33,7 +33,7 @@ const Game = () => {
                     {/*<TableStack/>*/}
                     {/*<TopStack />*/}
                     {/*<PlayerStack />*/}
-                    <DrawingStack />
+                    {/*<DrawingStack />*/}
 
                     {/*<Modal open={modal} title="Are you sure to leave the lobby?"*/}
                     {/*       onOk={() => leaveRoom(socket, state?.roomName, true, navigate)}*/}

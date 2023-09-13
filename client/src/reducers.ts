@@ -83,7 +83,7 @@ export const gameSlice = createSlice({
             state.drawingStack = cardsToDistribute.concat(generateDrawingCards(20));
             state.orderOffset = myIdx;
 
-            // console.info("Players in reducers.ts: ", state.players);
+            console.info("Players in reducers.ts: ", state.players);
              //console.info("Drawing stack in reducers.ts: ", state.drawingStack);
             // console.info("Table stack in reducers.ts: ", state.tableStack);
             // console.info("Current player in reducers.ts: ", state.currentPlayer);

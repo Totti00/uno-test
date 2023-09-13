@@ -1,18 +1,10 @@
 import {Socket, Server} from "socket.io";
 import {user} from "../types/user";
 import {v4} from "uuid";
-import GameServer from "./GameServer";
-import {Player} from "./interfaces";
-import {getCard} from "./Cards";
-const { createServer, joinServer, getServer } = require("./Data");
-const { addPlayer, removePlayer, getPlayer } = require("./PlayersSockets");
 
 var host = new Map()
 var roomState = new Map()
 var firstPlayer = new Map()
-
-
-const servers: { [key: string]: GameServer } = {}; // Definizione di un oggetto con chiavi stringhe e valori di tipo GameServer
 
 export const getUidFromSocketID = (users: user, id: string) =>
     Object.keys(users).find((uid) => users[uid] === id);
@@ -68,18 +60,6 @@ export const startListeners = (io: Server, socket: Socket, socketUsers: user) =>
 
     socket.on('create_room', (value, callback) => {
         console.info(`User ${socket.id} want to create a room ${value}`);
-
-
-
-
-        //PROVARE
-        createServer(value);
-
-
-
-
-
-
         if (io.sockets.adapter.rooms.has("room_"+value)) return
         socket.join("room_"+value)
         host.set("room_"+value, socket.id)
@@ -142,7 +122,6 @@ export const startListeners = (io: Server, socket: Socket, socketUsers: user) =>
         console.info('Disconnect received from: ' + socket.id);
 
         const uid = getUidFromSocketID(socketUsers, socket.id);
-        let newScore = new Map()
 
         if (uid) {
             //Ciclo attraverso tutte le stanze

@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { useAppSelector } from "../../../hooks/hooks";
 import CardsRow from "../../../components/jsx/CardsRow";
+import {playerAndCurrPlayerTopStackSelector} from "./MemorizedSelector.ts";
+import {useMemo} from "react";
 
 const Root = styled.div`
   position: fixed;
@@ -10,12 +12,14 @@ const Root = styled.div`
 `;
 
 export default function TopStack() {
-  const { player, currentPlayer } = useAppSelector((state) => ({
-    player: state.game.players[1],
-    currentPlayer: state.game.currentPlayer,
-  }));
+  const { player, currentPlayer } = useAppSelector(playerAndCurrPlayerTopStackSelector);
+  const cards = useMemo(() => player?.cards || [], [player]);
 
-  const cards = player?.cards || [];
+
+  // const { player, currentPlayer } = useAppSelector((state) => ({
+  //   player: state.game.players[2],
+  //   currentPlayer: state.game.currentPlayer,
+  // }));
 
   return (
     <Root>

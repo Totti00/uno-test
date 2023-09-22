@@ -1,6 +1,6 @@
 import {ServerInterface} from "./ServerInterface.ts";
 import {Card, GameServer, Player} from "../utils/interfaces.ts";
-import { Server } from "./Server";
+import {Server} from "./Server";
 
 export class _API implements ServerInterface {
     _server: ServerInterface;
@@ -57,9 +57,7 @@ export class _API implements ServerInterface {
     }
 
     onGameInit(cb: (data: { players: Player[]; cards: Card[] }) => void): () => void {
-        const unsub = this._server.onGameInit(cb);
-        console.log(this._server);
-        return unsub;
+        return this._server.onGameInit(cb);
     }
 
     onMove(cb: (data: { nxtPlayer: number; card: Card; draw?: number; cardsToDraw?: Card[] }) => void): () => void {

@@ -2,7 +2,6 @@ import {Routes, Route} from "react-router-dom";
 import {Provider} from "react-redux";
 import {store} from "../store/store.ts";
 import {AnimatePresence} from "framer-motion";
-import {ConfigProvider} from "antd";
 import Home from "../pages/Home/Home";
 import Loading from "../pages/Home/Loading.tsx"
 import Rules from "../pages/Rules/Rules"
@@ -15,6 +14,16 @@ import ErrorRoute from "./ErrorRoute";
 import StartPage from "../pages/Start/StartPage.jsx";
 import CreateUser from "../pages/CreateUser/CreateUser.jsx";
 import {useState} from "react";
+import styled from "styled-components";
+import { useLocation } from "react-router-dom";
+
+const Root = styled.div`
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  /* background: radial-gradient(#5065da, #20295a); */
+  background: radial-gradient(#3d50ba, #161d3f);
+`;
 
 const AppRoute = (props: any) =>{
     const [loadingAssets, setLoadingAssets] = useState(true);
@@ -23,30 +32,30 @@ const AppRoute = (props: any) =>{
         setLoadingAssets(false);
     };
 
+    const location = useLocation();
+
     if (loadingAssets) return <Loading onLoaded={onLoaded} />;
 
     return (
-        <Provider store={store}>
-        <ConfigProvider
-
-        >
-            <AnimatePresence mode='wait'>
-                <SocketContextComponent>
-                    <Routes>
-                        <Route path="/" element={<StartPage />} />
-                        <Route path="/create-user" element={<CreateUser />} />
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/lobby" element={<Lobby />} />
-                        <Route path="/create" element={<CreateLobby />} />
-                        <Route path="/waiting" element={<WaitingLobby {...props} />} />
-                        <Route path="/game" element={<Game {...props}/>} />
-                        <Route path="/rules" element={<Rules />} />
-                        <Route path="*" element={<ErrorRoute />} />
-                    </Routes>
-                </SocketContextComponent>
-            </AnimatePresence>
-        </ConfigProvider>
-    </Provider>
+        <Root>
+            <Provider store={store}>
+                <AnimatePresence mode='wait'>
+                    <SocketContextComponent>
+                        <Routes location={location} key={location.key}>
+                            <Route key={"/"} path="/" element={<StartPage />} />
+                            <Route key={"/create-user"} path="/create-user" element={<CreateUser />} />
+                            <Route key={"/home"} path="/home" element={<Home />} />
+                            <Route key={"/lobby"} path="/lobby" element={<Lobby />} />
+                            <Route key={"/create"} path="/create" element={<CreateLobby />} />
+                            <Route key={"/waiting"} path="/waiting" element={<WaitingLobby {...props} />} />
+                            <Route key={"/game"} path="/game" element={<Game {...props}/>} />
+                            <Route key={"/rules"} path="/rules" element={<Rules />} />
+                            <Route key={"*"} path="*" element={<ErrorRoute />} />
+                        </Routes>
+                    </SocketContextComponent>
+                </AnimatePresence>
+            </Provider>
+        </Root>
     )
 }
 export default AppRoute

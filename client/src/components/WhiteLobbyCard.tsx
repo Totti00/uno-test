@@ -1,9 +1,5 @@
-import { Button, List } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { /*Button*/ List } from 'antd';
 import styled from 'styled-components';
-import {joinRoom} from "../hooks/functions.ts";
-import {useContext} from "react";
-import socketContext from "../context/SocketContext.ts";
 import {Player} from "../utils/interfaces.ts";
 
 const Card = styled.div`
@@ -29,23 +25,20 @@ const Title = styled.h3`
   letter-spacing: 0.05em;
 `
 
-const JoinButton = styled(Button)`
+/*const JoinButton = styled(Button)`
   position: absolute;
   bottom: 20px;
   left: 0;
   right: 0;
   margin: 0 20px
-`
+`*/
 interface WhiteLobbyCard {
     roomName: string,
     players: Player[] | undefined,
     join?: boolean
 }
 
-const WhiteLobbyCard = ({ roomName, players, join = false }: WhiteLobbyCard) => {
-    const { socket } = useContext(socketContext).socketState;
-    const navigate = useNavigate()
-    console.info("roomName: ", roomName);
+const WhiteLobbyCard = ({ roomName, players/*, join = false */}: WhiteLobbyCard) => {
     return (
             <Card>
                 <Front>
@@ -55,10 +48,10 @@ const WhiteLobbyCard = ({ roomName, players, join = false }: WhiteLobbyCard) => 
                         dataSource={players?.map((player: Player) => player.name)}
                         renderItem={(item: string) => <List.Item style={{ textAlign: "center" }}>{item}</List.Item>}
                     />
-                    {join &&
+{/*                    {join &&
                         <JoinButton type="primary" onClick={() => joinRoom(socket, roomName, navigate)}>
                             Connect
-                        </JoinButton>}
+                        </JoinButton>}*/}
                 </Front>
             </Card >
     )

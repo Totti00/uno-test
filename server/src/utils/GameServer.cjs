@@ -15,6 +15,7 @@ class GameServer {
   lastPlayerDrew = false;
   playersFinished = [];
   gameRunning = false;
+  deck = null;
 
   constructor(serverName, numberOfPlayers = 4) {
     this.serverId = nanoid();
@@ -22,7 +23,7 @@ class GameServer {
     this.numberOfPlayers = numberOfPlayers;
   }
 
-  init() {
+  async init() {
     this.players = [];
     this.curPlayer = 0;
     this.direction = 1;
@@ -32,6 +33,7 @@ class GameServer {
     this.playersFinished = [];
     this.lastPlayerDrew = false;
     this.gameRunning = false;
+    this.deck = await getCards();  //async/await per eliminare la promise ed aspettare il risultato.
   }
 
   joinPlayer(player) {
@@ -55,20 +57,17 @@ class GameServer {
   }
 
   start() {
-    const cards = getCards();
-    /*cards.toArray().forEach((item, index) => {
-      console.info(`Item ${index}:`, item);
-    });*/
-    shuffle(cards);
+    console.info("GameServer.cjs: ", this.deck);
+    shuffle(this.deck);
     shuffle(this.players);
 
     const NUM_CARDS = 7;
     this.players.forEach((player, idx) => {
-      player.cards = cards.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS);
+      player.cards = this.deck.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS);
     });
-    this.drawingStk = cards.slice(
+    this.drawingStk = this.deck.slice(
       this.players.length * NUM_CARDS,
-      cards.length
+        this.deck.length
     );
   }
 

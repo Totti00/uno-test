@@ -1,6 +1,6 @@
 import { Button, Popconfirm, Row } from "antd"
 import {useEffect, useState} from "react";
-import { useNavigate, Navigate} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import { LeftOutlined } from "@ant-design/icons"
 import WhiteLobbyCard from "../../components/WhiteLobbyCard.tsx";
 import {useDispatch, useSelector} from "react-redux";
@@ -31,7 +31,7 @@ const WaitingLobby = () => {
             const server = await API.getServerByPlayerId(serverPlayers[0].name);
             setServer(server);
         })();
-
+        
         return () => {
             if (timeout) clearTimeout(timeout);
             if (unsubInit) unsubInit();
@@ -39,8 +39,10 @@ const WaitingLobby = () => {
         };
     },[]);
 
-    if (location.pathname === "/waiting-lobby" && !inLobby)
-        return <Navigate replace to="/main-menu" />;
+    // if (location.pathname === "/waiting" && !inLobby)
+    //     console.info("Not in lobby: ", inLobby);
+    //     console.info("Location: ", location.pathname);
+    //     return <Navigate replace to="/home" />;
 
     const handleJoinServer = async () => {
         API.leaveServer();
@@ -59,7 +61,6 @@ const WaitingLobby = () => {
                     >
                         <Button icon={<LeftOutlined />} type="primary" >Back</Button>
                     </Popconfirm>
-                    <Button icon={<LeftOutlined />} type="primary" >Back</Button>
             </Row>
             <Row justify="center" style={{ marginTop: 0 }}>
                 <WhiteLobbyCard roomName={server} players={players} />

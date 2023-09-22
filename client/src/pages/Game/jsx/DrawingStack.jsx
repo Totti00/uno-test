@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks.ts";
 import { ready } from "../../../reducers.ts";
+import API from "../../../api/API.ts";
+import {drawingStackAndCurrentPlayerSelector} from "./MemorizedSelector.ts";
 
 const variants = {
   init: { x: 0, y: 0 },
@@ -39,25 +41,24 @@ const Root = styled.div`
 `;
 
 export default function DrawingStack() {
-  const { drawingStack, currentPlayer } = useAppSelector((state) => ({
-    drawingStack: state.game.drawingStack,
-    currentPlayer: state.game.currentPlayer,
-  }));
+  const { drawingStack, currentPlayer } = useAppSelector(drawingStackAndCurrentPlayerSelector);
+  // const { drawingStack, currentPlayer } = useAppSelector((state) => ({
+  //   drawingStack: state.game.drawingStack,
+  //   currentPlayer: state.game.currentPlayer,
+  // }));
+  // console.info("drawingstack", drawingStack);
   const dispatch = useAppDispatch();
 
   const [gameStarted, setGameStarted] = useState(false);
 
   const handleClick = () => {
-    //if (currentPlayer === 0) API.move(true);
+    if (currentPlayer === 0) API.move(true);
   };
 
   useEffect(() => {
     setTimeout(() => {
       dispatch(ready());
       setGameStarted(true);
-      // drawingStack.forEach((item, index) => {
-      //   console.info(`Item ${index}:`, item);
-      // });
     }, 2000);
   }, [dispatch]);
 

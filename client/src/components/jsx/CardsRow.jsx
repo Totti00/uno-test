@@ -6,16 +6,16 @@ const Root = styled.div`
   justify-content: center;
 
   filter: ${(props) =>
-    props.highlight ? "drop-shadow(0 0 10px white)" : "brightness(0.6)"};
+      props.highlight ? "drop-shadow(0 0 10px white)" : "brightness(0.6)"};
 
   --cardsCnt: ${(props) => props.cardsCnt};
   --containerMaxWidth: 55vw;
   .card-container {
     &:not(:last-of-type) {
       margin-right: calc(
-        -1 * max(calc((
-                  var(--cardWidth) * var(--cardsCnt) - var(--containerMaxWidth)
-                ) / (var(--cardsCnt) - 1)), calc(var(--cardWidth) / 3))
+          -1 * max(calc((
+          var(--cardWidth) * var(--cardsCnt) - var(--containerMaxWidth)
+          ) / (var(--cardsCnt) - 1)), calc(var(--cardWidth) / 3))
       );
     }
   }
@@ -23,7 +23,7 @@ const Root = styled.div`
 
 export default function CardsRow({ cards, cardProps, highlight }) {
   return (
-    <Root cardsCnt={cards.length} highlight={highlight}>
+    <Root>
       {cards.map((card) => (
         <div className="card-container" key={card.layoutId}>
           <Card

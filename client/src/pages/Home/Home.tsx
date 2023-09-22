@@ -1,6 +1,5 @@
 import {Button, Row } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import {useEffect} from "react";
 import API from "../../api/API";
 
 const Home = () => {
@@ -15,10 +14,6 @@ const Home = () => {
         API.playOnline();
         navigate("/lobby");
     };
-
-    useEffect(() => {
-
-    }, []);
 
     return (
         <div style={{ width: "100%", height: "100%" }}>

@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import Image from "../Image.tsx";
+import Image from "./Image.jsx";
 import { motion } from "framer-motion";
+import API from "../../api/API.ts";
 
 const Root = styled.div`
   --color: var(--${(props) => props.color});
@@ -145,7 +146,7 @@ export default function Card({
   disableShadow = false,
 }) {
   const onClick = () => {
-      console.info("Card.jsx: onClick: id: ", id, " color: ", color, " action: ", action, " digit: ", digit);
+      if (playable) API.move(false, id);
   };
 
   const getFrontContent = () => {

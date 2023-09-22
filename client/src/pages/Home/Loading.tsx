@@ -53,7 +53,7 @@ const Loading: React.FC<LoadingProps> = ({ onLoaded }) => {
         Loader.addEventListener("completed", () => {
             setCompleted(true);
         });
-    }, []);
+    }, [onLoaded, navigate]);
 
     const onClick = () => {
         if (completed) {

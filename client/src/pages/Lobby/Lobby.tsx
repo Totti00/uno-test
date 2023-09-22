@@ -48,12 +48,13 @@ const Lobby = () => {
         const interval = setInterval(async () => {
             const servers = await API.getServers();
             setServers(servers);
-        }, 2000);
+        }, 4000);
         return () => clearInterval(interval);
     }, []);
 
     const handleJoinServer = async () => {
         if (selectedServer !== null && selectedServer !== undefined) {
+
             const serverId = servers[selectedServer].id;
             const playerId = await API.joinServer(serverId);
             dispatch(setPlayerId(playerId));

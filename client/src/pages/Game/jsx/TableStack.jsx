@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Card from "../../../components/jsx/Card.jsx";
 import { useAppSelector } from "../../../hooks/hooks.ts";
+import {tableStackSelector} from "./MemorizedSelector.ts";
 
 const Root = styled.div`
   position: fixed;
@@ -18,7 +19,8 @@ const Root = styled.div`
 `;
 
 export default function TableStack() {
-  const tableStack = useAppSelector((state) => state.game.tableStack);
+  //const tableStack = useAppSelector((state) => state.game.tableStack);
+  const {tableStack} = useAppSelector(tableStackSelector);
 
   return (
     <Root>

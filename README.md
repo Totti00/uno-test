@@ -16,7 +16,8 @@ To run the server locally, follow these steps:
 
 - Navigate to the server folder of the project.
 - Run the command `npm install` to install all the necessary dependencies.
-- Run the command `npm start` to start the server.
+- Run the command `npm run build` to compile the Typescript code.
+- Finally, run the command `npm start` to start the server.
 
 The server will be listening at `http://localhost:3000`.
 

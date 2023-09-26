@@ -16,13 +16,7 @@ export default function PlayerStack() {
 
   const { player, currentPlayer } = useAppSelector(playerAndCurrPlayerStackSelector);
   const cards = useMemo(() => player?.cards || [], [player]);
-  //   const { player, currentPlayer } = useAppSelector((state) => ({
-  //       player: state.game.players[0],
-  //       currentPlayer: state.game.currentPlayer,
-  //   }));
-    //const cards = player?.cards || [];
-    // console.info("Player: ", player);
-    // console.info("playerstack", cards);
+
   return (
     <Root>
       <CardsRow

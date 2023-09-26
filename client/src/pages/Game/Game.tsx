@@ -28,6 +28,7 @@ const Game = () => {
         }, 2000);
 
         API.onMove(({ card, draw, cardsToDraw, nxtPlayer }) => {
+            console.info("GAME draw: ", draw);
             dispatch(moveCard({nextPlayer: nxtPlayer, card, draw, cardsToDraw}));
             setTimeout(() => dispatch(movePlayer()), 500);
         });

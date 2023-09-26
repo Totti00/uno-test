@@ -6,7 +6,7 @@ const Root = styled.div`
   justify-content: center;
 
   filter: ${(props) =>
-      props.highlight ? "drop-shadow(0 0 10px white)" : "brightness(0.6)"};
+      props.$highlight ? "drop-shadow(0 0 10px white)" : "brightness(0.6)"};
 
   --cardsCnt: ${(props) => props.cardsCnt};
   --containerMaxWidth: 55vw;
@@ -23,11 +23,11 @@ const Root = styled.div`
 
 export default function CardsRow({ cards, cardProps, highlight }) {
   return (
-    <Root>
+    <Root $highlight={highlight}>
       {cards.map((card) => (
         <div className="card-container" key={card.layoutId}>
           <Card
-            id={card.id}
+            id={card._id}
             layoutId={card.layoutId}
             color={card.color}
             digit={card.digit}

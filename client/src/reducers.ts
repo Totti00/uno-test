@@ -1,4 +1,4 @@
-import { createSlice, current} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, current} from "@reduxjs/toolkit";
 import { Card, Player, canPlayCard } from "./utils/interfaces.ts";
 import { wrapMod } from "./utils/utile.ts";
 import { isNullOrUndefined } from 'is-what';
@@ -121,9 +121,14 @@ export const gameSlice = createSlice({
             state.inLobby = action.payload;
         },
 
-        moveCard(state, action) {
-            let {nextPlayer} = action.payload;
-            const { card, cardsToDraw = [], draw } = action.payload;
+        moveCard(state, action: PayloadAction<{
+            nextPlayer: number;
+            card?: Card;
+            draw?: number;
+            cardsToDraw?: Card[];
+          }>) {
+            let { nextPlayer, card, cardsToDraw = [], draw } = action.payload;
+        
 
             const currentPlayer = state.players[state.currentPlayer];
 
@@ -157,7 +162,7 @@ export const gameSlice = createSlice({
                     layoutId = currentPlayer.cards[Math.floor(Math.random() * currentPlayer.cards.length)].layoutId;
                     shouldFlip = true;
                 } else {
-                    layoutId = currentPlayer.cards.find((c: Card) => c.id === card?.id)?.layoutId;
+                    layoutId = currentPlayer.cards.find((c: Card) => c._id === card?._id)?.layoutId;
                     const cardToMove = currentPlayer.cards.filter((c: Card) => c.layoutId === layoutId)[0];
                     console.log(layoutId, current(cardToMove));
 

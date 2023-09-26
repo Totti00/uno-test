@@ -42,11 +42,6 @@ const Root = styled.div`
 
 export default function DrawingStack() {
   const { drawingStack, currentPlayer } = useAppSelector(drawingStackAndCurrentPlayerSelector);
-  // const { drawingStack, currentPlayer } = useAppSelector((state) => ({
-  //   drawingStack: state.game.drawingStack,
-  //   currentPlayer: state.game.currentPlayer,
-  // }));
-  // console.info("drawingstack", drawingStack);
   const dispatch = useAppDispatch();
 
   const [gameStarted, setGameStarted] = useState(false);

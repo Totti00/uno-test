@@ -53,9 +53,9 @@ function initGame(server, io) {
             cards: [], // just empty cards objects
         }));
         for (const player of server.players) {
-            console.info("cards in api.cjs: " + player.cards)
+            //console.info("cards in api.cjs: " + player.cards)
             if (player.socketId) {
-                console.info("lancio initgame al player: ", player)
+                //console.info("lancio initgame al player: ", player)
                 io.to(player.socketId).emit("init-game", {
                     players: playersToSend,
                     cards: player.cards,
@@ -94,6 +94,8 @@ function move({ socket, cardId, draw }) {
 
     // Make the move
     const { nxtPlayer, cardsToDraw } = server.move(draw, card);
+
+    console.info("API.CJS cardsToDraw: ", cardsToDraw);
 
     //broadcast to all OTHER players
     socket.broadcast.to(serverId).emit("move", {

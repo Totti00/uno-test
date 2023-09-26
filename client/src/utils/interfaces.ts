@@ -5,11 +5,11 @@ export interface Player {
 }
 
 export interface Card {
-    id?: string;
+    _id?: string;
     layoutId?: string;
     digit?: number;
     color?: "red" | "blue" | "green" | "yellow" | "black";
-    action?: "skip" | "reverse" | "draw2" | "draw4" | "colorchange";
+    action?: "skip" | "reverse" | "draw2" | "draw4" | "wild";
     flip?: boolean;
     rotationY?: number;
     playable?: boolean;
@@ -36,7 +36,7 @@ export function canPlayCard(
     //No CardTSX Played Yet
     if (!oldCard) return true;
 
-    if (!haveToDraw && newCard.action === "colorchange") return true;
+    if (!haveToDraw && newCard.action === "wild") return true;
 
     if (newCard.action === "draw4") return true;
 

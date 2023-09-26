@@ -15,11 +15,6 @@ export default function LeftStack() {
   const { player, currentPlayer } = useAppSelector(playerAndCurrPlayerLeftStackSelector);
   const cards = useMemo(() => player?.cards || [], [player]);
 
-  // const { player, currentPlayer } = useAppSelector((state) => ({
-  //   player: state.game.players[1],
-  //   currentPlayer: state.game.currentPlayer,
-  // }));
-  // const cards = player?.cards || [];
   return (
     <Root>
       <CardsColumn cards={cards} highlight={currentPlayer === 1} />

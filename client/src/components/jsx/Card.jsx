@@ -146,11 +146,11 @@ export default function Card({
   disableShadow = false,
 }) {
   const onClick = () => {
+    console.info("CARD.JSX -> Is playable ?", playable);
       if (playable) API.move(false, id);
   };
 
   const getFrontContent = () => {
-      //console.info("Card.jsx: getFrontContent: color: ", color, " action: ", action, " digit: ", digit)
     if (color === "black" && action === "wild")
       return <Image src={`assets/images/wild.png`} ratio={590 / 418} />;
 

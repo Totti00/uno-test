@@ -19,7 +19,6 @@ const Root = styled.div`
 `;
 
 export default function TableStack() {
-  //const tableStack = useAppSelector((state) => state.game.tableStack);
   const {tableStack} = useAppSelector(tableStackSelector);
 
   return (

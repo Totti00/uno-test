@@ -57,7 +57,7 @@ class GameServer {
   }
 
   start() {
-    console.info("GameServer.cjs: ", this.deck);
+    //console.info("GameServer.cjs: ", this.deck);
     shuffle(this.deck);
     shuffle(this.players);
 
@@ -74,6 +74,7 @@ class GameServer {
   move(draw, card) {
     let moveEventObj = { nxtPlayer: 0, curPlayer: 0 };
 
+    //controllo che la carta può essere giocata sulla cima dello stack
     if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew))
       return false;
 
@@ -108,15 +109,15 @@ class GameServer {
       if (card.action === "draw2") this.sumDrawing += 2;
       if (card.action === "draw4") this.sumDrawing += 4;
 
-      this.tableStk.unshift(card);
+      this.tableStk.unshift(card); //Inserisce la carta in cima allo stack
       moveEventObj.card = card;
       this.players[this.curPlayer].cards = this.players[
         this.curPlayer
-      ].cards.filter((c) => c.id !== card.id);
+      ].cards.filter((c) => c.id !== card._id); //rimuove dalla mano del giocatore, la carta appena giocata
       this.lastPlayerDrew = false;
 
       // Check if game finished
-      if (this.players[this.curPlayer].cards.length === 0)
+      if (this.players[this.curPlayer].cards.length === 0)  
         this.playersFinished.push(this.curPlayer);
       if (this.playersFinished.length === this.players.length - 1)
         this.finishGame();

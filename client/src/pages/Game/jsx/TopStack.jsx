@@ -15,12 +15,6 @@ export default function TopStack() {
   const { player, currentPlayer } = useAppSelector(playerAndCurrPlayerTopStackSelector);
   const cards = useMemo(() => player?.cards || [], [player]);
 
-
-  // const { player, currentPlayer } = useAppSelector((state) => ({
-  //   player: state.game.players[2],
-  //   currentPlayer: state.game.currentPlayer,
-  // }));
-
   return (
     <Root>
       <CardsRow cards={cards} highlight={currentPlayer === 2} />

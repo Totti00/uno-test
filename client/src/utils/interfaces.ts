@@ -22,6 +22,12 @@ export interface GameServer {
     cntPlayers: string;
 }
 
+export interface Message {
+    player: Player;
+    text: string;
+    id: string;
+}
+
 export function canPlayCard(
     oldCard: Card,
     newCard: Card,

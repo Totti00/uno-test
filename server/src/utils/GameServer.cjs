@@ -16,6 +16,7 @@ class GameServer {
   playersFinished = [];
   gameRunning = false;
   deck = null;
+  messages = [];
 
   constructor(serverName, numberOfPlayers = 4) {
     this.serverId = nanoid();
@@ -34,6 +35,7 @@ class GameServer {
     this.lastPlayerDrew = false;
     this.gameRunning = false;
     this.deck = await getCards();  //async/await per eliminare la promise ed aspettare il risultato.
+    this.messages = [];
   }
 
   joinPlayer(player) {
@@ -125,6 +127,14 @@ class GameServer {
 
     this.curPlayer = nxtPlayer;
     return moveEventObj;
+  }
+
+  chat(message) {
+    const idMess = nanoid();
+    message.id = idMess;
+
+    this.messages.push(message);
+    return this.messages;
   }
 
   getNextPlayer(card) {

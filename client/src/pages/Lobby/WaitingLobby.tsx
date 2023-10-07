@@ -8,6 +8,7 @@ import {init, setInLobby} from "../../reducers.ts";
 import {RootState} from "../../store/store.ts";
 import API from "../../api/API.ts";
 import {Player} from "../../utils/interfaces.ts";
+import Chat from "../../components/chat/Chat.tsx"
 
 const WaitingLobby = () => {
     const navigate = useNavigate()
@@ -61,6 +62,7 @@ const WaitingLobby = () => {
                     >
                         <Button icon={<LeftOutlined />} type="primary" >Back</Button>
                     </Popconfirm>
+                    <Chat/>
             </Row>
             <Row justify="center" style={{ marginTop: 0 }}>
                 <WhiteLobbyCard roomName={server} players={players} />

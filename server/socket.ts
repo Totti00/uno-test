@@ -4,7 +4,7 @@ import {user} from "./src/types/user";
 import {startListeners} from "./src/utils/utils";
 
 //import * as api from "./src/utils/api";
-import {createServer, joinServer, startGame, leaveServer, move} from "./src/utils/api.cjs";
+import {createServer, joinServer, startGame, leaveServer, move, chat} from "./src/utils/api.cjs";
 import {getPlayer} from "./src/utils/PlayersSockets.cjs";
 import {getAllServers, getServerPlayers, getServerByPlayerId} from "./src/utils/Servers.cjs";
 
@@ -68,6 +68,16 @@ export class ServerSocket {
             socket.on("move", ({ cardId, draw }, cb = () => {}) => {
                 try {
                     move({ socket, cardId, draw });
+                    cb(null);
+                } catch (error) {
+                    cb(error);
+                    console.log(error);
+                }
+            });
+
+            socket.on("chat", ({ message }, cb = () => { }) => {
+                try {
+                    chat({ socket, message });
                     cb(null);
                 } catch (error) {
                     cb(error);

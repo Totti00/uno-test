@@ -1,4 +1,4 @@
-import {Card, GameServer, Player} from "../utils/interfaces.ts";
+import {Card, GameServer, Message, Player} from "../utils/interfaces.ts";
 
 export interface ServerInterface {
     player?: Player;
@@ -12,6 +12,7 @@ export interface ServerInterface {
     emitReady(): void;
     leaveServer(): void;
     move(draw: boolean | null, cardId: string): Promise<void>;
+    chat(message: Message): Promise<void>;
 
     onPlayersUpdated(cb: (players: Player[]) => void): () => void;
     onGameInit(
@@ -23,6 +24,11 @@ export interface ServerInterface {
             card: Card;
             draw?: number;
             cardsToDraw?: Card[];
+        }) => void
+    ): () => void;
+    onChat(
+        cb: (data: {
+            messages: Message[];
         }) => void
     ): () => void;
     onPlayerLeft(cb: () => void): () => void;

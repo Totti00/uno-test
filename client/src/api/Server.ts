@@ -1,5 +1,5 @@
 import {ServerInterface} from "./ServerInterface.ts";
-import {Card, GameServer, Player} from "../utils/interfaces.ts";
+import {Card, GameServer, Message, Player} from "../utils/interfaces.ts";
 import { socket } from "./socket";
 
 export class Server implements ServerInterface {
@@ -85,6 +85,15 @@ export class Server implements ServerInterface {
             });
         });
     }
+    
+    chat(message: Message): Promise<void>{
+        return new Promise((res, rej) => {
+            socket.emit("chat", { message }, (err: any) => {
+                if (err) return rej(err);
+                res();
+            });
+        });
+    }
 
     onFinishGame(cb: (playersOrdered: Player[]) => void): () => void {
         socket.on("finished-game", cb);
@@ -112,6 +121,15 @@ export class Server implements ServerInterface {
     ): () => void {
         socket.on("move", cb);
         return () => socket.off("move", cb);
+    }
+
+    onChat(
+        cb: (data: {
+            messages: Message[];
+        }) => void
+    ): () => void {
+        socket.on("chat", cb);
+        return () => socket.off("chat", cb);
     }
 
     onPlayerLeft(cb: () => void): () => void {

@@ -1,5 +1,5 @@
 import {ServerInterface} from "./ServerInterface.ts";
-import {Card, GameServer, Player} from "../utils/interfaces.ts";
+import {Card, GameServer, Message, Player} from "../utils/interfaces.ts";
 import {Server} from "./Server";
 
 export class _API implements ServerInterface {
@@ -52,6 +52,10 @@ export class _API implements ServerInterface {
         return this._server.move(draw, cardId);
     }
 
+    chat(message: Message): Promise<void>{
+        return this._server.chat(message);
+    }
+
     onFinishGame(cb: (playersOrdered: Player[]) => void): () => void {
         return this._server.onFinishGame(cb);
     }
@@ -62,6 +66,10 @@ export class _API implements ServerInterface {
 
     onMove(cb: (data: { nxtPlayer: number; card: Card; draw?: number; cardsToDraw?: Card[] }) => void): () => void {
         return this._server.onMove(cb);
+    }
+
+    onChat(cb: (data: { messages: Message[] }) => void): () => void{
+        return this._server.onChat(cb);
     }
 
     onPlayerLeft(cb: () => void): () => void {

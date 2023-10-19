@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import styles from "../../style/Home.module.css";
+import styles from "../../style/Chat.module.css";
 import { Input, Button } from "antd"
 
 export default function InputMessage({ onSend }) {
@@ -13,7 +13,8 @@ export default function InputMessage({ onSend }) {
 
     function onSubmit(e) {
         e.preventDefault(); // page dosn't refresh at each submit
-        onSend(text);
+        if(text !== null && text.trim() !== "")
+            onSend(text.trim());
         setText('');
     }
 

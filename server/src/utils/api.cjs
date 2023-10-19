@@ -122,14 +122,10 @@ function move({ socket, cardId, draw }) {
 }
 
 function chat({ socket, message }) {
-    const { playerId, serverId } = getPlayer(socket.id);
+    const { serverId } = getPlayer(socket.id);
     const server = getServer(serverId);
 
-    // console.info("API.CJS message received: ", message.text);
-
     const messages = server.chat(message)
-
-    console.info("messages: " + messages);
 
     //broadcast to other players
     socket.broadcast.to(serverId).emit("chat", {
@@ -141,6 +137,12 @@ function chat({ socket, message }) {
         messages,
     });
 
+}
+
+function getChat(serverId) {
+    const server = getServer(serverId);
+
+    return server.getChat();
 }
 
 function leaveServer(socket, io) {
@@ -166,4 +168,4 @@ function leaveServer(socket, io) {
     } catch (error) {}
 }
 
-export {createServer, joinServer, startGame, leaveServer, move, chat}
+export {createServer, joinServer, startGame, leaveServer, move, chat, getChat}

@@ -35,4 +35,5 @@ export interface ServerInterface {
     onFinishGame(cb: (playersOrdered: Player[]) => void): () => void;
 
     getPlayer(): Player;
+    getChat(): Promise<Message[]>;
 }

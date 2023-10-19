@@ -27,7 +27,13 @@ export default function Chat() {
     const [messages, setMessages] = useState<Message[]>([]);
     const me = API.getPlayer();
 
-    const handleOpen = () => setOpen(true);
+    const handleOpen = () => {
+        (async () => {
+            const chatHistory = await API.getChat();
+            setMessages(chatHistory);
+        })();
+        setOpen(true);
+    }
     const handleClose = () => setOpen(false);
     const handleSendMessage = (text: string) => {
         // console.log("Message sent: " + text);
@@ -41,7 +47,7 @@ export default function Chat() {
 
     useEffect(() => {
         API.onChat(({ messages }) => {
-            // console.info("CHAT received message ");
+            // console.info("CHAT received message with color: " + messages[messages.length - 1].player.color);
             setMessages(messages);
         });
 
@@ -59,7 +65,9 @@ export default function Chat() {
                 <Box sx={style}>
                     <Button onClick={handleClose}>Back</Button>
                     <div style={{ height: "5%" }} />
-                    <Messages messages={messages} me={me} />
+                    <div style={{ overflow: "auto", height: "80%"}}>
+                        <Messages messages={messages} me={me} />
+                    </div>
                     <InputMessage onSend={handleSendMessage} />
                 </Box>
             </Modal>

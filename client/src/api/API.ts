@@ -40,6 +40,10 @@ export class _API implements ServerInterface {
         return this._server.getServers();
     }
 
+    getChat(): Promise<Message[]> {
+        return this._server.getChat();
+    }
+
     joinServer(serverId: string): Promise<string> {
         return this._server.joinServer(serverId);
     }

@@ -2,6 +2,7 @@ export interface Player {
     id: string;
     name: string;
     cards: Card[];
+    color: string; //colore visualizzato in chat
 }
 
 export interface Card {

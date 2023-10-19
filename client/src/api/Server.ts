@@ -32,6 +32,8 @@ export class Server implements ServerInterface {
         if (this.player) return this.player;
         this.player = {} as Player;
         this.player.name = localStorage.getItem("playerName") as string;
+        this.player.color = randomColor();
+        console.log("color: " + this.player.color);
         return this.player;
     }
 
@@ -40,6 +42,15 @@ export class Server implements ServerInterface {
             socket.emit("get-server-players", null, (err: any, players: Player[]) => {
                 if (err) return rej(err);
                 res(players);
+            });
+        });
+    }
+
+    getChat(): Promise<Message[]> {
+        return new Promise((res, rej) => {
+            socket.emit("get-chat", null, (err: any, messages: Message[]) => {
+                if (err) return rej(err);
+                res(messages);
             });
         });
     }
@@ -142,4 +153,9 @@ export class Server implements ServerInterface {
         return () => socket.off("players-changed", cb);
     }
 
+}
+
+function randomColor() {
+    const randomHex = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+    return '#' + '0'.repeat(6 - randomHex.length) + randomHex;
 }

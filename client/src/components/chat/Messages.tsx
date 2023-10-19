@@ -1,6 +1,6 @@
 // import React, { useEffect, useRef } from "react";
 import { useEffect, useRef } from "react";
-import styles from "../../style/Home.module.css";
+import styles from "../../style/Chat.module.css";
 import { Message, Player } from "../../utils/interfaces";
 
 
@@ -37,15 +37,11 @@ function MessageCard({ player, text, id }: Message, me: Player) {
 
     return (
         <li key={id} className={className}>
-            <span className={styles.avatar} style={{ backgroundColor: randomColor() }} />
+            <span className={styles.avatar} style={{ backgroundColor: player.color }} />
             <div className={styles.messageContent}>
                 <div className={styles.username}>{username}</div>
                 <div className={styles.text}>{text}</div>
             </div>
         </li>
     );
-}
-
-function randomColor() {
-    return '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
 }

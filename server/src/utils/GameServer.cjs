@@ -137,6 +137,10 @@ class GameServer {
     return this.messages;
   }
 
+  getChat() {
+    return this.messages;
+  }
+
   getNextPlayer(card) {
     let nxtPlayer = this.curPlayer;
 

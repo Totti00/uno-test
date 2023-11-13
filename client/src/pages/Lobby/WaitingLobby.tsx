@@ -54,7 +54,7 @@ const WaitingLobby = () => {
         <div style={{ margin: 30 }}>
             <Row justify="space-between">
                     <Popconfirm
-                        title="Leave room alert"
+                        title="Leave lobby alert"
                         description="Are you sure to exit?"
                         onConfirm={handleJoinServer}
                         okText="Yes"

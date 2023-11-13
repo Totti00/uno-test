@@ -74,7 +74,7 @@ class GameServer {
   }
 
   move(draw, card) {
-    let moveEventObj = { nxtPlayer: 0, curPlayer: 0 };
+    let moveEventObj = { nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder:[] };
 
     //controllo che la carta può essere giocata sulla cima dello stack
     if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew))
@@ -115,14 +115,17 @@ class GameServer {
       moveEventObj.card = card;
       this.players[this.curPlayer].cards = this.players[
         this.curPlayer
-      ].cards.filter((c) => c.id !== card._id); //rimuove dalla mano del giocatore, la carta appena giocata
+      ].cards.filter((c) => c._id !== card._id); //rimuove dalla mano del giocatore, la carta appena giocata
       this.lastPlayerDrew = false;
 
       // Check if game finished
-      if (this.players[this.curPlayer].cards.length === 0)  
+      if (this.players[this.curPlayer].cards.length === 0) {
         this.playersFinished.push(this.curPlayer);
-      if (this.playersFinished.length === this.players.length - 1)
-        this.finishGame();
+      }
+      if (this.playersFinished.length === this.players.length - 1) {
+        moveEventObj.finish = true;
+        moveEventObj.playersFinishingOrder = this.finishGame();
+      }
     }
 
     this.curPlayer = nxtPlayer;
@@ -166,25 +169,20 @@ class GameServer {
     return nxtPlayer;
   }
 
-  onFinish(cb) {
-    this.onFinish = cb;
-  }
-
   finishGame() {
-    const lastPlayer = this.players.filter(
-      (player) =>
-        !this.playersFinished.some(
-          (playerFinished) => playerFinished.id === player.id
-        )
-    );
-    this.playersFinished.push(lastPlayer.id);
+    for (let i = 0; i <= 3; i++) {
+      if (!this.playersFinished.includes(i)) {
+        this.playersFinished.push(i);
+      }
+    }
+
     const playersFinishingOrder = this.playersFinished.map(
       (idx) => this.players[idx]
     );
+    
+    // this.init();
 
-    this.init();
-
-    this.onFinish(playersFinishingOrder);
+    return playersFinishingOrder;
   }
 }
 
@@ -207,6 +205,8 @@ function canPlayCard(oldCard, newCard, lastPlayerDrew) {
   if (haveToDraw && isNewDawingCard) return true;
 
   if (!haveToDraw && oldCard.color === newCard.color) return true;
+
+  if (oldCard.action !== undefined && newCard.action !== undefined && oldCard.action === newCard.action) return true;
 
   if (oldCard.digit !== undefined && oldCard.digit === newCard.digit)
     return true;

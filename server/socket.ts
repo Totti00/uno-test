@@ -67,7 +67,8 @@ export class ServerSocket {
 
             socket.on("move", ({ cardId, draw }, cb = () => {}) => {
                 try {
-                    move({ socket, cardId, draw });
+                    const io = this.io;
+                    move({ socket, cardId, draw }, io);
                     cb(null);
                 } catch (error) {
                     cb(error);

@@ -53,6 +53,8 @@ export function canPlayCard(
 
     if (!haveToDraw && oldCard.color === newCard.color) return true;
 
+    if (oldCard.action !== undefined && newCard.action !== undefined && oldCard.action === newCard.action) return true;
+
     if (oldCard.digit !== undefined && oldCard.digit === newCard.digit)
         return true;
 

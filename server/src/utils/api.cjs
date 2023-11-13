@@ -69,21 +69,21 @@ function startGame(serverId, io) {
     const server = getServer(serverId);
     if (!server.gameRunning) {
         server.gameRunning = true;
-/*        if (
-            server.players[server.curPlayer].disconnected ||
-            server.players[server.curPlayer].isBot
-        ) {
-            setTimeout(() => {
-                moveBot(server);
-            }, 1500);
-        }*/
-        server.onFinish((playersOrdered) => {
-            io.to(serverId).emit("finished-game", playersOrdered);
-        });
+        // if (
+        //     server.players[server.curPlayer].disconnected ||
+        //     server.players[server.curPlayer].isBot
+        // ) {
+        //     setTimeout(() => {
+        //         moveBot(server);
+        //     }, 1500);
+        // }
+        // server.onFinish((playersOrdered) => {
+        //     io.to(serverId).emit("finished-game", playersOrdered);
+        // });
     }
 }
 
-function move({ socket, cardId, draw }) {
+function move({ socket, cardId, draw }, io) {
     const { playerId, serverId } = getPlayer(socket.id);
     const server = getServer(serverId);
     const card = getCard(cardId);
@@ -93,7 +93,7 @@ function move({ socket, cardId, draw }) {
         throw new Error("Not Your Turn");
 
     // Make the move
-    const { nxtPlayer, cardsToDraw } = server.move(draw, card);
+    const { nxtPlayer, cardsToDraw, finish, playersFinishingOrder} = server.move(draw, card);
 
     console.info("API.CJS cardsToDraw: ", cardsToDraw);
 
@@ -111,6 +111,11 @@ function move({ socket, cardId, draw }) {
         draw: cardsToDraw?.length,
         cardsToDraw,
     });
+    
+    if (finish) {
+        console.info("API.CJS game finished");
+        io.to(serverId).emit("finished-game", playersFinishingOrder);
+    }
     /*if (
         server.players[server.curPlayer].disconnected ||
         server.players[server.curPlayer].isBot

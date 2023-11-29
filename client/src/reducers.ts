@@ -15,6 +15,8 @@ interface StoreState {
     lastPlayerDrawed: boolean;
     inGame: boolean;
     inLobby: boolean;
+    firstCard: Card;
+    firstPlayer: number;
 }
 
 let cardLayoutIdIdx = 111;
@@ -65,7 +67,6 @@ export const gameSlice = createSlice({
                 ...c,
                 layoutId: `id_${cardLayoutIdIdx++}`,
                 rotationY: 0,
-                playable: myIdx === 0,
                 forPlayer: 0,
             }));
 
@@ -105,7 +106,10 @@ export const gameSlice = createSlice({
             state.players = state.players.map((player, idx) => {
                 return {
                     ...player,
-                    cards: state.drawingStack.filter((c) => c.forPlayer === idx),
+                    cards: state.drawingStack.filter((c) => c.forPlayer === idx).map((c: Card) => ({
+                        ...c,
+                        playable: (idx === state.nextPlayer) && canPlayCard(state.firstCard, c, false),
+                    })),
                 };
             });
 
@@ -132,6 +136,7 @@ export const gameSlice = createSlice({
 
             const currentPlayer = state.players[state.currentPlayer];
 
+            //ricalcolo nextPlayer in relazione al curPlayer
             nextPlayer = wrapMod(nextPlayer - state.orderOffset, state.players.length);
 
             if (card?.action === "reverse") state.direction *= -1;
@@ -196,7 +201,7 @@ export const gameSlice = createSlice({
             state.players = state.players.map((p) => {
                 if (p.id === state.playerId) {
                     const myTurn = state.nextPlayer === 0;
-
+                    
                     return {
                         ...p,
                         cards: p.cards.map((c: Card) => {
@@ -211,6 +216,43 @@ export const gameSlice = createSlice({
             });
             state.currentPlayer = state.nextPlayer;
         },
+        setFirstCard(state, action: PayloadAction<{
+            firstCard: Card;
+            firstPlayer: number;
+        }>) {
+            let { firstCard, firstPlayer } = action.payload;
+            state.firstCard = firstCard;
+            state.firstPlayer = firstPlayer;
+        },
+        moveFirstCard(state, action: PayloadAction<{
+            nextPlayer: number;
+            card: Card;
+        }>) {
+            let { nextPlayer, card} = action.payload;
+
+            //ricalcolo nextPlayer in relazione al curPlayer
+            nextPlayer = wrapMod(nextPlayer - state.orderOffset, state.players.length);
+
+            if (card.action === "reverse") state.direction *= -1;
+
+            let layoutId: string | undefined = "";
+            let shouldFlip = false;
+                
+            layoutId = card.layoutId;
+            shouldFlip = true;
+
+            state.tableStack = [...state.tableStack.slice(-1), {
+                layoutId,
+                color: card.color,
+                digit: card.digit,
+                action: card.action,
+                flip: shouldFlip,
+                rotationY: 0,
+            },];
+            
+            state.lastPlayerDrawed = false;
+            state.nextPlayer = nextPlayer;
+        },
     },
 });
 
@@ -222,6 +264,8 @@ export const {
     movePlayer,
     setPlayerId,
     setInLobby,
+    setFirstCard,
+    moveFirstCard,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

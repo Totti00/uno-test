@@ -47,7 +47,7 @@ function joinServer({
 
 function initGame(server, io) {
     setTimeout(() => {
-        server.start();
+        const { nxtPlayer, card} = server.start();
         const playersToSend = server.players.map((player) => ({
             ...player,
             cards: [], // just empty cards objects
@@ -59,6 +59,8 @@ function initGame(server, io) {
                 io.to(player.socketId).emit("init-game", {
                     players: playersToSend,
                     cards: player.cards,
+                    nxtPlayer,
+                    card
                 });
             }
         }

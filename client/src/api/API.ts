@@ -64,7 +64,7 @@ export class _API implements ServerInterface {
         return this._server.onFinishGame(cb);
     }
 
-    onGameInit(cb: (data: { players: Player[]; cards: Card[] }) => void): () => void {
+    onGameInit(cb: (data: { players: Player[]; cards: Card[]; card: Card; nxtPlayer: number; }) => void): () => void {
         return this._server.onGameInit(cb);
     }
 

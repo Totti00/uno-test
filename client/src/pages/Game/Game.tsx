@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Player } from "../../utils/interfaces.ts";
 import { useAppSelector } from "../../hooks/hooks.ts";
 import API from "../../api/API.ts";
-import { moveCard, movePlayer, stopGame } from "../../reducers.ts";
+import { moveCard, movePlayer, stopGame, moveFirstCard} from "../../reducers.ts";
 import TableStack from "./jsx/TableStack.jsx";
 import TopStack from "./jsx/TopStack.jsx";
 import PlayerStack from "./jsx/PlayerStack.jsx";
@@ -23,9 +23,15 @@ const Game = () => {
     const inGame = useAppSelector(state => state.game.inGame);
     //const [modal, showModal] = useState(false)
 
+    const firstCard = useAppSelector(state => state.game.firstCard);
+    const firstPlayer = useAppSelector(state => state.game.firstPlayer);
+
+    dispatch(moveFirstCard({ nextPlayer: firstPlayer, card: firstCard }));
+    setTimeout(() => dispatch(movePlayer()), 500);
+
     useEffect(() => {
         const timeoutReady = setTimeout(() => {
-            API.emitReady()
+            API.emitReady();
         }, 2000);
 
         API.onMove(({ card, draw, cardsToDraw, nxtPlayer }) => {

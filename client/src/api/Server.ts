@@ -116,7 +116,7 @@ export class Server implements ServerInterface {
     }
 
     onGameInit(
-        cb: (data: { players: Player[]; cards: Card[] }) => void
+        cb: (data: { players: Player[]; cards: Card[]; card: Card; nxtPlayer: number; }) => void
     ): () => void {
         socket.on("init-game", cb);
         return () => socket.off("init-game", cb);

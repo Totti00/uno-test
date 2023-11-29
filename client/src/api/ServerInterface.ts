@@ -16,7 +16,7 @@ export interface ServerInterface {
 
     onPlayersUpdated(cb: (players: Player[]) => void): () => void;
     onGameInit(
-        cb: (data: { players: Player[]; cards: Card[] }) => void
+        cb: (data: { players: Player[]; cards: Card[]; card: Card; nxtPlayer: number; }) => void
     ): () => void;
     onMove(
         cb: (data: {

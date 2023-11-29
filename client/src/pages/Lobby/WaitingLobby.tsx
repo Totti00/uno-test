@@ -4,7 +4,7 @@ import { useNavigate} from "react-router-dom";
 import { LeftOutlined } from "@ant-design/icons"
 import WhiteLobbyCard from "../../components/WhiteLobbyCard.tsx";
 import {useDispatch, useSelector} from "react-redux";
-import {init, setInLobby} from "../../reducers.ts";
+import {init, setFirstCard, setInLobby} from "../../reducers.ts";
 import {RootState} from "../../store/store.ts";
 import API from "../../api/API.ts";
 import {Player} from "../../utils/interfaces.ts";
@@ -25,7 +25,8 @@ const WaitingLobby = () => {
             const serverPlayers = await API.getServerPlayers();
             setPlayers(serverPlayers);
             API.onPlayersUpdated((players) => setPlayers(players));
-            unsubInit = API.onGameInit(({ players, cards }) => {
+            unsubInit = API.onGameInit(({ players, cards, card, nxtPlayer }) => {
+                dispatch(setFirstCard({ firstCard: card, firstPlayer: nxtPlayer }));
                 dispatch(init({ cards, players }));
                 timeout = setTimeout(() => navigate("/game"), 2000);
             });

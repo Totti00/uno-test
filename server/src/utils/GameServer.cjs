@@ -1,6 +1,6 @@
 const { wrapMod, shuffle } = require("./helpers.cjs");
 const { nanoid } = require("nanoid");
-const {getCards} = require("./Cards.cjs");
+const { getCards } = require("./Cards.cjs");
 
 class GameServer {
   serverId;
@@ -67,14 +67,19 @@ class GameServer {
     this.players.forEach((player, idx) => {
       player.cards = this.deck.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS);
     });
+
+    let firstCard = this.deck.slice(NUM_CARDS * this.players.length, NUM_CARDS * this.players.length +1)[0];
+    
     this.drawingStk = this.deck.slice(
-      this.players.length * NUM_CARDS,
-        this.deck.length
+      this.players.length * NUM_CARDS + 1,
+      this.deck.length
     );
+
+    return this.move(false, firstCard);
   }
 
   move(draw, card) {
-    let moveEventObj = { nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder:[] };
+    let moveEventObj = { nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: [] };
 
     //controllo che la carta può essere giocata sulla cima dello stack
     if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew))
@@ -145,25 +150,29 @@ class GameServer {
   }
 
   getNextPlayer(card) {
-    let nxtPlayer = this.curPlayer;
+    let nxtPlayer = this.tableStk[0] ? this.curPlayer : wrapMod(this.curPlayer - 1, this.players.length); //se non ho carte nel tableStk significa che è la prima carta giocata
+    // let nxtPlayer = this.curPlayer;
 
-    if (card?.action === "reverse") this.direction *= -1;
+    //se ci sono rimasti 2 player in gioco, dopo un reverse o uno skip tocca di nuovo al curPlayer
+    if (!((this.players.length - this.playersFinished.length === 2) && (card?.action === "reverse" || card?.action === "skip"))) {
+      if (card?.action === "reverse") {
+        this.direction *= -1;
+      }
 
-    //Move to next player ( if not wild card )
-    if (card?.action === "skip")
-      nxtPlayer = wrapMod(
-        this.curPlayer + 2 * this.direction,
-        this.players.length
-      );
-    else if (card?.action !== "wild")
-      nxtPlayer = wrapMod(
-        this.curPlayer + this.direction,  //this.curPlayer + 1 * this.direction,
-        this.players.length
-      );
+      //Move to next player
+      if (card?.action === "skip") {
+        nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+      }
+      else //if (card?.action !== "wild")
+        nxtPlayer = wrapMod(
+          nxtPlayer + this.direction,  //this.curPlayer + 1 * this.direction,
+          this.players.length
+        );
 
-    //if nxtPlayer is out of the game (no cards left with him)
-    while (this.players[nxtPlayer].cards.length === 0) {
-      nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length); //this.curPlayer + 1 * this.direction,
+      //if nxtPlayer is out of the game (no cards left with him)
+      while (this.players[nxtPlayer].cards.length === 0) {
+        nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length); //this.curPlayer + 1 * this.direction,
+      }
     }
 
     return nxtPlayer;
@@ -179,8 +188,8 @@ class GameServer {
     const playersFinishingOrder = this.playersFinished.map(
       (idx) => this.players[idx]
     );
-    
-    // this.init();
+
+    this.init();
 
     return playersFinishingOrder;
   }

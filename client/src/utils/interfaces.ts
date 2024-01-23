@@ -34,11 +34,14 @@ export function canPlayCard(
     newCard: Card,
     lastPlayerDrew: boolean
 ) {
-    const isOldDawingCard =
-        oldCard?.action && oldCard.action.indexOf("draw") !== -1;
-    const haveToDraw = isOldDawingCard && !lastPlayerDrew;
-    const isNewDawingCard =
-        newCard?.action && newCard.action.indexOf("draw") !== -1;
+    //restituisce true se oldCard è una carta draw2 o dra4 altrimenti false
+    const isOldDrawingCard = oldCard?.action && oldCard.action.indexOf("draw") !== -1;
+
+    //Sarà true solo se il giocatore precedente ha giocato una carta draw e se il giocatore corrente non ha ancora pescato
+    const haveToDraw = isOldDrawingCard && !lastPlayerDrew;
+
+    //restituisce true se newCard è una carta draw2 o draw4 altrimenti false
+    const isNewDrawingCard = newCard?.action && newCard.action.indexOf("draw") !== -1;
 
     //No CardTSX Played Yet
     if (!oldCard) return true;
@@ -49,7 +52,7 @@ export function canPlayCard(
 
     if (oldCard.color === "black" && !haveToDraw) return true;
 
-    if (haveToDraw && isNewDawingCard) return true;
+    if (haveToDraw && isNewDrawingCard) return true;
 
     if (!haveToDraw && oldCard.color === newCard.color) return true;
 

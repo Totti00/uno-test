@@ -224,6 +224,9 @@ cmake-build-*/
 
 # Exclude MongoDB data and log files
 mongo/data/**
+mongo/data/WiredTiger.turtle
+mongo/data/WiredTiger.wt
+mongo/data/mongod.lock
 
 # File-based project format
 *.iws

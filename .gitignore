@@ -222,6 +222,9 @@ cmake-build-*/
 # Mongo Explorer plugin
 .idea/**/mongoSettings.xml
 
+# Exclude MongoDB data and log files
+data/
+
 # File-based project format
 *.iws
 

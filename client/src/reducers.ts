@@ -131,8 +131,8 @@ export const gameSlice = createSlice({
             draw?: number;
             cardsToDraw?: Card[];
           }>) {
-            let { nextPlayer, card, cardsToDraw = [], draw } = action.payload;
-        
+            let { nextPlayer} = action.payload;
+            const { card, cardsToDraw = [], draw } = action.payload;
 
             const currentPlayer = state.players[state.currentPlayer];
 
@@ -198,21 +198,21 @@ export const gameSlice = createSlice({
             state.nextPlayer = nextPlayer;
         },
         movePlayer(state) {
-            state.players = state.players.map((p) => {
-                if (p.id === state.playerId) {
+            state.players = state.players.map((player) => {
+                if (player.id === state.playerId) {
                     const myTurn = state.nextPlayer === 0;
                     
                     return {
-                        ...p,
-                        cards: p.cards.map((c: Card) => {
+                        ...player,
+                        cards: player.cards.map((card: Card) => {
                             return {
-                                ...c,
-                                playable: myTurn && canPlayCard(state.tableStack[state.tableStack.length - 1], c, state.lastPlayerDrawed),
+                                ...card,
+                                playable: myTurn && canPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed),
                             };
                         }),
                     };
                 }
-                return p;
+                return player;
             });
             state.currentPlayer = state.nextPlayer;
         },
@@ -220,7 +220,7 @@ export const gameSlice = createSlice({
             firstCard: Card;
             firstPlayer: number;
         }>) {
-            let { firstCard, firstPlayer } = action.payload;
+            const { firstCard, firstPlayer } = action.payload;
             state.firstCard = firstCard;
             state.firstPlayer = firstPlayer;
         },
@@ -228,7 +228,8 @@ export const gameSlice = createSlice({
             nextPlayer: number;
             card: Card;
         }>) {
-            let { nextPlayer, card} = action.payload;
+            let { nextPlayer} = action.payload;
+            const { card} = action.payload;
 
             //ricalcolo nextPlayer in relazione al curPlayer
             nextPlayer = wrapMod(nextPlayer - state.orderOffset, state.players.length);

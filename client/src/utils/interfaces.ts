@@ -32,9 +32,9 @@ export interface Message {
 export function canPlayCard(
     oldCard: Card,
     newCard: Card,
-    lastPlayerDrew: boolean
+    lastPlayerDrew: boolean //True se l'ultimo giocatore ha pescato
 ) {
-    //restituisce true se oldCard è una carta draw2 o dra4 altrimenti false
+    //restituisce true se oldCard è una carta draw2 o draw4 altrimenti false
     const isOldDrawingCard = oldCard?.action && oldCard.action.indexOf("draw") !== -1;
 
     //Sarà true solo se il giocatore precedente ha giocato una carta draw e se il giocatore corrente non ha ancora pescato
@@ -43,23 +43,25 @@ export function canPlayCard(
     //restituisce true se newCard è una carta draw2 o draw4 altrimenti false
     const isNewDrawingCard = newCard?.action && newCard.action.indexOf("draw") !== -1;
 
-    //No CardTSX Played Yet
+    //Nessuna carta ancora giocata
     if (!oldCard) return true;
 
-    if (!haveToDraw && newCard.action === "wild") return true;
+    // Se non devo pescare, allora le carte black sono sempre giocabili
+    if (!haveToDraw && newCard.color === "black") return true;
 
-    if (newCard.action === "draw4") return true;
-
+    // Se non devo pescare, e nel mazzo degli scarti c'è una carta black, allora tutte le carte sono giocabili
     if (oldCard.color === "black" && !haveToDraw) return true;
 
-    if (haveToDraw && isNewDrawingCard) return true;
+    // Se la carta precedente è una carta draw2 o draw4, e devo quindi pescare, non posso rispondere con draw2 o draw4
+    if (isOldDrawingCard && isNewDrawingCard && haveToDraw) return false;
 
+    // Una carta dello stesso colore di quella nel mazzo degli scarti, è giocabile se non devo pescare
     if (!haveToDraw && oldCard.color === newCard.color) return true;
 
+    // Se la carta in mano ha la stessa action di quella nel mazzo degli scarti, è giocabile
     if (oldCard.action !== undefined && newCard.action !== undefined && oldCard.action === newCard.action) return true;
 
-    if (oldCard.digit !== undefined && oldCard.digit === newCard.digit)
-        return true;
+    // Se la carta in mano ha lo stesso numero di quella nel mazzo degli scarti, è giocabile. Altrimenti no
+    return oldCard.digit !== undefined && oldCard.digit === newCard.digit;
 
-    return false;
 }

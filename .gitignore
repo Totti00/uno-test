@@ -223,7 +223,7 @@ cmake-build-*/
 .idea/**/mongoSettings.xml
 
 # Exclude MongoDB data and log files
-mongo/data/
+mongo/data/**
 
 # File-based project format
 *.iws

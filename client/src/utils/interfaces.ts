@@ -44,7 +44,7 @@ export function canPlayCard(
     const isNewDrawingCard = newCard?.action && newCard.action.indexOf("draw") !== -1;
 
     //Nessuna carta ancora giocata
-    if (!oldCard) return true;
+    //if (!oldCard) return true;
 
     // Se non devo pescare, allora le carte black sono sempre giocabili
     if (!haveToDraw && newCard.color === "black") return true;

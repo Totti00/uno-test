@@ -8,11 +8,20 @@ import API from '../../api/API';
 import { Message } from '../../utils/interfaces';
 // import { useState } from 'react';
 
+const styleDiv = {
+    display: 'flex',
+    justifyContent: 'space-between',
+
+};
+
+const styleButton = {
+    marginLeft: 'auto',
+};
+
 const style = {
-    position: 'absolute' as 'absolute',
+    position: 'absolute',
     top: '5%',
     left: '15%',
-    //   transform: 'translate(-50%, -50%)',
     width: '70%',
     height: '85%',
     bgcolor: 'background.paper',
@@ -54,8 +63,8 @@ export default function Chat() {
     });
 
     return (
-        <div>
-            <Button onClick={handleOpen}>Chat</Button>
+        <div style={styleDiv}>
+            <Button style={styleButton} onClick={handleOpen}>Chat</Button>
             <Modal
                 open={open}
                 onClose={handleClose}

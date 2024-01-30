@@ -4,6 +4,7 @@ import Chat from "../../../components/chat/Chat.tsx";
 import { useNavigate } from "react-router-dom";
 import { Player } from '../../../utils/interfaces.ts';
 import WhiteRankingCard from '../../../components/WhiteRankingCard.tsx';
+import React from "react";
 
 interface RankingProps {
     playersOrder: Player[];

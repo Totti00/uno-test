@@ -12,7 +12,8 @@ import DrawingStack from "./jsx/DrawingStack.jsx";
 import RightStack from "./jsx/RightStack.jsx";
 import LeftStack from "./jsx/LeftStack.jsx";
 import { Navigate } from "react-router-dom";
-import Ranking from "./jsx/Ranking.jsx";
+import Ranking from "./jsx/Ranking.tsx";
+import Chat from "../../components/chat/Chat.tsx";
 //import {Navigate} from "react-router-dom";
 
 const Game = () => {
@@ -78,6 +79,7 @@ const Game = () => {
 
             {finished ? <Ranking playersOrder={playersOrder} /> : (
                 <>
+                    <Chat />
                     <TableStack />
                     <TopStack />
                     <LeftStack />

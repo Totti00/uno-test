@@ -65,3 +65,11 @@ export function canPlayCard(
     return oldCard.digit !== undefined && oldCard.digit === newCard.digit;
 
 }
+
+export function canPlayCardSelectableColor(
+    color: string,
+    newCard: Card
+) {
+    // Se non devo pescare, allora le carte black sono sempre giocabili
+    return newCard.color === "black" || color === newCard.color;
+}

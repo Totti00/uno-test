@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, current} from "@reduxjs/toolkit";
-import { Card, Player, canPlayCard } from "./utils/interfaces.ts";
+import {Card, Player, canPlayCard, canPlayCardSelectableColor} from "./utils/interfaces.ts";
 import { wrapMod } from "./utils/utile.ts";
 import { isNullOrUndefined } from 'is-what';
 
@@ -197,6 +197,7 @@ export const gameSlice = createSlice({
             }
             state.nextPlayer = nextPlayer;
         },
+
         movePlayer(state) {
             state.players = state.players.map((player) => {
                 if (player.id === state.playerId) {
@@ -216,6 +217,29 @@ export const gameSlice = createSlice({
             });
             state.currentPlayer = state.nextPlayer;
         },
+        movePlayerSelectableCard(state, action: PayloadAction<{
+            color: string;
+        }>) {
+            const { color } = action.payload;
+            state.players = state.players.map((player) => {
+                if (player.id === state.playerId) {
+                    const myTurn = state.nextPlayer === 0;
+
+                    return {
+                        ...player,
+                        cards: player.cards.map((card: Card) => {
+                            return {
+                                ...card,
+                                playable: myTurn && canPlayCardSelectableColor(color, card),
+                            };
+                        }),
+                    };
+                }
+                return player;
+            });
+            state.currentPlayer = state.nextPlayer;
+        },
+
         setFirstCard(state, action: PayloadAction<{
             firstCard: Card;
             firstPlayer: number;
@@ -263,6 +287,7 @@ export const {
     stopGame,
     moveCard,
     movePlayer,
+    movePlayerSelectableCard,
     setPlayerId,
     setInLobby,
     setFirstCard,

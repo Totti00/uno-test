@@ -12,6 +12,7 @@ export interface ServerInterface {
     emitReady(): void;
     leaveServer(): void;
     move(draw: boolean | null, cardId: string): Promise<void>;
+    moveSelectableColorCard(draw: boolean | null, cardId: string, colorSelected: string): Promise<void>;
     chat(message: Message): Promise<void>;
 
     onPlayersUpdated(cb: (players: Player[]) => void): () => void;
@@ -23,6 +24,15 @@ export interface ServerInterface {
             nxtPlayer: number;
             card: Card;
             draw?: number;
+            cardsToDraw?: Card[];
+        }) => void
+    ): () => void;
+    onMoveSelectableColorCard(
+        cb: (data: {
+            nxtPlayer: number;
+            card: Card;
+            draw?: number;
+            colorSelected: string;
             cardsToDraw?: Card[];
         }) => void
     ): () => void;

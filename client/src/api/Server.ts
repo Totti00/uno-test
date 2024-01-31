@@ -3,7 +3,6 @@ import {Card, GameServer, Message, Player} from "../utils/interfaces.ts";
 import { socket } from "./socket";
 
 export class Server implements ServerInterface {
-
     player?: Player;
 
     createServer(serverName: string): Promise<string> {
@@ -96,6 +95,15 @@ export class Server implements ServerInterface {
             });
         });
     }
+
+    moveSelectableColorCard(draw: boolean | null, cardId: string, colorSelected: string): Promise<void> {
+        return new Promise((res, rej) => {
+            socket.emit("move-selectable-color-card", { cardId, draw, colorSelected }, (err: any) => {
+                if (err) return rej(err);
+                res();
+            });
+        });
+    }
     
     chat(message: Message): Promise<void>{
         return new Promise((res, rej) => {
@@ -132,6 +140,19 @@ export class Server implements ServerInterface {
     ): () => void {
         socket.on("move", cb);
         return () => socket.off("move", cb);
+    }
+
+    onMoveSelectableColorCard(
+        cb: (data: {
+            nxtPlayer: number;
+            card: Card;
+            draw?: number | undefined;
+            colorSelected: string;
+            cardsToDraw?: Card[] | undefined;
+        }) => void
+    ): () => void {
+        socket.on("move-selectable-color-card", cb);
+        return () => socket.off("move-selectable-color-card", cb);
     }
 
     onChat(

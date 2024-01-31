@@ -4,7 +4,7 @@ import {user} from "./src/types/user";
 import {startListeners} from "./src/utils/utils";
 
 //import * as api from "./src/utils/api";
-import {createServer, joinServer, startGame, leaveServer, move, chat, getChat} from "./src/utils/api.cjs";
+import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat} from "./src/utils/api.cjs";
 import {getPlayer} from "./src/utils/PlayersSockets.cjs";
 import {getAllServers, getServerPlayers, getServerByPlayerId} from "./src/utils/Servers.cjs";
 
@@ -69,6 +69,17 @@ export class ServerSocket {
                 try {
                     const io = this.io;
                     move({ socket, cardId, draw }, io);
+                    cb(null);
+                } catch (error) {
+                    cb(error);
+                    console.log(error);
+                }
+            });
+
+            socket.on("move-selectable-color-card", ({ cardId, draw, colorSelected }, cb = () => {}) => {
+                try {
+                    const io = this.io;
+                    moveSelectableColorCard({ socket, cardId, draw, colorSelected }, io);
                     cb(null);
                 } catch (error) {
                     cb(error);

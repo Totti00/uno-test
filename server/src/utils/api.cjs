@@ -118,14 +118,41 @@ function move({ socket, cardId, draw }, io) {
         console.info("API.CJS game finished");
         io.to(serverId).emit("finished-game", playersFinishingOrder);
     }
-    /*if (
-        server.players[server.curPlayer].disconnected ||
-        server.players[server.curPlayer].isBot
-    ) {
-        setTimeout(() => {
-            moveBot(server);
-        }, 1500);
-    }*/
+}
+
+function moveSelectableColorCard({ socket, cardId, draw, colorSelected }, io) {
+    const { playerId, serverId } = getPlayer(socket.id);
+    const server = getServer(serverId);
+    const card = getCard(cardId);
+
+    // Check if its my turn
+    if (server.players[server.curPlayer].id !== playerId)
+        throw new Error("Not Your Turn");
+
+    // Make the move
+    const { nxtPlayer, cardsToDraw, finish, playersFinishingOrder} = server.move(draw, card);
+
+    //broadcast to all OTHER players
+    socket.broadcast.to(serverId).emit("move-selectable-color-card", {
+        nxtPlayer,
+        card,
+        draw: cardsToDraw?.length,
+        colorSelected,
+    });
+
+    //send to my player
+    socket.emit("move-selectable-color-card", {
+        nxtPlayer,
+        card,
+        draw: cardsToDraw?.length,
+        colorSelected,
+        cardsToDraw,
+    });
+
+    if (finish) {
+        console.info("API.CJS game finished");
+        io.to(serverId).emit("finished-game", playersFinishingOrder);
+    }
 }
 
 function chat({ socket, message }) {
@@ -175,4 +202,4 @@ function leaveServer(socket, io) {
     } catch (error) {}
 }
 
-export {createServer, joinServer, startGame, leaveServer, move, chat, getChat}
+export {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat}

@@ -56,6 +56,10 @@ export class _API implements ServerInterface {
         return this._server.move(draw, cardId);
     }
 
+    moveSelectableColorCard(draw: boolean | null, cardId: string, colorSelected: string): Promise<void> {
+        return this._server.moveSelectableColorCard(draw, cardId, colorSelected);
+    }
+
     chat(message: Message): Promise<void>{
         return this._server.chat(message);
     }
@@ -70,6 +74,10 @@ export class _API implements ServerInterface {
 
     onMove(cb: (data: { nxtPlayer: number; card: Card; draw?: number; cardsToDraw?: Card[] }) => void): () => void {
         return this._server.onMove(cb);
+    }
+
+    onMoveSelectableColorCard(cb: (data: { nxtPlayer: number; card: Card; draw?: number; colorSelected: string; cardsToDraw?: Card[] }) => void): () => void {
+        return this._server.onMoveSelectableColorCard(cb);
     }
 
     onChat(cb: (data: { messages: Message[] }) => void): () => void{

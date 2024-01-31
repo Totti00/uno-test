@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Player } from "../../utils/interfaces.ts";
 import { useAppSelector } from "../../hooks/hooks.ts";
 import API from "../../api/API.ts";
-import { moveCard, movePlayer, stopGame, moveFirstCard} from "../../reducers.ts";
+import {moveCard, movePlayer, stopGame, moveFirstCard, movePlayerSelectableCard} from "../../reducers.ts";
 import TableStack from "./jsx/TableStack.jsx";
 import TopStack from "./jsx/TopStack.jsx";
 import PlayerStack from "./jsx/PlayerStack.jsx";
@@ -36,9 +36,14 @@ const Game = () => {
         }, 2000);
 
         API.onMove(({ card, draw, cardsToDraw, nxtPlayer }) => {
-            console.info("GAME draw: ", draw);
+            //console.info("GAME draw: ", draw);
             dispatch(moveCard({ nextPlayer: nxtPlayer, card, draw, cardsToDraw }));
             setTimeout(() => dispatch(movePlayer()), 500);
+        });
+
+        API.onMoveSelectableColorCard(({ card, draw, cardsToDraw, colorSelected, nxtPlayer }) => {
+            dispatch(moveCard({ nextPlayer: nxtPlayer, card, draw, cardsToDraw }));
+            setTimeout(() => dispatch(movePlayerSelectableCard({color: colorSelected})), 500);
         });
 
         API.onFinishGame((players: Player[]) => {

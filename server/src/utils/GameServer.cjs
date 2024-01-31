@@ -153,7 +153,7 @@ class GameServer {
     let nxtPlayer = this.tableStk[0] ? this.curPlayer : wrapMod(this.curPlayer - 1, this.players.length); //se non ho carte nel tableStk significa che è la prima carta giocata
     // let nxtPlayer = this.curPlayer;
 
-    //se ci sono rimasti 2 player in gioco, dopo un reverse o uno skip tocca di nuovo al curPlayer
+    //se sono rimasti 2 player in gioco, dopo un reverse o uno skip tocca di nuovo al curPlayer
     if (!((this.players.length - this.playersFinished.length === 2) && (card?.action === "reverse" || card?.action === "skip"))) {
       if (card?.action === "reverse") {
         this.direction *= -1;

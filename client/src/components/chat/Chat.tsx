@@ -11,7 +11,6 @@ import { Message } from '../../utils/interfaces';
 const styleDiv = {
     display: 'flex',
     justifyContent: 'space-between',
-
 };
 
 const styleButton = {

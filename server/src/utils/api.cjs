@@ -97,8 +97,6 @@ function move({ socket, cardId, draw }, io) {
     // Make the move
     const { nxtPlayer, cardsToDraw, finish, playersFinishingOrder} = server.move(draw, card);
 
-    console.info("API.CJS cardsToDraw: ", cardsToDraw);
-
     //broadcast to all OTHER players
     socket.broadcast.to(serverId).emit("move", {
         nxtPlayer,

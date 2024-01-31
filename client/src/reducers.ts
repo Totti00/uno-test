@@ -47,6 +47,7 @@ export const gameSlice = createSlice({
             state.tableStack = [];
             state.lastPlayerDrawed = false;
             state.inGame = true;
+            state.colorSelected = "";
 
             const playersFinal: Player[] = [];
             let myIdx = 0;
@@ -115,7 +116,7 @@ export const gameSlice = createSlice({
             cardsToDraw?: Card[];
           }>) {
             let { nextPlayer} = action.payload;
-            const { card, cardsToDraw = [], draw } = action.payload;
+            const { card, cardsToDraw = [], draw } = action.payload
 
             const currentPlayer = state.players[state.currentPlayer];
 
@@ -144,6 +145,7 @@ export const gameSlice = createSlice({
             }
 
             if (card) {
+                state.colorSelected = "";
                 let layoutId: string | undefined = "";
                 let shouldFlip = false;
                 if (currentPlayer.id !== state.playerId) {
@@ -191,7 +193,8 @@ export const gameSlice = createSlice({
                         cards: player.cards.map((card: Card) => {
                             return {
                                 ...card,
-                                playable: myTurn && canPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed),
+                                //playable: myTurn && canPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed),
+                                playable: myTurn && (state.colorSelected !== "" ? canPlayCardSelectableColor(state.colorSelected,state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed) : canPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed)),
                             };
                         }),
                     };
@@ -204,6 +207,7 @@ export const gameSlice = createSlice({
             color: string;
         }>) {
             const { color } = action.payload;
+            state.colorSelected = color;
             state.players = state.players.map((player) => {
                 if (player.id === state.playerId) {
                     const myTurn = state.nextPlayer === 0;
@@ -213,7 +217,7 @@ export const gameSlice = createSlice({
                         cards: player.cards.map((card: Card) => {
                             return {
                                 ...card,
-                                playable: myTurn && canPlayCardSelectableColor(color, card),
+                                playable: myTurn && canPlayCardSelectableColor(color, state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed),
                             };
                         }),
                     };

@@ -185,7 +185,7 @@ export default function Card({
 
     const onClick = () => {
         if (playable) {
-            if (color === "black" && action === "wild") {
+            if (color === "black" && (action === "wild" || action === "draw4")){
                 if(colorSelected === ""){
                     setShowColorSelector(true);
                     setPreserve3D(false);

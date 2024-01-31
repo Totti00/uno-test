@@ -17,6 +17,7 @@ interface StoreState {
     inLobby: boolean;
     firstCard: Card;
     firstPlayer: number;
+    colorSelected: string;
 }
 
 let cardLayoutIdIdx = 111;
@@ -83,26 +84,9 @@ export const gameSlice = createSlice({
             state.players = playersFinal;
             state.drawingStack = cardsToDistribute.concat(generateDrawingCards(20));
             state.orderOffset = myIdx;
-
-            // console.info("Players in reducers.ts: ", state.players);
-            // console.info("Drawing stack in reducers.ts: ", state.drawingStack);
-            // console.info("Table stack in reducers.ts: ", state.tableStack);
-            // console.info("Current player in reducers.ts: ", state.currentPlayer);
-            // console.info("Next player in reducers.ts: ", state.nextPlayer);
-            // console.info("Order offset in reducers.ts: ", state.orderOffset);
-            // console.info("Direction in reducers.ts: ", state.direction);
-            // console.info("Last player drawed in reducers.ts: ", state.lastPlayerDrawed);
-            // console.info("In game in reducers.ts: ", state.inGame);
-            // console.info("In lobby in reducers.ts: ", state.inLobby);
-            // console.info("Starting cards in reducers.ts: ", startingCards);
-            //  console.info("Cards to distribute in reducers.ts: ", cardsToDistribute);
-            //  console.info("Prova ", state.players[state.currentPlayer].cards)
         },
 
         ready(state) {
-            // state.drawingStack.forEach((elem, index) => {
-            //     console.log(`Element at index ${index}:`, elem);
-            // })
             state.players = state.players.map((player, idx) => {
                 return {
                     ...player,
@@ -114,7 +98,6 @@ export const gameSlice = createSlice({
             });
 
             state.drawingStack = state.drawingStack.filter((c) => isNullOrUndefined(c.forPlayer));
-            // console.info("Players in reducers.ts/INIT: ", state.players);
         },
 
         stopGame(state) {

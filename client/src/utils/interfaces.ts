@@ -83,8 +83,10 @@ export function canPlayCardSelectableColor(
 
     if (isOldDrawingFourCard && !haveToDraw && (newCard.color === color)) return true;
 
+    if (newCard.color === "black" && !haveToDraw) return true;
+
     if (isOldDrawingFourCard) return false;
 
     // Se non devo pescare, allora le carte black sono sempre giocabili
-    return newCard.color === "black" || color === newCard.color;
+    return color === newCard.color;
 }

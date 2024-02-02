@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, current} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Card, Player, canPlayCard, canPlayCardSelectableColor} from "./utils/interfaces.ts";
 import { wrapMod } from "./utils/utile.ts";
 import { isNullOrUndefined } from 'is-what';
@@ -154,7 +154,6 @@ export const gameSlice = createSlice({
                 } else {
                     layoutId = currentPlayer.cards.find((c: Card) => c._id === card?._id)?.layoutId;
                     const cardToMove = currentPlayer.cards.filter((c: Card) => c.layoutId === layoutId)[0];
-                    console.log(layoutId, current(cardToMove));
 
                     card.color = cardToMove.color;
                     card.digit = cardToMove.digit;

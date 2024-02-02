@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Player } from "../../utils/interfaces.ts";
 import { useAppSelector } from "../../hooks/hooks.ts";
 import API from "../../api/API.ts";
-import {moveCard, movePlayer, stopGame, moveFirstCard, movePlayerSelectableCard} from "../../reducers.ts";
+import {moveCard, finalMovePlayer, stopGame, moveFirstCard} from "../../reducers.ts";
 import TableStack from "./jsx/TableStack.jsx";
 import TopStack from "./jsx/TopStack.jsx";
 import PlayerStack from "./jsx/PlayerStack.jsx";
@@ -28,7 +28,7 @@ const Game = () => {
     const firstPlayer = useAppSelector(state => state.game.firstPlayer);
 
     dispatch(moveFirstCard({ nextPlayer: firstPlayer, card: firstCard }));
-    setTimeout(() => dispatch(movePlayer()), 500);
+    setTimeout(() => dispatch(finalMovePlayer({color: ""})), 500);
 
     useEffect(() => {
         const timeoutReady = setTimeout(() => {
@@ -37,12 +37,12 @@ const Game = () => {
 
         API.onMove(({ card, draw, cardsToDraw, nxtPlayer }) => {
             dispatch(moveCard({ nextPlayer: nxtPlayer, card, draw, cardsToDraw }));
-            setTimeout(() => dispatch(movePlayer()), 500);
+            setTimeout(() => dispatch(finalMovePlayer({color: ""})), 500);
         });
 
         API.onMoveSelectableColorCard(({ card, draw, cardsToDraw, colorSelected, nxtPlayer }) => {
             dispatch(moveCard({ nextPlayer: nxtPlayer, card, draw, cardsToDraw }));
-            setTimeout(() => dispatch(movePlayerSelectableCard({color: colorSelected})), 500);
+            setTimeout(() => dispatch(finalMovePlayer({color: colorSelected})), 500);
         });
 
         API.onFinishGame((players: Player[]) => {

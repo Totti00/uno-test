@@ -181,42 +181,25 @@ export const gameSlice = createSlice({
             }
             state.nextPlayer = nextPlayer;
         },
+        finalMovePlayer(state, action: PayloadAction<{
+            color?: string;
+        }>){
+            const color = action?.payload?.color || state.colorSelected;
 
-        movePlayer(state) {
+            if (state.colorSelected === "" ) {
+                state.colorSelected = color;
+            }
+
             state.players = state.players.map((player) => {
                 if (player.id === state.playerId) {
                     const myTurn = state.nextPlayer === 0;
-                    
+        
                     return {
                         ...player,
                         cards: player.cards.map((card: Card) => {
                             return {
                                 ...card,
-                                //playable: myTurn && canPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed),
                                 playable: myTurn && (state.colorSelected !== "" ? canPlayCardSelectableColor(state.colorSelected,state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed) : canPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed)),
-                            };
-                        }),
-                    };
-                }
-                return player;
-            });
-            state.currentPlayer = state.nextPlayer;
-        },
-        movePlayerSelectableCard(state, action: PayloadAction<{
-            color: string;
-        }>) {
-            const { color } = action.payload;
-            state.colorSelected = color;
-            state.players = state.players.map((player) => {
-                if (player.id === state.playerId) {
-                    const myTurn = state.nextPlayer === 0;
-
-                    return {
-                        ...player,
-                        cards: player.cards.map((card: Card) => {
-                            return {
-                                ...card,
-                                playable: myTurn && canPlayCardSelectableColor(color, state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed),
                             };
                         }),
                     };
@@ -272,8 +255,7 @@ export const {
     ready,
     stopGame,
     moveCard,
-    movePlayer,
-    movePlayerSelectableCard,
+    finalMovePlayer,
     setPlayerId,
     setInLobby,
     setFirstCard,

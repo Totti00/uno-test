@@ -73,8 +73,6 @@ export function canPlayCardSelectableColor(
     lastPlayerDrew: boolean //True se l'ultimo giocatore ha pescato
 ) {
 
-    console.log("Interfaces.ts color -> ", color);
-
     //restituisce true se oldCard è una carta draw4 altrimenti false
     const isOldDrawingFourCard = oldCard?.action && oldCard.action === "draw4";
 

@@ -88,3 +88,16 @@ export function canPlayCardSelectableColor(
     // Se non devo pescare, allora le carte black sono sempre giocabili
     return color === newCard.color;
 }
+
+export function finalCanPlayCard(
+    oldCard: Card,
+    newCard: Card,
+    lastPlayerDrew: boolean, //True se l'ultimo giocatore ha pescato
+    color?: string,
+) {
+    if (color) {
+        return canPlayCardSelectableColor(color, oldCard, newCard, lastPlayerDrew);
+    } else {
+        return canPlayCard(oldCard, newCard, lastPlayerDrew);
+    }
+}

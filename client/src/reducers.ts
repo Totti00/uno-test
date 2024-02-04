@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {Card, Player, canPlayCard, canPlayCardSelectableColor} from "./utils/interfaces.ts";
+import {Card, Player, canPlayCard, finalCanPlayCard} from "./utils/interfaces.ts";
 import { wrapMod } from "./utils/utile.ts";
 import { isNullOrUndefined } from 'is-what';
 
@@ -121,6 +121,10 @@ export const gameSlice = createSlice({
             const currentPlayer = state.players[state.currentPlayer];
 
             //ricalcolo nextPlayer in relazione al curPlayer
+            console.info("nextPlayer -> ", nextPlayer);
+            console.info("state.orderOffset -> ", state.orderOffset);
+            console.info("state.players.length -> ", state.players.length);
+
             nextPlayer = wrapMod(nextPlayer - state.orderOffset, state.players.length);
 
             if (card?.action === "reverse") state.direction *= -1;
@@ -199,7 +203,8 @@ export const gameSlice = createSlice({
                         cards: player.cards.map((card: Card) => {
                             return {
                                 ...card,
-                                playable: myTurn && (state.colorSelected !== "" ? canPlayCardSelectableColor(state.colorSelected,state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed) : canPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed)),
+                                //playable: myTurn && (state.colorSelected !== "" ? canPlayCardSelectableColor(state.colorSelected,state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed) : canPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed)),
+                                playable: myTurn && finalCanPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed, state.colorSelected),
                             };
                         }),
                     };

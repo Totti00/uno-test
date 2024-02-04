@@ -3,80 +3,80 @@ const { nanoid } = require("nanoid");
 const { getCards } = require("./Cards.cjs");
 
 class GameServer {
-  serverId;
-  serverName;
+    serverId;
+    serverName;
 
-  players = [];
-  curPlayer = 0;
-  direction = 1;
-  tableStk = [];
-  drawingStk = [];
-  sumDrawing = 0;
-  lastPlayerDrew = false;
-  playersFinished = [];
-  gameRunning = false;
-  deck = null;
-  messages = [];
+    players = [];
+    curPlayer = 0;
+    direction = 1;
+    tableStk = [];
+    drawingStk = [];
+    sumDrawing = 0;
+    lastPlayerDrew = false;
+    playersFinished = [];
+    gameRunning = false;
+    deck = null;
+    messages = [];
 
-  constructor(serverName, numberOfPlayers = 4) {
-    this.serverId = nanoid();
-    this.serverName = serverName;
-    this.numberOfPlayers = numberOfPlayers;
-  }
-
-  async init() {
-    this.players = [];
-    this.curPlayer = 0;
-    this.direction = 1;
-    this.tableStk = [];
-    this.drawingStk = [];
-    this.sumDrawing = 0;
-    this.playersFinished = [];
-    this.lastPlayerDrew = false;
-    this.gameRunning = false;
-    this.deck = await getCards();  //async/await per eliminare la promise ed aspettare il risultato.
-    this.messages = [];
-  }
-
-  joinPlayer(player) {
-    const playerId = nanoid();
-
-    this.players.push({
-      ...player,
-      id: playerId,
-      cards: [],
-    });
-    return playerId;
-  }
-
-  leavePlayer(playerId) {
-    if (!this.gameRunning) {
-      this.players = this.players.filter((p) => p.id !== playerId);
-    } else {
-      const player = this.players.find((p) => p.id === playerId);
-      player.disconnected = true;
+    constructor(serverName, numberOfPlayers = 4) {
+        this.serverId = nanoid();
+        this.serverName = serverName;
+        this.numberOfPlayers = numberOfPlayers;
     }
-  }
 
-  start() {
-    //console.info("GameServer.cjs: ", this.deck);
-    shuffle(this.deck);
-    shuffle(this.players);
+    async init() {
+        this.players = [];
+        this.curPlayer = 0;
+        this.direction = 1;
+        this.tableStk = [];
+        this.drawingStk = [];
+        this.sumDrawing = 0;
+        this.playersFinished = [];
+        this.lastPlayerDrew = false;
+        this.gameRunning = false;
+        this.deck = await getCards();  //async/await per eliminare la promise ed aspettare il risultato.
+        this.messages = [];
+    }
 
-    const NUM_CARDS = 7;
-    this.players.forEach((player, idx) => {
-      player.cards = this.deck.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS);
-    });
+    joinPlayer(player) {
+        const playerId = nanoid();
 
-    let firstCard = this.deck.slice(NUM_CARDS * this.players.length, NUM_CARDS * this.players.length +1)[0];
+        this.players.push({
+        ...player,
+        id: playerId,
+        cards: [],
+        });
+        return playerId;
+    }
+
+    leavePlayer(playerId) {
+        if (!this.gameRunning) {
+            this.players = this.players.filter((p) => p.id !== playerId);
+        } else {
+            const player = this.players.find((p) => p.id === playerId);
+            player.disconnected = true;
+        }
+    }
+
+    start() {
+        //console.info("GameServer.cjs: ", this.deck);
+        shuffle(this.deck);
+        shuffle(this.players);
+
+        const NUM_CARDS = 7;
+        this.players.forEach((player, idx) => {
+            player.cards = this.deck.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS);
+        });
+
+        let firstCard = this.deck.slice(NUM_CARDS * this.players.length, NUM_CARDS * this.players.length +1)[0];
     
-    this.drawingStk = this.deck.slice(
-      this.players.length * NUM_CARDS + 1,
-      this.deck.length
-    );
+        this.drawingStk = this.deck.slice(
+            this.players.length * NUM_CARDS + 1,
+            this.deck.length
+        );
 
-    return this.move(false, firstCard);
-  }
+        return this.move(false, firstCard);
+    }
 
   move(draw, card) {
     let moveEventObj = { nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: [] };
@@ -137,90 +137,125 @@ class GameServer {
     return moveEventObj;
   }
 
-  chat(message) {
-    const idMess = nanoid();
-    message.id = idMess;
+    chat(message) {
+        message.id = nanoid();
+        this.messages.push(message);
+        return this.messages;
+    }
 
-    this.messages.push(message);
-    return this.messages;
-  }
+    getChat() {
+      return this.messages;
+    }
 
-  getChat() {
-    return this.messages;
-  }
+    getNextPlayer(card) {
+        let nxtPlayer = this.tableStk[0] ? this.curPlayer : wrapMod(this.curPlayer + this.direction, this.players.length);
 
-  getNextPlayer(card) {
-    let nxtPlayer = this.tableStk[0] ? this.curPlayer : wrapMod(this.curPlayer - 1, this.players.length); //se non ho carte nel tableStk significa che è la prima carta giocata
-    // let nxtPlayer = this.curPlayer;
+        if (this.players.length - this.playersFinished.length === 3) {
+            this.checkReverse(card);
 
-    //se sono rimasti 2 player in gioco, dopo un reverse o uno skip tocca di nuovo al curPlayer
-    if (!((this.players.length - this.playersFinished.length === 2) && (card?.action === "reverse" || card?.action === "skip"))) {
-      if (card?.action === "reverse") {
-        this.direction *= -1;
-      }
+            if (card?.action === "skip") {
+                if (this.players[0].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 1 2 3
+                    if (this.direction < 0) {
+                        if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer * this.direction, this.players.length);
+                        else if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
+                        else nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
+                    } else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                } else if(this.players[3].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 0 1 2
+                    if (this.direction < 0) {
+                        if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                        else if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+                        else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                    } else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length - 1);
+                } else if(this.players[2].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 0 1 3
+                    if (this.direction < 0) {
+                        if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+                        else if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
+                        else nxtPlayer = wrapMod(nxtPlayer * this.direction, this.players.length);
+                    } else {
+                        if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                        else nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+                    }
+                } else { //Sono nel caso in cui i giocatori rimasti sono 0 2 3
+                    if (this.direction < 0) {
+                        if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                        else if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
+                        else nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
+                    } else {
+                        if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                        else nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+                    }
+                }
+            } else nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
 
-      //Move to next player
-      if (card?.action === "skip") {
-        nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-      }
-      else //if (card?.action !== "wild")
-        nxtPlayer = wrapMod(
-          nxtPlayer + this.direction,  //this.curPlayer + 1 * this.direction,
-          this.players.length
+            nxtPlayer = this.checkActivePlayers(nxtPlayer);
+        } else if (this.players.length - this.playersFinished.length === 2) {
+            this.checkReverse(card);
+
+            if (card?.action !== "skip" && card?.action !== "reverse") nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
+
+            nxtPlayer = this.checkActivePlayers(nxtPlayer);
+        } else {
+            this.checkReverse(card);
+
+            if (card?.action === "skip") nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+            else nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
+
+            nxtPlayer = this.checkActivePlayers(nxtPlayer);
+        }
+        return nxtPlayer;
+    }
+
+    checkActivePlayers(nxtPlayer) {
+        while (this.players[nxtPlayer].cards.length === 0) {
+            nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
+        }
+        return nxtPlayer;
+    }
+
+    checkReverse(card) {
+        if (card?.action === "reverse") {
+            this.direction *= -1;
+        }
+    }
+
+    finishGame() {
+        for (let i = 0; i <= 3; i++) {
+            if (!this.playersFinished.includes(i)) {
+            this.playersFinished.push(i);
+            }
+        }
+
+        const playersFinishingOrder = this.playersFinished.map(
+            (idx) => this.players[idx]
         );
 
-      //if nxtPlayer is out of the game (no cards left with him)
-      while (this.players[nxtPlayer].cards.length === 0) {
-        nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length); //this.curPlayer + 1 * this.direction,
-      }
+        this.init();
+
+        return playersFinishingOrder;
     }
-
-    return nxtPlayer;
-  }
-
-  finishGame() {
-    for (let i = 0; i <= 3; i++) {
-      if (!this.playersFinished.includes(i)) {
-        this.playersFinished.push(i);
-      }
-    }
-
-    const playersFinishingOrder = this.playersFinished.map(
-      (idx) => this.players[idx]
-    );
-
-    this.init();
-
-    return playersFinishingOrder;
-  }
 }
 
 function canPlayCard(oldCard, newCard, lastPlayerDrew) {
-  const isOldDawingCard =
-    oldCard?.action && oldCard.action.indexOf("draw") !== -1;
-  const haveToDraw = isOldDawingCard && !lastPlayerDrew;
-  const isNewDawingCard =
-    newCard?.action && newCard.action.indexOf("draw") !== -1;
+    const isOldDawingCard = oldCard?.action && oldCard.action.indexOf("draw") !== -1;
+    const haveToDraw = isOldDawingCard && !lastPlayerDrew;
+    const isNewDawingCard = newCard?.action && newCard.action.indexOf("draw") !== -1;
 
-  //No Card Played Yet
-  if (!oldCard) return true;
+    //No Card Played Yet
+    if (!oldCard) return true;
 
-  if (!haveToDraw && newCard.action === "wild") return true;
+    if (!haveToDraw && newCard.action === "wild") return true;
 
-  if (newCard.action === "draw4") return true;
+    if (newCard.action === "draw4") return true;
 
-  if (oldCard.color === "black" && !haveToDraw) return true;
+    if (oldCard.color === "black" && !haveToDraw) return true;
 
-  if (haveToDraw && isNewDawingCard) return true;
+    if (haveToDraw && isNewDawingCard) return true;
 
-  if (!haveToDraw && oldCard.color === newCard.color) return true;
+    if (!haveToDraw && oldCard.color === newCard.color) return true;
 
-  if (oldCard.action !== undefined && newCard.action !== undefined && oldCard.action === newCard.action) return true;
+    if (oldCard.action !== undefined && newCard.action !== undefined && oldCard.action === newCard.action) return true;
 
-  if (oldCard.digit !== undefined && oldCard.digit === newCard.digit)
-    return true;
-
-  return false;
+    return oldCard.digit !== undefined && oldCard.digit === newCard.digit;
 }
 
 module.exports = GameServer;

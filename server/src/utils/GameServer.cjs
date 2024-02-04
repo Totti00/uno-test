@@ -172,7 +172,7 @@ class GameServer {
     }
 
     handleSkipAction(nxtPlayer) {
-        /* if (this.players[0].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 1 2 3
+        /*if (this.players[0].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 1 2 3
             if (this.direction === -1) {
                 if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer * this.direction, this.players.length);
                 else if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
@@ -203,7 +203,7 @@ class GameServer {
                 else nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
             }
         }
-        return nxtPlayer; */
+        return nxtPlayer;*/
 
         const playerCases = [
             { check: this.players[0].cards.length === 0, players: [1, 2, 3] },
@@ -220,9 +220,9 @@ class GameServer {
     handlePlayerCase(nxtPlayer, players) {
         const directionMap = {
             '-1': [3, 2, 1],
-            '1': [2, 3, 3]
+            '1': [1, 2, 3]
         };
-    
+
         const directionFactor = directionMap[this.direction.toString()][players.indexOf(nxtPlayer)];
         return wrapMod(nxtPlayer + directionFactor * this.direction, this.players.length);
     }

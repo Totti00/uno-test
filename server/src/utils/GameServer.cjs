@@ -78,64 +78,58 @@ class GameServer {
         return this.move(false, firstCard);
     }
 
-  move(draw, card) {
-    let moveEventObj = { nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: [] };
+    move(draw, card) {
+        let moveEventObj = { nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: [] };
 
-    //controllo che la carta può essere giocata sulla cima dello stack
-    if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew))
-      return false;
+        //controllo che la carta può essere giocata sulla cima dello stack
+        if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew)) return false;
 
-    if (draw) {
-      let drawCnt = 1;
-      if (this.sumDrawing) {
-        drawCnt = this.sumDrawing;
-        this.sumDrawing = 0;
-      }
+        if (draw) {
+            let drawCnt = 1;
+            if (this.sumDrawing) {
+                drawCnt = this.sumDrawing;
+                this.sumDrawing = 0;
+            }
 
-      moveEventObj.draw = drawCnt;
-      if (drawCnt + 1 > this.drawingStk.length) {
-        this.drawingStk = shuffle(this.tableStk.slice(5, this.tableStk.length));
-        this.tableStk = this.tableStk.slice(0, 5);
-      }
+            moveEventObj.draw = drawCnt;
+            if (drawCnt + 1 > this.drawingStk.length) {
+                this.drawingStk = shuffle(this.tableStk.slice(5, this.tableStk.length));
+                this.tableStk = this.tableStk.slice(0, 5);
+            }
 
-      moveEventObj.cardsToDraw = this.drawingStk.slice(0, drawCnt);
-      this.players[this.curPlayer].cards = this.drawingStk
-        .slice(0, drawCnt)
-        .concat(this.players[this.curPlayer].cards);
+            moveEventObj.cardsToDraw = this.drawingStk.slice(0, drawCnt);
+            this.players[this.curPlayer].cards = this.drawingStk.slice(0, drawCnt).concat(this.players[this.curPlayer].cards);
 
-      this.drawingStk = this.drawingStk.slice(drawCnt, this.drawingStk.length);
-      this.lastPlayerDrew = true;
+            this.drawingStk = this.drawingStk.slice(drawCnt, this.drawingStk.length);
+            this.lastPlayerDrew = true;
+        }
+
+        let nxtPlayer = this.getNextPlayer(card);
+
+        moveEventObj.curPlayer = this.curPlayer;
+        moveEventObj.nxtPlayer = nxtPlayer;
+
+        if (card) {
+            if (card.action === "draw2") this.sumDrawing += 2;
+            if (card.action === "draw4") this.sumDrawing += 4;
+
+            this.tableStk.unshift(card); //Inserisce la carta in cima allo stack
+            moveEventObj.card = card;
+            //rimuove dalla mano del giocatore, la carta appena giocata
+            this.players[this.curPlayer].cards = this.players[this.curPlayer].cards.filter((c) => c._id !== card._id);
+            this.lastPlayerDrew = false;
+
+            // Check if game finished
+            if (this.players[this.curPlayer].cards.length === 0) this.playersFinished.push(this.curPlayer);
+            if (this.playersFinished.length === this.players.length - 1) {
+                moveEventObj.finish = true;
+                moveEventObj.playersFinishingOrder = this.finishGame();
+            }
+        }
+
+        this.curPlayer = nxtPlayer;
+        return moveEventObj;
     }
-
-    let nxtPlayer = this.getNextPlayer(card);
-
-    moveEventObj.curPlayer = this.curPlayer;
-    moveEventObj.nxtPlayer = nxtPlayer;
-
-    if (card) {
-      if (card.action === "draw2") this.sumDrawing += 2;
-      if (card.action === "draw4") this.sumDrawing += 4;
-
-      this.tableStk.unshift(card); //Inserisce la carta in cima allo stack
-      moveEventObj.card = card;
-      this.players[this.curPlayer].cards = this.players[
-        this.curPlayer
-      ].cards.filter((c) => c._id !== card._id); //rimuove dalla mano del giocatore, la carta appena giocata
-      this.lastPlayerDrew = false;
-
-      // Check if game finished
-      if (this.players[this.curPlayer].cards.length === 0) {
-        this.playersFinished.push(this.curPlayer);
-      }
-      if (this.playersFinished.length === this.players.length - 1) {
-        moveEventObj.finish = true;
-        moveEventObj.playersFinishingOrder = this.finishGame();
-      }
-    }
-
-    this.curPlayer = nxtPlayer;
-    return moveEventObj;
-  }
 
     chat(message) {
         message.id = nanoid();
@@ -144,93 +138,108 @@ class GameServer {
     }
 
     getChat() {
-      return this.messages;
+        return this.messages;
     }
 
     getNextPlayer(card) {
         let nxtPlayer = this.tableStk[0] ? this.curPlayer : wrapMod(this.curPlayer + this.direction, this.players.length);
+        let remainingPlayers = this.players.length - this.playersFinished.length;
 
-        if (this.players.length - this.playersFinished.length === 3) {
-            this.checkReverse(card);
+        this.checkReverse(card);
 
-            if (card?.action === "skip") {
-                if (this.players[0].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 1 2 3
-                    if (this.direction < 0) {
-                        if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer * this.direction, this.players.length);
-                        else if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
-                        else nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
-                    } else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-                } else if(this.players[3].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 0 1 2
-                    if (this.direction < 0) {
-                        if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-                        else if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
-                        else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-                    } else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length - 1);
-                } else if(this.players[2].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 0 1 3
-                    if (this.direction < 0) {
-                        if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
-                        else if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
-                        else nxtPlayer = wrapMod(nxtPlayer * this.direction, this.players.length);
-                    } else {
-                        if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-                        else nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
-                    }
-                } else { //Sono nel caso in cui i giocatori rimasti sono 0 2 3
-                    if (this.direction < 0) {
-                        if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-                        else if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
-                        else nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
-                    } else {
-                        if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-                        else nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
-                    }
-                }
-            } else nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
+        if (remainingPlayers === 3) nxtPlayer = this.handleThreeRemainingPlayers(card, nxtPlayer);
+        else if (remainingPlayers === 2) nxtPlayer = this.handleTwoRemainingPlayers(card, nxtPlayer);
+        else nxtPlayer = this.handleOtherCases(card, nxtPlayer);
+        
+        return this.checkNextActivePlayers(nxtPlayer);
+    }
 
-            nxtPlayer = this.checkActivePlayers(nxtPlayer);
-        } else if (this.players.length - this.playersFinished.length === 2) {
-            this.checkReverse(card);
-
-            if (card?.action !== "skip" && card?.action !== "reverse") nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
-
-            nxtPlayer = this.checkActivePlayers(nxtPlayer);
-        } else {
-            this.checkReverse(card);
-
-            if (card?.action === "skip") nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-            else nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
-
-            nxtPlayer = this.checkActivePlayers(nxtPlayer);
-        }
+    handleThreeRemainingPlayers(card, nxtPlayer) {
+        if (card?.action === "skip") nxtPlayer = this.handleSkipAction(nxtPlayer);
+        else nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
         return nxtPlayer;
     }
 
-    checkActivePlayers(nxtPlayer) {
-        while (this.players[nxtPlayer].cards.length === 0) {
-            nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
+    handleTwoRemainingPlayers(card, nxtPlayer) {
+        if (card?.action !== "skip" && card?.action !== "reverse") nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
+        return nxtPlayer;
+    }
+
+    handleOtherCases(card, nxtPlayer) {
+        if (card?.action === "skip") nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+        else nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
+        return nxtPlayer;
+    }
+
+    handleSkipAction(nxtPlayer) {
+        /* if (this.players[0].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 1 2 3
+            if (this.direction === -1) {
+                if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer * this.direction, this.players.length);
+                else if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
+                else nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
+            } else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+        } else if(this.players[3].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 0 1 2
+            if (this.direction === -1) {
+                if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                else if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+                else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+            } else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length - 1);
+        } else if(this.players[2].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 0 1 3
+            if (this.direction === -1) {
+                if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+                else if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
+                else nxtPlayer = wrapMod(nxtPlayer * this.direction, this.players.length);
+            } else {
+                if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                else nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+            }
+        } else { //Sono nel caso in cui i giocatori rimasti sono 0 2 3
+            if (this.direction === -1) {
+                if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                else if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
+                else nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
+            } else {
+                if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                else nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+            }
         }
+        return nxtPlayer; */
+
+        const playerCases = [
+            { check: this.players[0].cards.length === 0, players: [1, 2, 3] },
+            { check: this.players[3].cards.length === 0, players: [0, 1, 2] },
+            { check: this.players[2].cards.length === 0, players: [0, 1, 3] },
+            { check: true, players: [0, 2, 3] } // default case
+        ];
+    
+        for (const caseInfo of playerCases) {
+            if (caseInfo.check) return this.handlePlayerCase(nxtPlayer, caseInfo.players);
+        }
+    }
+
+    handlePlayerCase(nxtPlayer, players) {
+        const directionMap = {
+            '-1': [3, 2, 1],
+            '1': [2, 3, 3]
+        };
+    
+        const directionFactor = directionMap[this.direction.toString()][players.indexOf(nxtPlayer)];
+        return wrapMod(nxtPlayer + directionFactor * this.direction, this.players.length);
+    }
+
+    checkNextActivePlayers(nxtPlayer) {
+        while (this.players[nxtPlayer].cards.length === 0) nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
         return nxtPlayer;
     }
 
     checkReverse(card) {
-        if (card?.action === "reverse") {
-            this.direction *= -1;
-        }
+        if (card?.action === "reverse") this.direction *= -1;
     }
 
     finishGame() {
-        for (let i = 0; i <= 3; i++) {
-            if (!this.playersFinished.includes(i)) {
-            this.playersFinished.push(i);
-            }
-        }
-
-        const playersFinishingOrder = this.playersFinished.map(
-            (idx) => this.players[idx]
-        );
-
+        for (let i = 0; i <= 3; i++) if (!this.playersFinished.includes(i)) this.playersFinished.push(i);
+        const playersFinishingOrder = this.playersFinished.map((idx) => this.players[idx]);
         this.init();
-
         return playersFinishingOrder;
     }
 }

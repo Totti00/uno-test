@@ -222,7 +222,7 @@ class GameServer {
             '-1': [3, 2, 1],
             '1': [1, 2, 3]
         };
-
+        //TODO: Non funziona bnee il caso del blocco
         const directionFactor = directionMap[this.direction.toString()][players.indexOf(nxtPlayer)];
         return wrapMod(nxtPlayer + directionFactor * this.direction, this.players.length);
     }

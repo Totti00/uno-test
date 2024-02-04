@@ -50,32 +50,34 @@ class GameServer {
     }
 
     leavePlayer(playerId) {
-        if (!this.gameRunning) {
-            this.players = this.players.filter((p) => p.id !== playerId);
-        } else {
+        if (!this.gameRunning) this.players = this.players.filter((p) => p.id !== playerId);
+        else {
             const player = this.players.find((p) => p.id === playerId);
             player.disconnected = true;
         }
     }
 
     start() {
-        //console.info("GameServer.cjs: ", this.deck);
         shuffle(this.deck);
         shuffle(this.players);
 
         const NUM_CARDS = 7;
-        this.players.forEach((player, idx) => {
-            player.cards = this.deck.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS);
-        });
-
-        let firstCard = this.deck.slice(NUM_CARDS * this.players.length, NUM_CARDS * this.players.length +1)[0];
-    
-        this.drawingStk = this.deck.slice(
-            this.players.length * NUM_CARDS + 1,
-            this.deck.length
-        );
-
+        this.players.forEach((player, idx) => player.cards = this.deck.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS));
+        
+        let firstCard;
+        do {
+            firstCard = this.deck.slice(NUM_CARDS * this.players.length, NUM_CARDS * this.players.length +1)[0];
+            if (this.checkNoFirstCard(firstCard)) {
+                this.deck.push(firstCard);
+                shuffle(this.deck);
+            }
+        } while (this.checkNoFirstCard(firstCard));
+        this.drawingStk = this.deck.slice(this.players.length * NUM_CARDS + 1, this.deck.length);
         return this.move(false, firstCard);
+    }
+
+    checkNoFirstCard(card) {
+        return card.action === "draw4" || card.action === "wild" || card.action === "draw2" || card.action === "skip" || card.action === "reverse";
     }
 
     move(draw, card) {
@@ -99,7 +101,6 @@ class GameServer {
 
             moveEventObj.cardsToDraw = this.drawingStk.slice(0, drawCnt);
             this.players[this.curPlayer].cards = this.drawingStk.slice(0, drawCnt).concat(this.players[this.curPlayer].cards);
-
             this.drawingStk = this.drawingStk.slice(drawCnt, this.drawingStk.length);
             this.lastPlayerDrew = true;
         }
@@ -126,7 +127,6 @@ class GameServer {
                 moveEventObj.playersFinishingOrder = this.finishGame();
             }
         }
-
         this.curPlayer = nxtPlayer;
         return moveEventObj;
     }

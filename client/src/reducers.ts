@@ -23,9 +23,7 @@ interface StoreState {
 let cardLayoutIdIdx = 111;
 
 function generateDrawingCards(cnt: number) {
-    return Array(cnt)
-        .fill(0)
-        .map(() => ({ layoutId: `id_${cardLayoutIdIdx++}` }));
+    return Array(cnt).fill(0).map(() => ({ layoutId: `id_${cardLayoutIdIdx++}` }));
 }
 
 const initialState = {
@@ -114,7 +112,7 @@ export const gameSlice = createSlice({
             card?: Card;
             draw?: number;
             cardsToDraw?: Card[];
-          }>) {
+        }>) {
             let { nextPlayer} = action.payload;
             const { card, cardsToDraw = [], draw } = action.payload
 

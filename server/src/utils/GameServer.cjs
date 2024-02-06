@@ -172,59 +172,48 @@ class GameServer {
     }
 
     handleSkipAction(nxtPlayer) {
-        /*if (this.players[0].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 1 2 3
-            if (this.direction === -1) {
-                if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer * this.direction, this.players.length);
-                else if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
-                else nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
-            } else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-        } else if(this.players[3].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 0 1 2
-            if (this.direction === -1) {
-                if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-                else if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
-                else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-            } else nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length - 1);
-        } else if(this.players[2].cards.length === 0) { //Sono nel caso in cui i giocatori rimasti sono 0 1 3
-            if (this.direction === -1) {
-                if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
-                else if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
-                else nxtPlayer = wrapMod(nxtPlayer * this.direction, this.players.length);
-            } else {
-                if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-                else nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+        const playerMap = {
+            0: () => {
+                if (this.direction === -1) {
+                    return nxtPlayer === 3 ? wrapMod(nxtPlayer * this.direction, this.players.length) :
+                        wrapMod(nxtPlayer - this.direction, this.players.length);
+                } else {
+                    return nxtPlayer === 3 ? wrapMod(nxtPlayer + 3 * this.direction, this.players.length) :
+                        wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                }
+            },
+            1: () => {
+                if (this.direction === -1) {
+                    return nxtPlayer === 0 ? wrapMod(nxtPlayer + 2 * this.direction, this.players.length) :
+                        wrapMod(nxtPlayer - this.direction, this.players.length);
+                } else {
+                    return nxtPlayer === 2 ? wrapMod(nxtPlayer + 2 * this.direction, this.players.length) :
+                        wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+                }
+            },
+            2: () => {
+                if (this.direction === -1) {
+                    return nxtPlayer === 0 ? wrapMod(nxtPlayer + 3 * this.direction, this.players.length) :
+                        nxtPlayer === 3 ? wrapMod(nxtPlayer - this.direction, this.players.length) :
+                            wrapMod(nxtPlayer * this.direction, this.players.length);
+                } else {
+                    return nxtPlayer === 3 ? wrapMod(nxtPlayer + 2 * this.direction, this.players.length) :
+                        wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+                }
+            },
+            3: () => {
+                if (this.direction === -1) {
+                    return nxtPlayer === 2 ? wrapMod(nxtPlayer + 2 * this.direction, this.players.length) :
+                        nxtPlayer === 0 ? wrapMod(nxtPlayer + 3 * this.direction, this.players.length) :
+                            wrapMod(nxtPlayer - this.direction, this.players.length);
+                } else {
+                    return wrapMod(nxtPlayer + 2 * this.direction, this.players.length - 1);
+                }
             }
-        } else { //Sono nel caso in cui i giocatori rimasti sono 0 2 3
-            if (this.direction === -1) {
-                if (nxtPlayer === 0) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-                else if (nxtPlayer === 3) nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
-                else nxtPlayer = wrapMod(nxtPlayer - this.direction, this.players.length);
-            } else {
-                if (nxtPlayer === 2) nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
-                else nxtPlayer = wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
-            }
-        }
-        return nxtPlayer;*/
-
-        const playerCases = [
-            { check: this.players[0].cards.length === 0, players: [1, 2, 3] },
-            { check: this.players[3].cards.length === 0, players: [0, 1, 2] },
-            { check: this.players[2].cards.length === 0, players: [0, 1, 3] },
-            { check: true, players: [0, 2, 3] } // default case
-        ];
-    
-        for (const caseInfo of playerCases) {
-            if (caseInfo.check) return this.handlePlayerCase(nxtPlayer, caseInfo.players);
-        }
-    }
-
-    handlePlayerCase(nxtPlayer, players) {
-        const directionMap = {
-            '-1': [3, 2, 1],
-            '1': [1, 2, 3]
         };
-        //TODO: Non funziona bnee il caso del blocco
-        const directionFactor = directionMap[this.direction.toString()][players.indexOf(nxtPlayer)];
-        return wrapMod(nxtPlayer + directionFactor * this.direction, this.players.length);
+
+        const playerIndex = this.players.findIndex(player => player.cards.length === 0);
+        return playerMap[playerIndex]();
     }
 
     checkNextActivePlayers(nxtPlayer) {

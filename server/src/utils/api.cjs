@@ -1,7 +1,7 @@
 const GameServer = require("./GameServer.cjs");
 const {getServer, setServer, deleteServer} = require("./Servers.cjs");
 const {addPlayer, removePlayer, getPlayer} = require("./PlayersSockets.cjs");
-const {getCard} = require("./Cards.cjs");
+import { getCard } from "./cards";
 
 function createServer({ serverName }) {
     if (serverName.trim().length < 2) throw new Error();

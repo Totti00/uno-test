@@ -1,6 +1,6 @@
-const { wrapMod, shuffle } = require("./helpers.cjs");
+import { wrapMod, shuffle } from "./helpers";
 const { nanoid } = require("nanoid");
-const { getCards } = require("./Cards.cjs");
+import { getCards } from "./cards";
 
 class GameServer {
     serverId;

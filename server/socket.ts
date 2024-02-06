@@ -2,8 +2,6 @@ import {Server} from "socket.io";
 import {Server as HttpServer} from "http";
 import {user} from "./src/types/user";
 import {startListeners} from "./src/utils/utils";
-
-//import * as api from "./src/utils/api";
 import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat} from "./src/utils/api.cjs";
 import {getPlayer} from "./src/utils/PlayersSockets.cjs";
 import {getAllServers, getServerPlayers, getServerByPlayerId} from "./src/utils/Servers.cjs";

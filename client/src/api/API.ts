@@ -30,13 +30,11 @@ export class _API implements ServerInterface {
         return this._server.getServerPlayers();
     }
 
-    getServerByPlayerId(playerName: string): Promise<string> {
-        return this._server.getServerByPlayerId(playerName);
+    getServerByPlayerId(playerId: string): Promise<string> {
+        return this._server.getServerByPlayerId(playerId);
     }
 
     getServers(): Promise<GameServer[]> {
-        //console.log(this._server);
-
         return this._server.getServers();
     }
 

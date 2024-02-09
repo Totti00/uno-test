@@ -5,7 +5,7 @@ export interface ServerInterface {
 
     getServers(): Promise<GameServer[]>;
     getServerPlayers(): Promise<Player[]>;
-    getServerByPlayerId(playerName: string): Promise<string>;
+    getServerByPlayerId(playerId: string): Promise<string>;
     createServer(serverName: string): Promise<string>;
     joinServer(serverId: string): Promise<string>;
 

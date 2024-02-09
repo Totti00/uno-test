@@ -30,7 +30,7 @@ const WaitingLobby = () => {
                 dispatch(init({ cards, players }));
                 timeout = setTimeout(() => navigate("/game"), 2000);
             });
-            const server = await API.getServerByPlayerId(serverPlayers[0].name);
+            const server = await API.getServerByPlayerId(serverPlayers[0].id);
             setServer(server);
         })();
         

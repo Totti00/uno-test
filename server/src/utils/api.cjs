@@ -1,6 +1,6 @@
-const GameServer = require("./GameServer.cjs");
-const {getServer, setServer, deleteServer} = require("./Servers.cjs");
-const {addPlayer, removePlayer, getPlayer} = require("./PlayersSockets.cjs");
+import GameServer from "./gameServer";
+const { getServer, setServer, deleteServer } = require("./servers");
+const {addPlayer, removePlayer, getPlayer} = require("./playersSockets");
 import { getCard } from "./cards";
 
 function createServer({ serverName }) {
@@ -23,7 +23,7 @@ function joinServer({
 
     if (!server) throw new Error("Server Doesn't Exist");
     if (player.name.trim().length <= 1) throw new Error("Player Name too short");
-    if (server.players.length >= server.numberOfPlayers)
+    if (server.players.length >= 4 /* server.numberOfPlayers */ )
         throw new Error("Server is Already full");
 
     let playerId;
@@ -40,7 +40,7 @@ function joinServer({
 
     io.to(serverId).emit("players-changed", server.players);
 
-    if (server.players.length === server.numberOfPlayers) {
+    if (server.players.length === 4 /* server.numberOfPlayers */) {
         initGame(server, io);
     }
 }
@@ -48,14 +48,13 @@ function joinServer({
 function initGame(server, io) {
     setTimeout(() => {
         const { nxtPlayer, card} = server.start();
+
         const playersToSend = server.players.map((player) => ({
             ...player,
             cards: [], // just empty cards objects
         }));
         for (const player of server.players) {
-            //console.info("cards in api.cjs: " + player.cards)
             if (player.socketId) {
-                //console.info("lancio initgame al player: ", player)
                 io.to(player.socketId).emit("init-game", {
                     players: playersToSend,
                     cards: player.cards,

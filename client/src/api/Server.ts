@@ -63,9 +63,9 @@ export class Server implements ServerInterface {
         });
     }
 
-    getServerByPlayerId(playerName: string): Promise<string> {
+    getServerByPlayerId(playerId: string): Promise<string> {
         return new Promise((res, rej) => {
-            socket.emit("get-server", {playerName}, (err: any, serverName: string) => {
+            socket.emit("get-server", {playerId}, (err: any, serverName: string) => {
                 if (err) return rej(err);
                 res(serverName);
             });

@@ -1,4 +1,4 @@
-function shuffle<T>(array: T[]): T[] {
+export function shuffle<T>(array: T[]): T[] {
     let currentIndex = array.length,
         randomIndex;
 
@@ -18,8 +18,6 @@ function shuffle<T>(array: T[]): T[] {
     return array;
 }
 
-function wrapMod(n: number, len: number): number {
+export function wrapMod(n: number, len: number): number {
     return (n + len) % len;
 }
-
-export { shuffle, wrapMod };

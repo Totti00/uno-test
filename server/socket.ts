@@ -3,8 +3,9 @@ import {Server as HttpServer} from "http";
 import {user} from "./src/types/user";
 import {startListeners} from "./src/utils/utils";
 import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat} from "./src/utils/api.cjs";
-import {getPlayer} from "./src/utils/PlayersSockets.cjs";
-import {getAllServers, getServerPlayers, getServerByPlayerId} from "./src/utils/Servers.cjs";
+import {getPlayer} from "./src/utils/playersSockets";
+//import {getAllServers, getServerPlayers, getServerByPlayerId} from "./src/utils/Servers.cjs"
+import {getAllServers, getServerPlayers, getServerByPlayerId} from "./src/utils/servers";
 
 export class ServerSocket {
     public static instance: ServerSocket;
@@ -112,9 +113,9 @@ export class ServerSocket {
                 }
             });
 
-            socket.on("get-server", ({playerName}, cb = () => {}) => {
+            socket.on("get-server", ({playerId}, cb = () => {}) => {
                 try {
-                    cb(null, getServerByPlayerId(playerName));
+                    cb(null, getServerByPlayerId(playerId));
                 } catch (error) {
                     cb(error);
                     console.log(error);
@@ -142,6 +143,5 @@ export class ServerSocket {
             });
 
         });
-        //new RealTime(this.io, this.users)
     }
 }

@@ -197,11 +197,7 @@ export function leaveServer(socket: Socket, io: any): void {
             io.to(serverId).emit("players-changed", server.players);
         }
     }
-
     /*  try {
-
-
-
         let connectedPlayers = 0;
          for (const player of server.players) {
              if (!player.disconnected) connectedPlayers++;

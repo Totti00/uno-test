@@ -21,6 +21,16 @@ export interface IGameServer {
   lastPlayerDrew: boolean;
   playersFinished: number[];
   messages: string[];
+
+  init(): Promise<void>;
+  joinPlayer(player: IPlayer): string;
+  leavePlayer(playerId: string): void;
+  start(): any;
+  chat(message: string): any;
+  getChat(): any;
+  move(draw: boolean, card: ICard /* | null */): IMoveEvent;
+  getNextPlayer(card: ICard): number;
+  finishGame(): any;
 }
 
 export interface IMoveEvent {

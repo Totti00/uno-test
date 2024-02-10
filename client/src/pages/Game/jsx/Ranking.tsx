@@ -1,5 +1,4 @@
 import { Button, Row } from 'antd';
-import API from "../../../api/API.ts";
 import Chat from "../../../components/chat/Chat.tsx";
 import { useNavigate } from "react-router-dom";
 import { Player } from '../../../utils/interfaces.ts';
@@ -14,7 +13,6 @@ const Ranking: React.FC<RankingProps> = ({ playersOrder }) => {
     const navigate = useNavigate();
 
     const handleLeaveServer = async () => {
-        API.leaveServer();
         navigate("/home");
     };
 

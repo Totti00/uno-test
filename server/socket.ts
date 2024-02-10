@@ -2,9 +2,9 @@ import {Server} from "socket.io";
 import {Server as HttpServer} from "http";
 import {user} from "./src/types/user";
 import {startListeners} from "./src/utils/utils";
-import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat} from "./src/utils/api.cjs";
+//import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat} from "./src/utils/api.cjs";
+import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat} from "./src/utils/api";
 import {getPlayer} from "./src/utils/playersSockets";
-//import {getAllServers, getServerPlayers, getServerByPlayerId} from "./src/utils/Servers.cjs"
 import {getAllServers, getServerPlayers, getServerByPlayerId} from "./src/utils/servers";
 
 export class ServerSocket {

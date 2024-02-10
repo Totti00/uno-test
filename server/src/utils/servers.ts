@@ -11,6 +11,10 @@ const getServer = (id: string): IGameServer => {
     return servers[id];
 };
 
+const isThereServer = (id: string): boolean => {
+    return !!servers[id];
+}
+
 const getServerPlayers = (serverId: string): IPlayer[] => {
     if (!servers[serverId]) throw new Error("Server doesn't exist");
     return servers[serverId].players.map((p) => ({ ...p, cards: [] }));
@@ -38,4 +42,4 @@ const deleteServer = (serverId: string): void => {
     delete servers[serverId];
 };
 
-export { setServer, deleteServer, getServer, getAllServers, getServerPlayers, getServerByPlayerId };
+export { setServer, deleteServer, getServer, getAllServers, getServerPlayers, getServerByPlayerId, isThereServer };

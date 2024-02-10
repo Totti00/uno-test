@@ -18,4 +18,8 @@ const getPlayer = (socketId: string): { playerId: string; serverId: string } => 
     return socketToServerPlayer[socketId];
 };
 
-export { addPlayer, getPlayer, removePlayer };
+const isTherePlayer = (socketId: string): boolean => {
+    return !!socketToServerPlayer[socketId];
+}
+
+export { addPlayer, getPlayer, removePlayer, isTherePlayer };

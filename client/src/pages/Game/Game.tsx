@@ -14,6 +14,7 @@ import LeftStack from "./jsx/LeftStack.jsx";
 import { Navigate } from "react-router-dom";
 import Ranking from "./jsx/Ranking.tsx";
 import Chat from "../../components/chat/Chat.tsx";
+import { Modal } from "antd";
 //import {Navigate} from "react-router-dom";
 
 const Game = () => {
@@ -21,9 +22,10 @@ const Game = () => {
 
     const [finished, setFinished] = useState(false);
     const [playersOrder, setPlayersOrder] = useState<Player[]>([]);
-    const inGame = useAppSelector(state => state.game.inGame);
+    const [showPlayerUpdateMessage, setShowPlayerUpdateMessage] = useState(false);
     //const [modal, showModal] = useState(false)
 
+    const inGame = useAppSelector(state => state.game.inGame);
     const firstCard = useAppSelector(state => state.game.firstCard);
     const firstPlayer = useAppSelector(state => state.game.firstPlayer);
 
@@ -48,6 +50,16 @@ const Game = () => {
         API.onFinishGame((players: Player[]) => {
             setFinished(true);
             setPlayersOrder(players);
+        });
+
+        API.onPlayersUpdated(() => {
+            setShowPlayerUpdateMessage(true);
+            setTimeout(() => {
+                setShowPlayerUpdateMessage(false);
+                API.leaveServer();
+                dispatch(stopGame());
+            }, 5000);
+            //clearTimeout(timeoutReady);
         });
 
         return () => {
@@ -79,6 +91,9 @@ const Game = () => {
             {/*    <Button type="primary" onClick={() => showModal(true)} icon={<LeftOutlined />}> Back</Button>*/}
             {/*    <p>You are: {socket?.id}</p>*/}
             {/*</Row>*/}
+
+            <Modal open={showPlayerUpdateMessage} title="The number of players has changed. Redirecting to home in 5 seconds..."
+                footer={null} />
 
             {finished ? <Ranking playersOrder={playersOrder} /> : (
                 <>

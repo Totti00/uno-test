@@ -49,6 +49,7 @@ export const startListeners = (io: Server, socket: Socket, socketUsers: user) =>
 
     socket.on('handshake', (callback: (uid: string, users: string[]) => void) => {
         console.info('Handshake received from: ' + socket.id);
+
         const uid = v4();
         socketUsers[uid] = socket.id;
         const users = Object.values(socketUsers);

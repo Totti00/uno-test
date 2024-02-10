@@ -1,8 +1,7 @@
 import {shuffle, wrapMod} from "./helpers";
-import {ICard, IMoveEvent, IPlayer, IGameServer} from "./interfaces";
+import {ICard, IGameServer, IMoveEvent, IPlayer} from "./interfaces";
 import {getCards} from "./cards";
 import {nanoid} from "nanoid";
-
 import {v4 as uuidv4} from "uuid";
 
 export default class GameServer implements IGameServer {
@@ -67,7 +66,7 @@ export default class GameServer implements IGameServer {
 
         let firstCard;
         do {
-            firstCard = this.deck.slice(NUM_CARDS * this.players.length, NUM_CARDS * this.players.length +1)[0];
+            firstCard = this.deck.slice(NUM_CARDS * this.players.length, NUM_CARDS * this.players.length + 1)[0];
             if (this.checkNoFirstCard(firstCard)) {
                 this.deck.push(firstCard);
                 shuffle(this.deck);
@@ -92,10 +91,10 @@ export default class GameServer implements IGameServer {
     }
 
     move(draw: boolean, card: ICard /* | null */) {
-        let moveEventObj: IMoveEvent = { nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: []};
+        let moveEventObj: IMoveEvent = {nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: []};
 
         //controllo che la carta può essere giocata sulla cima dello stack
-        if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew)) return false;
+        //if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew)) return false;
 
         if (draw) {
             let drawCnt = 1;

@@ -3,9 +3,9 @@ import {Server as HttpServer} from "http";
 import {user} from "./src/types/user";
 import {startListeners} from "./src/utils/utils";
 //import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat} from "./src/utils/api.cjs";
-import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat} from "./src/utils/api";
+import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat, isPlayerMaster, initGame} from "./src/utils/api";
 import {getPlayer} from "./src/utils/playersSockets";
-import {getAllServers, getServerPlayers, getServerByPlayerId} from "./src/utils/servers";
+import {getAllServers, getServerPlayers, getServerByPlayerId, getServer} from "./src/utils/servers";
 
 export class ServerSocket {
     public static instance: ServerSocket;
@@ -136,6 +136,29 @@ export class ServerSocket {
                 try {
                     const { serverId } = getPlayer(socket.id);
                     cb(null, getChat(serverId));
+                } catch (error) {
+                    cb(error);
+                    console.log(error);
+                }
+            });
+
+            socket.on("is-player-master", (_, cb = () => { }) => {
+                try {
+                    const { playerId, serverId } = getPlayer(socket.id);
+                    cb(null, isPlayerMaster(playerId, serverId));
+                } catch (error) {
+                    cb(error);
+                    console.log(error);
+                }
+            });
+
+            socket.on("play-again", (_, cb = () => { }) => {
+                try {
+                    console.log("Player requested to play again");
+                    const io = this.io;
+                    const { serverId } = getPlayer(socket.id);
+                    const server = getServer(serverId);
+                    initGame(server, io, true);
                 } catch (error) {
                     cb(error);
                     console.log(error);

@@ -6,7 +6,7 @@ import { getCard } from "./cards";
 import { Socket } from "socket.io";
 
 export function createServer({ serverName }: { serverName: string }): string {
-    if (serverName.trim().length < 2) throw new Error();
+    if (serverName.trim().length < 2) throw new Error("Server Name too short");
     const server = new GameServer(serverName);
     const serverId = server.serverId;
     setServer(server);
@@ -52,8 +52,9 @@ export function joinServer({
     }
 }
 
-export function initGame(server: IGameServer, io: any): void {
+export function initGame(server: IGameServer, io: any, restart:boolean = false): void {
     setTimeout(() => {
+        if(restart) server.restart();
         const { nxtPlayer, card } = server.start();
 
         const playersToSend = server.players.map((player) => ({
@@ -212,5 +213,21 @@ export function leaveServer(socket: Socket, io: any): void {
     } catch (error) {
         console.log(error);
     } */
+}
+
+export function isPlayerMaster(playerId: string, serverId: string): boolean { //true if the player created the lobby
+    const server = getServer(serverId);
+
+    if (!server) {
+        console.error(`Server with ID ${serverId} not found`);
+        return false;
+    }
+    
+    if (!server.players || server.players.length === 0) {
+        console.error(`No players found in server with ID ${serverId}`);
+        return false;
+    }
+    
+    return server.players[0].id === playerId;
 }
 

@@ -9,7 +9,7 @@ const Rules = () => {
         <div style={{margin: 30}}>
             <Button icon={<LeftOutlined/>} type="primary" onClick={() => navigate(-1)}>Back</Button>
             <Row justify="center" style={{margin: "22px 0"}}>
-                <Typography.Title level={2}>
+                <Typography.Title level={2} style={{ color: "white" }}>
                     Uno Online
                 </Typography.Title>
             </Row>
@@ -18,7 +18,7 @@ const Rules = () => {
 
                 </Col>
             </Row>
-            <p style={{margin: "22px 0"}}>
+            <p style={{margin: "22px 0", color:"white"}}>
             Uno Online is a card game played with a deck of 108 cards. The game is played with 4 players. The game is played in rounds.
 
             The first player to get rid of all their cards wins the round. The winner of the round gets points based on

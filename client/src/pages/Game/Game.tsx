@@ -14,7 +14,7 @@ import LeftStack from "./jsx/LeftStack.jsx";
 import { Navigate } from "react-router-dom";
 import Ranking from "./jsx/Ranking.tsx";
 import Chat from "../../components/chat/Chat.tsx";
-import { Modal } from "antd";
+import { Modal, Row } from "antd";
 //import {Navigate} from "react-router-dom";
 
 const Game = () => {
@@ -71,6 +71,7 @@ const Game = () => {
     }, [dispatch]);
 
     if (!inGame) {
+        console.log("Error! not in game");
         return <Navigate replace to="/home" />;
     }
 
@@ -95,9 +96,12 @@ const Game = () => {
             <Modal open={showPlayerUpdateMessage} title="The number of players has changed. Redirecting to home in 5 seconds..."
                 footer={null} />
 
-            {finished ? <Ranking playersOrder={playersOrder} /> : (
+            <Row justify="end">
+                <Chat />
+            </Row>
+
+            {finished ? <Ranking playersOrder={playersOrder} setFinished={setFinished}/> : (
                 <>
-                    <Chat />
                     <TableStack />
                     <TopStack />
                     <LeftStack />

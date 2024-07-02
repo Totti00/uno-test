@@ -14,6 +14,8 @@ export interface ServerInterface {
     move(draw: boolean | null, cardId: string): Promise<void>;
     moveSelectableColorCard(draw: boolean | null, cardId: string, colorSelected: string): Promise<void>;
     chat(message: Message): Promise<void>;
+    isPlayerMaster(): Promise<boolean>;
+    playAgain(): Promise<void>;
 
     onPlayersUpdated(cb: (players: Player[]) => void): () => void;
     onGameInit(

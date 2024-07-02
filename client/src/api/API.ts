@@ -62,6 +62,14 @@ export class _API implements ServerInterface {
         return this._server.chat(message);
     }
 
+    isPlayerMaster(): Promise<boolean> {
+        return this._server.isPlayerMaster();
+    }
+
+    playAgain(): Promise<void>{
+        return this._server.playAgain();
+    }
+
     onFinishGame(cb: (playersOrdered: Player[]) => void): () => void {
         return this._server.onFinishGame(cb);
     }

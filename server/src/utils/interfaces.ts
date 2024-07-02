@@ -26,6 +26,7 @@ export interface IGameServer {
   joinPlayer(player: IPlayer): string;
   leavePlayer(playerId: string): void;
   start(): any;
+  restart(): Promise<void>;
   chat(message: string): any;
   getChat(): any;
   move(draw: boolean, card: ICard /* | null */): IMoveEvent;

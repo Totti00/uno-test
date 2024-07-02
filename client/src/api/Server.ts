@@ -114,6 +114,24 @@ export class Server implements ServerInterface {
         });
     }
 
+    isPlayerMaster(): Promise<boolean> {
+        return new Promise((res, rej) => {
+            socket.emit("is-player-master", null , (err: any, isMaster: boolean) => {
+                if (err) return rej(err);
+                res(isMaster);
+            });
+        });
+    }
+
+    playAgain(): Promise<void> {
+        return new Promise((res, rej) => {
+            socket.emit("play-again", null , (err: any) => {
+                if (err) return rej(err);
+                res();
+            });
+        });
+    }
+
     onFinishGame(cb: (playersOrdered: Player[]) => void): () => void {
         socket.on("finished-game", cb);
         return () => socket.off("finished-game", cb);

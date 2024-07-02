@@ -103,6 +103,10 @@ export const gameSlice = createSlice({
             state.inGame = false;
         },
 
+        initGame(state){
+            state.inGame = true;
+        },
+
         setInLobby(state, action) {
             state.inLobby = action.payload;
         },
@@ -257,6 +261,7 @@ export const {
     init,
     ready,
     stopGame,
+    initGame,
     moveCard,
     finalMovePlayer,
     setPlayerId,

@@ -59,7 +59,7 @@ export default class GameServer implements IGameServer {
     start() {
         shuffle(this.deck);
         shuffle(this.players);
-        const NUM_CARDS = 7;
+        const NUM_CARDS = 1;
         this.players.forEach((player, idx) => {
             player.cards = this.deck.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS) as ICard[];
         });
@@ -75,6 +75,18 @@ export default class GameServer implements IGameServer {
 
         this.drawingStk = this.deck.slice(this.players.length * NUM_CARDS + 1, this.deck.length) as ICard[];
         return this.move(false, firstCard);
+    }
+
+    async restart(){
+        this.curPlayer = 0;
+        this.direction = 1;
+        this.tableStk = [];
+        this.drawingStk = [];
+        this.sumDrawing = 0;
+        this.playersFinished = [];
+        this.lastPlayerDrew = false;
+        this.deck = await getCards();
+        this.gameRunning = true;
     }
 
     checkNoFirstCard(card: ICard) {
@@ -233,7 +245,6 @@ export default class GameServer implements IGameServer {
     finishGame() {
         for (let i = 0; i <= 3; i++) if (!this.playersFinished.includes(i)) this.playersFinished.push(i);
         const playersFinishingOrder = this.playersFinished.map((idx) => this.players[idx]);
-        this.init();
         return playersFinishingOrder;
     }
 }

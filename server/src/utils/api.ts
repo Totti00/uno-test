@@ -193,9 +193,11 @@ export function leaveServer(socket: Socket, io: any): void {
 
         if (isThereServer(serverId)) {
             const server = getServer(serverId);
-            deleteServer(serverId);
+            server.leavePlayer(player.playerId);
             socket.leave(serverId);
+            removePlayer(socket.id);
             io.to(serverId).emit("players-changed", server.players);
+            if (server.players.length === 0) deleteServer(serverId);
         }
     }
     /*  try {
@@ -203,7 +205,7 @@ export function leaveServer(socket: Socket, io: any): void {
          for (const player of server.players) {
              if (!player.disconnected) connectedPlayers++;
          }
-         console.info("API.CJS leaveServer connectedPlayers
+         console.info("API.CJS leaveServer connectedPlayers", connectedPlayers);
 
         socket.leave(serverId);
         if (server.gameRunning) io.to(serverId).emit("player-left", playerId);

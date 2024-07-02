@@ -59,7 +59,7 @@ export default class GameServer implements IGameServer {
     start() {
         shuffle(this.deck);
         shuffle(this.players);
-        const NUM_CARDS = 1;
+        const NUM_CARDS = 7;
         this.players.forEach((player, idx) => {
             player.cards = this.deck.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS) as ICard[];
         });

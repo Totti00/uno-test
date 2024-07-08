@@ -22,3 +22,5 @@ Test:
     script:
         - cd "client"
         - npm test
+    dependencies:
+        - client-build

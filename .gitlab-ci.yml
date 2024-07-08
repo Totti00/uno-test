@@ -21,6 +21,7 @@ Test:
     stage: test
     script:
         - cd "client"
+        - npm install
         - npm test
     dependencies:
-        - client-build
+        - Client Build

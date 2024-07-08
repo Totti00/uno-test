@@ -3,6 +3,7 @@ image: node:latest
 stages:
     - client-build
     - server-build
+    - test
 
 Client Build:
     stage: client-build
@@ -15,3 +16,9 @@ Server Build:
     script:
         - cd "server"
         - npm install
+
+Test:
+    stage: test
+    script:
+        - cd "client"
+        - npm test

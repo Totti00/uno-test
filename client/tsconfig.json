@@ -6,6 +6,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "allowJs": true,
+    "types": ["jest", "node"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -22,6 +23,6 @@
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"],
+  "include": ["src", "jest.config.cjs", "test/**/*.ts", "test/**/*.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

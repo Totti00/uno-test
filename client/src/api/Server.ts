@@ -192,4 +192,14 @@ export class Server implements ServerInterface {
         return () => socket.off("players-changed", cb);
     }
 
+    onResetTimer(cb: (moveTime: number) => void): () => void{
+        socket.on("reset-timer", cb);
+        return () => socket.off("reset-timer", cb)
+    }
+
+    onTimeOut(cb: () => void): () => void {
+        socket.on("time-out", cb);
+        return () => socket.off("time-out", cb);
+    }
+
 }

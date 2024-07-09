@@ -5,6 +5,8 @@ import {addPlayer, removePlayer, getPlayer, isTherePlayer} from "./playersSocket
 import { getCard } from "./cards";
 import { Socket } from "socket.io";
 
+const MOVE_TIME = 30; //time for each move in second
+
 export function createServer({ serverName }: { serverName: string }): string {
     if (serverName.trim().length < 2) throw new Error("Server Name too short");
     const server = new GameServer(serverName);
@@ -78,6 +80,15 @@ export function startGame(serverId: string, io: any): void {
     const server = getServer(serverId);
     if (!server.gameRunning) {
         server.gameRunning = true;
+
+        const nxtPlayer = server.curPlayer;
+
+        for (const player of server.players) {
+            if (player.socketID) {
+                io.to(player.socketID).emit("reset-timer", MOVE_TIME);
+                server.resetTimer(MOVE_TIME, nxtPlayer, handleTimeOut, io);
+            }
+        }
         // if (
         //     server.players[server.curPlayer].disconnected ||
         //     server.players[server.curPlayer].isBot
@@ -119,9 +130,11 @@ export function move({ socket, cardId, draw }: { socket: Socket; cardId: string;
     });
 
     if (finish) {
-        console.info("API.CJS game finished");
         server.gameRunning = false;
         io.to(serverId).emit("finished-game", playersFinishingOrder);
+    } else {
+        io.to(serverId).emit("reset-timer", MOVE_TIME);
+        server.resetTimer(MOVE_TIME, nxtPlayer, handleTimeOut, io);
     }
 }
 
@@ -160,7 +173,17 @@ export function moveSelectableColorCard(
         console.info("API.CJS game finished");
         server.gameRunning = false;
         io.to(serverId).emit("finished-game", playersFinishingOrder);
+    } else {
+        io.to(serverId).emit("reset-timer", MOVE_TIME);
+        server.resetTimer(MOVE_TIME, nxtPlayer, handleTimeOut, io);
     }
+}
+
+function handleTimeOut( {nxtPlayer, serverId} : {nxtPlayer: number; serverId: string}, io: any): void {
+    // console.info("Time out for player number " + nxtPlayer);
+    const server = getServer(serverId);
+
+    io.to(server.players[nxtPlayer].socketID).emit("time-out");
 }
 
 export function chat({ socket, message }: { socket: Socket; message: string }): void {
@@ -221,12 +244,10 @@ export function isPlayerMaster(playerId: string, serverId: string): boolean { //
     const server = getServer(serverId);
 
     if (!server) {
-        console.error(`Server with ID ${serverId} not found`);
         return false;
     }
     
     if (!server.players || server.players.length === 0) {
-        console.error(`No players found in server with ID ${serverId}`);
         return false;
     }
     

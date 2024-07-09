@@ -32,6 +32,7 @@ export interface IGameServer {
   move(draw: boolean, card: ICard /* | null */): IMoveEvent;
   getNextPlayer(card: ICard): number;
   finishGame(): any;
+  resetTimer(timeoutSeconds: number, nxtPlayer: number, handleTimeOut: ({ nxtPlayer, serverId }: { nxtPlayer: number; serverId: string; }, io: any) => void, io: any):any;
 }
 
 export interface IMoveEvent {

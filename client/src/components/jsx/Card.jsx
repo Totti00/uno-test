@@ -9,6 +9,7 @@ const Root = styled.div`
 
     .color-selector {
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
         align-items: center;
         position: absolute;
@@ -22,15 +23,19 @@ const Root = styled.div`
     }
 
     .color-selector-item {
-        margin: 0 10px;
         cursor: pointer;
+        flex-basis: 40%;
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .color-selector-item-inner {
-        width: 30px;
-        height: 30px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
-        border: 2px solid white;
+        border: 5px solid white;
     }
     
     /* overflow: hidden; */

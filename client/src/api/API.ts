@@ -97,6 +97,14 @@ export class _API implements ServerInterface {
     onPlayersUpdated(cb: (players: Player[]) => void): () => void {
         return this._server.onPlayersUpdated(cb);
     }
+
+    onResetTimer(cb: (moveTime: number) => void): () => void{
+        return this._server.onResetTimer(cb);
+    }
+
+    onTimeOut(cb: () => void): () => void{
+        return this._server.onTimeOut(cb);
+    }
 }
 
 const API = new _API();

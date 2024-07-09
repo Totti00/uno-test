@@ -11,6 +11,7 @@ import PlayerStack from "./jsx/PlayerStack.jsx";
 import DrawingStack from "./jsx/DrawingStack.jsx";
 import RightStack from "./jsx/RightStack.jsx";
 import LeftStack from "./jsx/LeftStack.jsx";
+import Timer from "./jsx/Timer.jsx";
 import { Navigate } from "react-router-dom";
 import Ranking from "./jsx/Ranking.tsx";
 import Chat from "../../components/chat/Chat.tsx";
@@ -23,7 +24,6 @@ const Game = () => {
     const [finished, setFinished] = useState(false);
     const [playersOrder, setPlayersOrder] = useState<Player[]>([]);
     const [showPlayerUpdateMessage, setShowPlayerUpdateMessage] = useState(false);
-    //const [modal, showModal] = useState(false)
 
     const inGame = useAppSelector(state => state.game.inGame);
     const firstCard = useAppSelector(state => state.game.firstCard);
@@ -76,32 +76,20 @@ const Game = () => {
     }
 
     return (
-        /*            {players === undefined || players.length < 2 ?
-                        <Result
-                            status="warning"
-                            title="This room do not exist anymore."
-                            extra={
-                                <Button type="primary" key="console" onClick={() => navigate("/home")}>
-                                    Go to the homepage
-                                </Button>
-                            }
-                        />
-                        :*/
         <div>
-            {/*<Row justify="space-between" style={{ marginBottom: 22 }}>*/}
-            {/*    <Button type="primary" onClick={() => showModal(true)} icon={<LeftOutlined />}> Back</Button>*/}
-            {/*    <p>You are: {socket?.id}</p>*/}
-            {/*</Row>*/}
-
             <Modal open={showPlayerUpdateMessage} title="The number of players has changed. Redirecting to home in 5 seconds..."
                 footer={null} />
 
-            <Row justify="end">
-                <Chat />
-            </Row>
+            <div style={{ margin: 10 }}>
+                <Row justify="end">
+                    <Chat />
+                </Row>
+            </div>
+            
 
             {finished ? <Ranking playersOrder={playersOrder} setFinished={setFinished}/> : (
                 <>
+                    <Timer/>
                     <TableStack />
                     <TopStack />
                     <LeftStack />
@@ -110,11 +98,6 @@ const Game = () => {
                     <DrawingStack />
                 </>
             )}
-
-            {/*<Modal open={modal} title="Are you sure to leave the lobby?"*/}
-            {/*       onOk={() => leaveRoom(socket, state?.roomName, true, navigate)}*/}
-            {/*       onCancel={() => showModal(false)}*/}
-            {/*/>*/}
         </div>
     );
 }

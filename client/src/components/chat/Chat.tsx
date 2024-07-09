@@ -58,7 +58,6 @@ export default function Chat() {
             // console.info("CHAT received message with color: " + messages[messages.length - 1].player.color);
             setMessages(messages);
         });
-
     });
 
     return (

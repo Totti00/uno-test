@@ -18,6 +18,7 @@ export default class GameServer implements IGameServer {
     lastPlayerDrew = false;
     playersFinished: number[] = [];
     messages: string[] = [];
+    private timer: NodeJS.Timeout | null = null;
 
     constructor(serverName: string, /* numberOfPlayers = 4 */) {
         this.serverName = serverName;
@@ -35,6 +36,7 @@ export default class GameServer implements IGameServer {
         this.lastPlayerDrew = false;
         this.deck = await getCards();
         this.messages = [];
+        this.timer = null;
     }
 
     joinPlayer(player: IPlayer) {
@@ -87,6 +89,7 @@ export default class GameServer implements IGameServer {
         this.lastPlayerDrew = false;
         this.deck = await getCards();
         this.gameRunning = true;
+        this.timer = null;
     }
 
     checkNoFirstCard(card: ICard) {
@@ -246,6 +249,17 @@ export default class GameServer implements IGameServer {
         for (let i = 0; i <= 3; i++) if (!this.playersFinished.includes(i)) this.playersFinished.push(i);
         const playersFinishingOrder = this.playersFinished.map((idx) => this.players[idx]);
         return playersFinishingOrder;
+    }
+
+    resetTimer(timeoutSeconds: number, nxtPlayer: number, handleTimeOut: ({ nxtPlayer, serverId }: { nxtPlayer: number; serverId: string; }, io: any) => void, io:any) {
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+
+        // Set a new timer
+        this.timer = setTimeout(() => {
+            handleTimeOut({ nxtPlayer, serverId: this.serverId }, io);
+        }, (timeoutSeconds + 1) * 1000);
     }
 }
 

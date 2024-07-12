@@ -1,5 +1,5 @@
 #image: docker/compose:latest
-image: gitlab/dind
+image: docker
 
 services:
     - docker:dind
@@ -9,25 +9,26 @@ variables:
     DOCKER_DRIVER: overlay2
 
 stages:
-    - diagnose
+    #- diagnose
     - setup-mongo
     - client-build
     - server-build
     - test-client
     - test-server
 
-diagnose-docker:
-    stage: diagnose
-    script:
-        - docker info
+#diagnose-docker:
+ #   stage: diagnose
+  #  script:
+   #     - docker info
 
 Setup MongoDB:
     stage: setup-mongo
-    image: gitlab/dind
     script:
-        - apk add --no-cache docker-compose
+        - sudo apt-get update
+        - sudo apt-get install -y python3-pip
+        - pip3 install docker-compose
         - cd "mongo"
-        - docker-compose up -d
+        - docker-compose up -d --build
     services:
         - docker:dind
     #artifacts:

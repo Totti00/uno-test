@@ -20,8 +20,7 @@ services:
     environment:
       - import=true
     depends_on:
-      mongo:
-        condition: service_healthy
+      - mongo
     volumes:
       - ./import:/databases:ro
     command: /bin/bash -c "/databases/init.sh"
@@ -34,5 +33,4 @@ services:
     environment:
       ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/
     depends_on:
-      mongo:
-        condition: service_healthy
+      - mongo

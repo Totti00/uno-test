@@ -23,6 +23,7 @@ before_script:
 Setup MongoDB:
     stage: setup-mongo
     script:
+        - cd "mongo"
         - docker-compose up -d
     artifacts:
         paths:

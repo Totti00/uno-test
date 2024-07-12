@@ -14,10 +14,16 @@ stages:
     - test-client
     - test-server
 
+before_script:
+  - apt-get update && apt-get install -y curl
+  - curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  - chmod +x /usr/local/bin/docker-compose
+  - docker-compose --version
+
 Setup MongoDB:
     stage: setup-mongo
     script:
-        - docker-compose -f mongo/compose.yaml up -d
+        - docker-compose up -d
     artifacts:
         paths:
         - mongo/data/db

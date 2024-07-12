@@ -6,12 +6,21 @@ import { ServerSocket } from '../socket';
 import session from 'express-session';
 import cors from 'cors';
 import { cardsRouter } from '../src/routes/cardsRouter';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Configurazione del server
 const app = express();
 const PORT = 3000;
 const httpServer = http.createServer(app);
 new ServerSocket(httpServer);
+
+const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/unoProgetto";
+
+
+/*mongoose.connect("mongodb://localhost:27017/unoProgetto")
+  .then(() => console.log("Connected to database"))
+  .catch((err) => console.log(err));*/
 
 app.use(cors());
 app.use(session({
@@ -30,6 +39,7 @@ describe('Express Server', () => {
   let server: http.Server;
 
   beforeAll((done) => {
+    mongoose.connect(mongoUri);
     mongoose.connection.once('open', () => {
       server = httpServer.listen(PORT, () => {
         console.log(`Listening on http://localhost:${PORT}`);

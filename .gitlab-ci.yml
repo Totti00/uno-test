@@ -1,10 +1,26 @@
 image: node:latest
 
+services:
+    - docker:dind
+
+variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
+
 stages:
+    - setup-mongo
     - client-build
     - server-build
     - test-client
     - test-server
+
+Setup MongoDB:
+    stage: setup-mongo
+    script:
+        - docker-compose -f mongo/compose.yaml up -d
+    artifacts:
+        paths:
+        - mongo/data/db
 
 Client Build:
     stage: client-build
@@ -35,3 +51,6 @@ Test Server:
         - npm test
     dependencies:
         - Server Build
+        - Setup MongoDB
+    variables:
+        MONGO_URI: "mongodb://mongo:27017/UnoProgetto"

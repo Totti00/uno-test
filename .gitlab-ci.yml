@@ -17,11 +17,20 @@ Server Build:
         - cd "server"
         - npm install
 
-Test:
-    stage: test
+Test Client:
+    stage: test-client
     script:
         - cd "client"
         - npm install
         - npm test
     dependencies:
         - Client Build
+
+Test Server:
+    stage: test-server
+    script:
+        - cd "server"
+        - npm install
+        - npm test
+    dependencies:
+        - Server Build

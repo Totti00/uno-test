@@ -3,7 +3,8 @@ image: node:latest
 stages:
     - client-build
     - server-build
-    - test
+    - test-client
+    - test-server
 
 Client Build:
     stage: client-build

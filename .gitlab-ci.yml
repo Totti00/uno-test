@@ -19,6 +19,7 @@ Setup MongoDB:
     script:
         - cd "mongo"
         - apt-get update
+        - apt-get install -y docker-compose
         - docker-compose up -d --build
     #artifacts:
      #   paths:

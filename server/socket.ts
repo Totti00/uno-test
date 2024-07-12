@@ -1,8 +1,5 @@
 import {Server} from "socket.io";
 import {Server as HttpServer} from "http";
-import {user} from "./src/types/user";
-import {startListeners} from "./src/utils/utils";
-//import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat} from "./src/utils/api.cjs";
 import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat, isPlayerMaster, initGame} from "./src/utils/api";
 import {getPlayer} from "./src/utils/playersSockets";
 import {getAllServers, getServerPlayers, getServerByPlayerId, getServer} from "./src/utils/servers";
@@ -10,11 +7,9 @@ import {getAllServers, getServerPlayers, getServerByPlayerId, getServer} from ".
 export class ServerSocket {
     public static instance: ServerSocket;
     public io: Server;
-    public users: user;
 
     constructor(server: HttpServer) {
         ServerSocket.instance = this;
-        this.users = {};
         this.io = new Server(server, {
             serveClient: false,
             pingInterval: 10000,
@@ -25,8 +20,6 @@ export class ServerSocket {
             }
         });
         this.io.on('connect', (socket) => {
-            startListeners(this.io, socket, this.users);
-
             socket.on(
                 "create-server",
                 ({ serverName, player }, cb = () => {}) => {

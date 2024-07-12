@@ -8,11 +8,9 @@ import Rules from "../pages/Rules/Rules"
 import Lobby from "../pages/Lobby/Lobby"
 import CreateLobby from "../pages/Lobby/CreateLobby";
 import WaitingLobby from "../pages/Lobby/WaitingLobby.tsx";
-import SocketContextComponent from "../context/SocketContextComponent";
 import Game from "../pages/Game/Game";
 import ErrorRoute from "./ErrorRoute";
 import StartPage from "../pages/Start/startPage.tsx";
-//import CreateUser from "../pages/CreateUser/CreateUser.jsx";
 import CreateUser from "../pages/CreateUser/create";
 import {useState} from "react";
 import styled from "styled-components";
@@ -41,7 +39,6 @@ const AppRoute = (props: any) =>{
         <Root>
             <Provider store={store}>
                 <AnimatePresence mode='wait'>
-                    <SocketContextComponent>
                         <Routes location={location} key={location.key}>
                             <Route key={"/"} path="/" element={<StartPage />} />
                             <Route key={"/create-user"} path="/create-user" element={<CreateUser />} />
@@ -53,7 +50,6 @@ const AppRoute = (props: any) =>{
                             <Route key={"/rules"} path="/rules" element={<Rules />} />
                             <Route key={"*"} path="*" element={<ErrorRoute />} />
                         </Routes>
-                    </SocketContextComponent>
                 </AnimatePresence>
             </Provider>
         </Root>

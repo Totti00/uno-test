@@ -18,7 +18,7 @@ Setup MongoDB:
     stage: setup-mongo
     script:
         - cd "mongo"
-        -apk add --no-cache docker-compose
+        - apk add --no-cache docker-compose
         - docker-compose up -d --build
     #artifacts:
      #   paths:

@@ -13,10 +13,6 @@ const PORT = 3000;
 const httpServer = http.createServer(app);
 new ServerSocket(httpServer);
 
-mongoose.connect("mongodb://localhost:27017/unoProgetto")
-  .then(() => console.log("Connected to database"))
-  .catch((err) => console.log(err));
-
 app.use(cors());
 app.use(session({
   secret: 'keyboard',

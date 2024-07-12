@@ -9,11 +9,17 @@ variables:
     #DOCKER_CLI_EXPERIMENTAL: "enabled" # Abilita il debug
 
 stages:
+    - diagnose
     - setup-mongo
     - client-build
     - server-build
     - test-client
     - test-server
+
+diagnose-docker:
+    stage: diagnose
+    script:
+        - docker info
 
 #before_script:
 #    - apk update && apk add curl

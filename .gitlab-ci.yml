@@ -15,10 +15,10 @@ stages:
     - test-server
 
 before_script:
-   - apt-get update && apt-get install -y wget
-  - wget -O /usr/local/bin/docker-compose "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)"
-  - chmod +x /usr/local/bin/docker-compose
-  - docker-compose --version
+    - apt-get update && apt-get install -y wget
+    - wget -O /usr/local/bin/docker-compose "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)"
+    - chmod +x /usr/local/bin/docker-compose
+    - docker-compose --version
 
 Setup MongoDB:
     stage: setup-mongo

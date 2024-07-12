@@ -24,7 +24,7 @@ Setup MongoDB:
     stage: setup-mongo
     script:
         - cd "mongo"
-        - /usr/bin/docker-compose up -d
+        - docker-compose up -d
     artifacts:
         paths:
         - mongo/data/db

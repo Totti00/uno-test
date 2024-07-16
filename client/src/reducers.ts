@@ -123,11 +123,6 @@ export const gameSlice = createSlice({
 
             const currentPlayer = state.players[state.currentPlayer];
 
-            //ricalcolo nextPlayer in relazione al curPlayer
-            console.info("nextPlayer -> ", nextPlayer);
-            console.info("state.orderOffset -> ", state.orderOffset);
-            console.info("state.players.length -> ", state.players.length);
-
             nextPlayer = wrapMod(nextPlayer - state.orderOffset, state.players.length);
 
             if (card?.action === "reverse") state.direction *= -1;

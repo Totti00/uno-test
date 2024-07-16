@@ -1,6 +1,5 @@
-//import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import './index.css'
+import './style/index.css'
 import AppRoute from './routes/AppRoute'
 import {CssBaseline} from "@mui/material";
 import { createRoot } from 'react-dom/client';
@@ -14,17 +13,4 @@ root.render(
         <AppRoute />
     </BrowserRouter>
 
-)
-
-
-
-
-/* ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-        <CssBaseline/>
-        <AppRoute />
-    </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById('root')
-); */
+);

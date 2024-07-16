@@ -18,6 +18,7 @@ interface StoreState {
     firstCard: Card;
     firstPlayer: number;
     colorSelected: string;
+    colorSelection: boolean;
 }
 
 let cardLayoutIdIdx = 111;
@@ -254,6 +255,12 @@ export const gameSlice = createSlice({
             state.lastPlayerDrawed = false;
             state.nextPlayer = nextPlayer;
         },
+        setColorSelection(state, action: PayloadAction<{
+            colorSelection: boolean;
+        }>) {
+            const { colorSelection } = action.payload;
+            state.colorSelection = colorSelection;
+        },
     },
 });
 
@@ -268,6 +275,7 @@ export const {
     setInLobby,
     setFirstCard,
     moveFirstCard,
+    setColorSelection,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

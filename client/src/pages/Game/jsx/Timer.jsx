@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import {Row} from "antd";
-import {LeftOutlined} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks.ts";
-import { ready } from "../../../reducers.ts";
+import { setColorSelection } from "../../../reducers.ts";
+import { useDispatch } from "react-redux";
 import API from "../../../api/API.ts";
 import {playerAndCurrPlayerStackSelector} from "./MemorizedSelector.ts";
 
@@ -22,7 +21,11 @@ const Timer = () => {
         borderRadius: '10px',
     };
 
+    const dispatch = useDispatch();
+
     const { currentPlayer } = useAppSelector(playerAndCurrPlayerStackSelector);
+    const colorSelection = useAppSelector(state => state.game.colorSelection);
+
     const [time, setTime] = useState(0);
     const [showTimer, setShowTimer] = useState(false);
 
@@ -33,14 +36,14 @@ const Timer = () => {
             setShowTimer(true);
         });
 
-        //se il client va giù può richiederlo
         // API.getTimer(({timeLeft}) => {
         //     setTime(timeLeft);
         // });
 
         API.onTimeOut(() => {
             if(currentPlayer === 0){
-                console.info("Time out! drawing card...");
+                // console.info("Time out! drawing card...");
+                dispatch(setColorSelection({colorSelection: false}));
                 API.move(true);
             }
         });

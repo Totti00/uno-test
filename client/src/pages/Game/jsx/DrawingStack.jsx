@@ -4,7 +4,7 @@ import FrontCards from "./FrontCards.jsx";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks.ts";
-import { ready } from "../../../reducers.ts";
+import { ready, setColorSelection } from "../../../reducers.ts";
 import API from "../../../api/API.ts";
 import {drawingStackAndCurrentPlayerSelector} from "./MemorizedSelector.ts";
 
@@ -42,12 +42,13 @@ const Root = styled.div`
 
 export default function DrawingStack() {
   const { drawingStack, currentPlayer } = useAppSelector(drawingStackAndCurrentPlayerSelector);
+  const colorSelection = useAppSelector(state => state.game.colorSelection);
   const dispatch = useAppDispatch();
 
   const [gameStarted, setGameStarted] = useState(false);
 
   const handleClick = () => {
-    if (currentPlayer === 0) API.move(true);
+    if (currentPlayer === 0 && !colorSelection) API.move(true);
   };
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function DrawingStack() {
     }, 2000);
   }, [dispatch]);
 
-  const canHover = gameStarted && currentPlayer === 0;
+  const canHover = gameStarted && currentPlayer === 0 && !colorSelection;
   const highlight = canHover || !gameStarted;
 
   return (

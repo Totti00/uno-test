@@ -3,6 +3,9 @@ import Image from "./Image.jsx";
 import { motion } from "framer-motion";
 import API from "../../api/API.ts";
 import {useEffect, useState} from "react";
+import { useDispatch } from "react-redux";
+import {setColorSelection} from "../../reducers.ts";
+import { useAppSelector } from "../../hooks/hooks.ts";
 
 const Root = styled.div`
     --color: var(--${(props) => props.color});
@@ -177,30 +180,32 @@ export default function Card({
     disableShadow = false,
     preserve3D = true,
 }) {
+    const dispatch = useDispatch();
+
     const [showColorSelector, setShowColorSelector] = useState(false);
     const [isPreserve3D, setPreserve3D] = useState(preserve3D);
-    const [colorSelected, setColorSelected] = useState("");
+
+    const colorSelection = useAppSelector(state => state.game.colorSelection);
 
     useEffect(() => {
-        if (colorSelected !== ""){
-            setPreserve3D(true)
-            API.moveSelectableColorCard(false, id, colorSelected);
-        }
-    },[colorSelected, id]);
+        //if colorSelection is setted false outside i don't show the colors anymore
+        if(!colorSelection) setShowColorSelector(false);
+    },[colorSelection]);
 
     const onClick = () => {
-        if (playable) {
+        if (playable && !colorSelection) {
             if (color === "black" && (action === "wild" || action === "draw4")){
-                if(colorSelected === ""){
-                    setShowColorSelector(true);
-                    setPreserve3D(false);
-                }
+                dispatch(setColorSelection({colorSelection: true}));
+                setShowColorSelector(true);
+                setPreserve3D(false);
             } else API.move(false, id);
         }
     };
 
     const handleColorSelection = (selectedColor) => {
-        setColorSelected(selectedColor);
+        setPreserve3D(true);
+        dispatch(setColorSelection({colorSelection: false}));
+        API.moveSelectableColorCard(false, id, selectedColor);
     }
 
     const getFrontContent = () => {
@@ -264,17 +269,17 @@ export default function Card({
             layoutId={layoutId}
             initial={{
                 rotateY: flip ? Math.abs(180 - rotationY) : rotationY,
-                y: 0,
+                y: showColorSelector ? -40 : 0,
             }}
             whileHover={
-                playable
+                (playable && !colorSelection)
                     ? { y: -40, transition: { duration: 0.3 } }
                     : { y: 0, transition: { duration: 0.3 } }
             }
             animate={{ rotateY: rotationY, y: 0 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
             selectable={selectable}
-            playable={playable}
+            playable={showColorSelector || (playable && !colorSelection)}
             disableShadow={disableShadow}
             preserve3D={isPreserve3D}
             onClick={onClick}

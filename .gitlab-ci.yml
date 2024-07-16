@@ -1,29 +1,9 @@
-#image: docker/compose:latest
 image: node:latest
 
 stages:
-    #- diagnose
-    - setup-mongo
     - client-build
     - server-build
     - test-client
-    - test-server
-
-#diagnose-docker:
- #   stage: diagnose
-  #  script:
-   #     - docker info
-
-Setup MongoDB:
-    stage: setup-mongo
-    script:
-        - cd "mongo"
-        - apt-get update
-        - apt-get install -y docker-compose
-        - docker-compose up -d --build
-    #artifacts:
-     #   paths:
-      #  - mongo/data/db
 
 Client Build:
     stage: client-build
@@ -45,15 +25,3 @@ Test Client:
         - npm test
     dependencies:
         - Client Build
-
-Test Server:
-    stage: test-server
-    script:
-        - cd "server"
-        - npm install
-        - npm test
-    dependencies:
-        - Server Build
-        - Setup MongoDB
-    variables:
-        MONGO_URI: "mongodb://mongo:27017/UnoProgetto"

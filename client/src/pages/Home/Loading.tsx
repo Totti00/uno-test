@@ -45,14 +45,23 @@ const Loading: React.FC<LoadingProps> = ({ onLoaded }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        Loader.load();
-        Loader.addEventListener("progress", (value) => {
+        const handleProgress = (value: number) => {
             setPercentage(Math.round(100 * value));
-        });
+        }
 
-        Loader.addEventListener("completed", () => {
+        const handleCompleted = () => {
             setCompleted(true);
-        });
+        }
+
+        Loader.load();
+        Loader.addEventListener("progress", handleProgress);
+
+        Loader.addEventListener("completed", handleCompleted);
+
+        return () => {
+            Loader.removeEventListener("progress", handleProgress);
+            Loader.removeEventListener("completed", handleCompleted);
+        }
     }, [onLoaded, navigate]);
 
     const onClick = () => {

@@ -24,7 +24,8 @@ const CreateLobby = () => {
             <Row justify="center" align="middle" style={{ position: "absolute", top: "40%", width: "100%" }}>
                 <Input autoFocus style={{ textAlign: "center", height: 100, margin: 30, border: "none", fontSize: 22 }} size="large" placeholder="Insert a lobby name" onChange={(value) => setRoomName(value.target.value)}/>
                 <Row justify="end">
-                    <Button style={{ width: 200 }} type="primary" size="large" onClick={handleCreateServer} >Create Lobby</Button>
+                    {roomName && roomName.trim().length > 1 && 
+                        <Button style={{ width: 200 }} type="primary" size="large" onClick={handleCreateServer} >Create Lobby</Button>}
                 </Row>
             </Row >
         </App>

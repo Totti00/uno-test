@@ -53,7 +53,7 @@ const CreateUser = () => {
                 </Grid>
 
                 <Grid item xs={10}>
-                    {playerName && (
+                    {playerName && playerName.trim().length > 1 && (
                         <Button href="/home">
                             <Typography> Save & Go </Typography>
                         </Button>

@@ -41,12 +41,14 @@ export default class GameServer implements IGameServer {
 
     joinPlayer(player: IPlayer) {
         const playerId = uuidv4();
+        const isMaster = this.players.length == 0
 
         this.players.push({
             ...player,
             id: playerId, //(this.players.length + 1).toString(),
             cards: [],
             timeOutCount: 0,
+            isMaster: isMaster,
         });
         return playerId; //this.players.length.toString();
     }

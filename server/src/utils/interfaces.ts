@@ -6,6 +6,7 @@ export interface IPlayer {
   cards: ICard[];
   disconnected: boolean;
   timeOutCount: number;
+  isMaster: boolean;
 }
 
 export interface IGameServer {

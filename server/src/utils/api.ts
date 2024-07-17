@@ -256,6 +256,11 @@ export function isPlayerMaster(playerId: string, serverId: string): boolean { //
         return false;
     }
     
-    return server.players[0].id === playerId;
+    const player = server.players.find(player => player.id === playerId);
+    if (player)
+        return player.isMaster;
+    else
+        return false;
+       
 }
 

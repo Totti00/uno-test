@@ -24,6 +24,7 @@ const Game = () => {
     const [finished, setFinished] = useState(false);
     const [playersOrder, setPlayersOrder] = useState<Player[]>([]);
     const [showPlayerUpdateMessage, setShowPlayerUpdateMessage] = useState(false);
+    const [showForceLeaveMessage, setShowForceLeaveMessage] = useState(false);
 
     const inGame = useAppSelector(state => state.game.inGame);
     const firstCard = useAppSelector(state => state.game.firstCard);
@@ -62,6 +63,15 @@ const Game = () => {
             //clearTimeout(timeoutReady);
         });
 
+        API.onForceLeave(() => {
+            setShowForceLeaveMessage(true);
+            setTimeout(() => {
+                setShowForceLeaveMessage(false);
+                API.leaveServer();
+                dispatch(stopGame());
+            }, 1000);
+        })
+
         return () => {
             API.leaveServer();
             dispatch(stopGame());
@@ -78,6 +88,9 @@ const Game = () => {
     return (
         <div>
             <Modal open={showPlayerUpdateMessage} title="The number of players has changed. Redirecting to home in 5 seconds..."
+                footer={null} />
+
+            <Modal open={showForceLeaveMessage} title="Too many time out, player is being disconnected"
                 footer={null} />
 
             <div style={{ margin: 10 }}>

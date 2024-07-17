@@ -105,6 +105,10 @@ export class _API implements ServerInterface {
     onTimeOut(cb: () => void): () => void{
         return this._server.onTimeOut(cb);
     }
+
+    onForceLeave(cb: () => void): () => void {
+        return this._server.onForceLeave(cb);
+    }
 }
 
 const API = new _API();

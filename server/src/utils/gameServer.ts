@@ -46,6 +46,7 @@ export default class GameServer implements IGameServer {
             ...player,
             id: playerId, //(this.players.length + 1).toString(),
             cards: [],
+            timeOutCount: 0,
         });
         return playerId; //this.players.length.toString();
     }
@@ -90,6 +91,10 @@ export default class GameServer implements IGameServer {
         this.deck = await getCards();
         this.gameRunning = true;
         this.timer = null;
+
+        this.players.forEach(player => {
+            player.timeOutCount = 0;
+        });
     }
 
     checkNoFirstCard(card: ICard) {

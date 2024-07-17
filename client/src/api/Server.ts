@@ -202,4 +202,9 @@ export class Server implements ServerInterface {
         return () => socket.off("time-out", cb);
     }
 
+    onForceLeave(cb: () => void): () => void {
+        socket.on("force-leave", cb);
+        return () => socket.off("force-leave", cb);
+    }
+
 }

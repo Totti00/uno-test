@@ -47,6 +47,7 @@ export interface ServerInterface {
     onFinishGame(cb: (playersOrdered: Player[]) => void): () => void;
     onResetTimer(cb: (moveTime: number) => void): () => void;
     onTimeOut(cb: () => void): () => void;
+    onForceLeave(cb: () => void): () => void;
 
     getPlayer(): Player;
     getChat(): Promise<Message[]>;

@@ -180,10 +180,15 @@ export function moveSelectableColorCard(
 }
 
 function handleTimeOut( {nxtPlayer, serverId} : {nxtPlayer: number; serverId: string}, io: any): void {
-    // console.info("Time out for player number " + nxtPlayer);
+    const MAX_TIME_OUT = 3;
     const server = getServer(serverId);
 
-    io.to(server.players[nxtPlayer].socketID).emit("time-out");
+    if((++server.players[nxtPlayer].timeOutCount) >= MAX_TIME_OUT){
+        console.log("Too many time out");
+        io.to(server.players[nxtPlayer].socketID).emit("force-leave");
+    }
+    else
+        io.to(server.players[nxtPlayer].socketID).emit("time-out");
 }
 
 export function chat({ socket, message }: { socket: Socket; message: string }): void {

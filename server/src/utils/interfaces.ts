@@ -5,6 +5,7 @@ export interface IPlayer {
   socketID: string;
   cards: ICard[];
   disconnected: boolean;
+  timeOutCount: number;
 }
 
 export interface IGameServer {

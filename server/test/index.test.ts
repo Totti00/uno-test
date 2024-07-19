@@ -17,11 +17,6 @@ new ServerSocket(httpServer);
 
 const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/unoProgetto";
 
-
-/*mongoose.connect("mongodb://localhost:27017/unoProgetto")
-  .then(() => console.log("Connected to database"))
-  .catch((err) => console.log(err));*/
-
 app.use(cors());
 app.use(session({
   secret: 'keyboard',

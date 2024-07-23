@@ -34,6 +34,7 @@ jobs:
         run: |
           cd server
           npm ci
+          npm test
       - name: Tear down Docker Compose
         if: always()
         working-directory: ./mongo

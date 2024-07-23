@@ -25,7 +25,17 @@ jobs:
         run: |
           cd client
           npm ci
+          npm test
+      - name: Set up Docker Compose for MongoDB
+        working-directory: ./mongo
+        run: |
+          docker-compose up -d
       - name: Run server tests
         run: |
           cd server
           npm ci
+      - name: Tear down Docker Compose
+        if: always()
+        working-directory: ./mongo
+        run: |
+          docker-compose down

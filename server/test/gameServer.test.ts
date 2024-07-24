@@ -1,5 +1,5 @@
 import GameServer from "../src/utils/gameServer";
-import { IPlayer } from "../src/utils/interfaces";
+import { IPlayer, ICard } from "../src/utils/interfaces";
 
 jest.mock('../src/utils/helpers', () => ({
     shuffle: jest.fn(arr => arr),
@@ -9,22 +9,22 @@ jest.mock('../src/utils/helpers', () => ({
 
 jest.mock('../src/utils/cards', () => ({
     getCards: jest.fn(async () => [
-      { _id: 'card1', layoutId: '1', color: 'red', digit: 1, action: '' },
-      { _id: 'card2', layoutId: '2', color: 'red', digit: 2, action: '' },
-      { _id: 'card3', layoutId: '3', color: 'red', digit: 3, action: '' },
-      { _id: 'card4', layoutId: '4', color: 'red', digit: 4, action: '' },
-      { _id: 'card5', layoutId: '5', color: 'blue', digit: 1, action: '' },
-      { _id: 'card6', layoutId: '6', color: 'blue', digit: 2, action: '' },
-      { _id: 'card7', layoutId: '7', color: 'blue', digit: 3, action: '' },
-      { _id: 'card8', layoutId: '8', color: 'blue', digit: 4, action: '' },
-      { _id: 'card9', layoutId: '9', color: 'yellow', digit: 1, action: '' },
-      { _id: 'card10', layoutId: '10', color: 'yellow', digit: 2, action: '' },
-      { _id: 'card11', layoutId: '11', color: 'green', digit: 3, action: '' },
-      { _id: 'card12', layoutId: '12', color: 'green', digit: 4, action: '' },
-      { _id: 'card13', layoutId: '13', color: 'green', digit: 5, action: '' },
-      { _id: 'card14', layoutId: '14', color: 'green', digit: 6, action: '' },
-      { _id: 'card15', layoutId: '15', color: 'green', digit: 7, action: '' },
-      { _id: 'card16', layoutId: '16', color: 'green', digit: 8, action: '' },
+      { _id: 'card1', layoutId: '1', color: 'red', digit: 1, action: undefined },
+      { _id: 'card2', layoutId: '2', color: 'red', digit: 2, action: undefined },
+      { _id: 'card3', layoutId: '3', color: 'red', digit: 3, action: undefined },
+      { _id: 'card4', layoutId: '4', color: 'red', digit: 4, action: undefined },
+      { _id: 'card5', layoutId: '5', color: 'blue', digit: 1, action: undefined },
+      { _id: 'card6', layoutId: '6', color: 'blue', digit: 2, action: undefined },
+      { _id: 'card7', layoutId: '7', color: 'blue', digit: 3, action: undefined },
+      { _id: 'card8', layoutId: '8', color: 'blue', digit: 4, action: undefined },
+      { _id: 'card9', layoutId: '9', color: 'yellow', digit: 1, action: undefined },
+      { _id: 'card10', layoutId: '10', color: 'yellow', digit: 2, action: undefined },
+      { _id: 'card11', layoutId: '11', color: 'green', digit: 3, action: undefined },
+      { _id: 'card12', layoutId: '12', color: 'green', digit: 4, action: undefined },
+      { _id: 'card13', layoutId: '13', color: 'green', digit: 5, action: undefined },
+      { _id: 'card14', layoutId: '14', color: 'green', digit: 6, action: undefined },
+      { _id: 'card15', layoutId: '15', color: 'green', digit: 7, action: undefined },
+      { _id: 'card16', layoutId: '16', color: 'green', digit: 8, action: undefined },
     ]),
 }));
 
@@ -120,5 +120,28 @@ describe('GameServer', () => {
         gameServer.chat('World');
         const messages = gameServer.getChat();
         expect(messages).toEqual(['Hello', 'World']);
+    });
+
+    it('should handle a move correctly', async () => {
+        await gameServer.init();
+        const player1: IPlayer = {
+            id: '', 
+            name: 'Player 1', 
+            seed: '1234', 
+            socketID: 'socket123', 
+            cards: [], 
+            disconnected: false, 
+            timeOutCount: 0, 
+            isMaster: false 
+        };
+        gameServer.joinPlayer(player1);
+        const moveEvent = gameServer.start();
+
+        const card: ICard = { _id: 'card1', color: 'red', digit: 9, action: undefined };
+        const moveResult = gameServer.move(false, card);
+
+        expect(moveResult.curPlayer).toBe(0);
+        expect(gameServer.tableStk).toContain(card);
+        expect(gameServer.players[0].cards).not.toContain(card);
     });
 });

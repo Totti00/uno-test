@@ -86,7 +86,6 @@ describe('GameServer', () => {
 
     it('should start the game', async () => {
         await gameServer.init();
-        console.log(gameServer.deck);
         const player1: IPlayer = {
             id: '', 
             name: 'Player 1', 

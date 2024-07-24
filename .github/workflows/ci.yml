@@ -41,3 +41,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.sources=client,server
+            -Dsonar.tests=client,server
+            -Dsonar.test.inclusions=**/*.test.ts
+            -Dsonar.typescript.lcov.reportPaths=client/coverage/lcov-report/index.html,server/coverage/lcov-report/index.html

@@ -1,5 +1,5 @@
 import GameServer from "../src/utils/gameServer";
-import { IPlayer, ICard } from "../src/utils/interfaces";
+import { IPlayer } from "../src/utils/interfaces";
 
 jest.mock('../src/utils/helpers', () => ({
     shuffle: jest.fn(arr => arr),

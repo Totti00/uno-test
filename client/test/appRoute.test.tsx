@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import AppRoute from '../../src/routes/AppRoute';
+import AppRoute from '../src/routes/AppRoute';
 import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 

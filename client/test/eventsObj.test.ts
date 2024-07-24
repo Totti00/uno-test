@@ -1,4 +1,4 @@
-import { EventsObject } from '../../src/utils/EventsObject';
+import { EventsObject } from '../src/utils/EventsObject';
 
 describe('EventsObject', () => {
   let eventsObject: EventsObject;

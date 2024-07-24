@@ -1,8 +1,8 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { store } from '../../src/store/store';
-import WaitingLobby from '../../src/pages/Lobby/WaitingLobby';
+import { store } from '../src/store/store';
+import WaitingLobby from '../src/pages/Lobby/WaitingLobby';
 import '@testing-library/jest-dom';
 import { jest } from '@jest/globals';
 

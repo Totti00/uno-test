@@ -1,8 +1,8 @@
 import { render, screen, waitFor, RenderResult } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { store } from '../../src/store/store';
-import CreateLobby from '../../src/pages/Lobby/CreateLobby';
+import { store } from '../src/store/store';
+import CreateLobby from '../src/pages/Lobby/CreateLobby';
 import '@testing-library/jest-dom';
 import { jest } from '@jest/globals';
 

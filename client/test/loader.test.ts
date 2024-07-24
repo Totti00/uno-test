@@ -1,5 +1,5 @@
-import Loader from '../../src/utils/loader';
-import { EventsObject } from '../../src/utils/EventsObject';
+import Loader from '../src/utils/loader';
+import { EventsObject } from '../src/utils/EventsObject';
 
 describe('_Loader', () => {
   beforeEach(() => {

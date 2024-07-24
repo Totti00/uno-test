@@ -1,8 +1,8 @@
 import { fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { store } from '../../src/store/store';
-import Home from '../../src/pages/Home/Home';
+import { store } from '../src/store/store';
+import Home from '../src/pages/Home/Home';
 import '@testing-library/jest-dom';
 import { jest } from '@jest/globals';
 

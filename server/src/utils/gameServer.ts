@@ -100,6 +100,7 @@ export default class GameServer implements IGameServer {
     }
 
     checkNoFirstCard(card: ICard) {
+        console.log(card);
         return card.action === "draw4" || card.action === "wild" || card.action === "draw2" || card.action === "skip" || card.action === "reverse";
     }
 

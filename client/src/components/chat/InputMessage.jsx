@@ -13,7 +13,7 @@ export default function InputMessage({ onSend }) {
 
     function onSubmit(e) {
         e.preventDefault(); // page dosn't refresh at each submit
-        if(text !== null && text.trim() !== "")
+        if(text.trim() !== "")
             onSend(text.trim());
         setText('');
     }

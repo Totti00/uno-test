@@ -1,6 +1,7 @@
 import Grid from "@mui/material/Grid";
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import React from "react";
 
 const Paper = styled.div`
   background: var(--panel-bg);

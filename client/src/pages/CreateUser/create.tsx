@@ -48,7 +48,7 @@ const CreateUser = () => {
                         placeholder=""
                         value={playerName}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPlayerName(e.target.value)}
-                        pad
+                        pad="true"
                     />
                 </Grid>
 

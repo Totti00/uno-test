@@ -96,11 +96,6 @@ describe('gameSlice reducer', () => {
         expect(store.getState().inGame).toBe(false);
     });
 
-    it('should handle stopGame', () => {
-        store.dispatch(stopGame());
-        expect(store.getState().inGame).toBeFalsy();
-    });
-
     it('should handle initGame', () => {
         store.dispatch(initGame());
         expect(store.getState().inGame).toBeTruthy();

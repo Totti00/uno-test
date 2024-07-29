@@ -1,4 +1,4 @@
-import { IPlayer, IGameServer } from "../src/utils/interfaces";
+import { IGameServer } from "../src/utils/interfaces";
 import { setServer, deleteServer, getServer, getServerPlayers, getServerByPlayerId, isThereServer, getAllServers } from "../src/utils/servers";
 import GameServer from "../src/utils/gameServer";
 import express from 'express';
@@ -43,7 +43,7 @@ describe('Server Manager', () => {
         mongoose.connect(mongoUri);
         mongoose.connection.once('open', () => {
             server = httpServer.listen(PORT, () => {
-                //console.log(`Listening on http://localhost:${PORT}`);
+                console.log(`Listening on http://localhost:${PORT}`);
                 done();
             });
         });

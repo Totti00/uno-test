@@ -11,7 +11,7 @@ dotenv.config();
 
 // Configurazione del server
 const app = express();
-const PORT = 3000;
+//const PORT = 3000;
 const httpServer = http.createServer(app);
 new ServerSocket(httpServer);
 
@@ -32,12 +32,14 @@ app.use((req, res) => {
 
 describe('Express Server', () => {
   let server: http.Server;
+  let port: number;
 
   beforeAll((done) => {
     mongoose.connect(mongoUri);
     mongoose.connection.once('open', () => {
-      server = httpServer.listen(PORT, () => {
-        console.log(`Listening on http://localhost:${PORT}`);
+      server = httpServer.listen(0, () => {
+        port = (server.address() as any).port;
+        console.log(`Listening on http://localhost:${port}`);
         done();
       });
     });

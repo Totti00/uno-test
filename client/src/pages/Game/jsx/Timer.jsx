@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks.ts";
 import { setColorSelection } from "../../../reducers.ts";
 import { useDispatch } from "react-redux";
@@ -29,34 +29,38 @@ const Timer = () => {
     const [time, setTime] = useState(0);
     const [showTimer, setShowTimer] = useState(false);
 
+    const listenersAdded = useRef(false);
+
     useEffect(() => {
-        API.onResetTimer((moveTime) => {
-            console.info("timer resetted with " + moveTime + " seconds");
-            setTime(moveTime);
-            setShowTimer(true);
-        });
+        if (!listenersAdded.current) {
+            const handleResetTimer = (moveTime) => {
+                console.info("timer resetted with " + moveTime + " seconds");
+                setTime(moveTime);
+                setShowTimer(true);
+            };
 
-        // API.getTimer(({timeLeft}) => {
-        //     setTime(timeLeft);
-        // });
-
-        API.onTimeOut(() => {
-            if(currentPlayer === 0){
-                // console.info("Time out! drawing card...");
-                dispatch(setColorSelection({colorSelection: false}));
+            const handleTimeOut = () => {
+                console.info("Time out! drawing card...");
+                dispatch(setColorSelection({ colorSelection: false }));
                 API.move(true);
-            }
-        });
-    });
+            };
+
+            API.onResetTimer(handleResetTimer);
+            API.onTimeOut(handleTimeOut);
+
+            listenersAdded.current = true;
+        }
+
+    }, [currentPlayer, dispatch]);
   
     useEffect(() => {
-      if (time === 0) return; //can't go under 0, timeOut event managed by the server
-  
-      const timerId = setInterval(() => {
-        setTime((prevTime) => prevTime - 1);
-      }, 1000);
-  
-      return () => clearInterval(timerId);
+        if (time === 0) return; //can't go under 0, timeOut event managed by the server
+
+        const timerId = setInterval(() => {
+            setTime((prevTime) => prevTime - 1);
+        }, 1000);
+
+        return () => clearInterval(timerId);
     }, [time]);
   
     return (

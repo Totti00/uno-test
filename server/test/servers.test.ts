@@ -43,7 +43,6 @@ describe('Server Manager', () => {
         mongoose.connect(mongoUri);
         mongoose.connection.once('open', () => {
             server = httpServer.listen(PORT, () => {
-                console.log(`Listening on http://localhost:${PORT}`);
                 done();
             });
         });

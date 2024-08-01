@@ -7,35 +7,43 @@ import { Socket } from "socket.io";
 
 const MOVE_TIME = 30; //time for each move in second
 
-export function createServer({ serverName }: { serverName: string }): string {
+export async function createServer({ serverName }: { serverName: string }): Promise<string> {
     if (serverName.trim().length < 2) throw new Error("Server Name too short");
     const server = new GameServer(serverName);
     const serverId = server.serverId;
     setServer(server);
-    server.init();
+    await server.init();
     return serverId;
 }
 
-export function joinServer({
+export async function joinServer({
     serverId,
     io,
     player,
     socket,
-    cb = () => {},
 }: {
     serverId: string;
     io: any;
     player: IPlayer;
     socket: Socket;
-    cb?: (error: Error | null, playerId?: string) => void;
-}): void {
+}, cb: (error: Error | null, playerId?: string) => void): Promise<void> {
     const server = getServer(serverId);
 
-    if (!server) throw new Error("Server Doesn't Exist");
-    if (player.name.trim().length <= 1) throw new Error("Player Name too short");
-    if (server.players.length >= 4 /* server.numberOfPlayers */) throw new Error("Server is Already full");
+    if (!server) {
+        const error = new Error("Server Doesn't Exist");
+        return cb(error);
+    }
+    if (player.name.trim().length <= 1) {  //DA controllare perche non abbiamo un tasto modifica nome giocatore
+        const error = new Error("Player Name too short");
+        return cb(error);
+    }
+    if (server.players.length >= 4 /* server.numberOfPlayers */) {
+        const error = new Error("Server is Already full");
+        return cb(error);
+    }
 
     let playerId;
+
     if (socket) {
         player.socketID = socket.id;
         socket.join(serverId);
@@ -44,36 +52,39 @@ export function joinServer({
     } else {
         playerId = server.joinPlayer(player);
     }
-
+    
+    io.to(serverId).emit("players-changed", server.players);
     cb(null, playerId);
 
-    io.to(serverId).emit("players-changed", server.players);
-
     if (server.players.length === 4 /* server.numberOfPlayers */) {
-        initGame(server, io);
+        await initGame(server, io);
     }
+    
 }
 
-export function initGame(server: IGameServer, io: any, restart:boolean = false): void {
-    setTimeout(() => {
-        if(restart) server.restart();
-        const { nxtPlayer, card } = server.start();
+export async function initGame(server: IGameServer, io: any, restart:boolean = false): Promise<void> {
+    await new Promise<void>((resolve) => {
+        setTimeout(() => {
+            if(restart) server.restart();
+            const { nxtPlayer, card } = server.start();
 
-        const playersToSend = server.players.map((player) => ({
-            ...player,
-            cards: [], // just empty cards objects
-        }));
-        for (const player of server.players) {
-            if (player.socketID) {
-                io.to(player.socketID).emit("init-game", {
-                    players: playersToSend,
-                    cards: player.cards,
-                    nxtPlayer,
-                    card,
-                });
+            const playersToSend = server.players.map((player) => ({
+                ...player,
+                cards: [], // just empty cards objects
+            }));
+            for (const player of server.players) {
+                if (player.socketID) {
+                    io.to(player.socketID).emit("init-game", {
+                        players: playersToSend,
+                        cards: player.cards,
+                        nxtPlayer,
+                        card,
+                    });
+                }
             }
-        }
-    }, 2000);
+            resolve();
+        }, 2000);
+    });
 }
 
 export function startGame(serverId: string, io: any): void {
@@ -89,6 +100,7 @@ export function startGame(serverId: string, io: any): void {
                 server.resetTimer(MOVE_TIME, nxtPlayer, handleTimeOut, io);
             }
         }
+
         // if (
         //     server.players[server.curPlayer].disconnected ||
         //     server.players[server.curPlayer].isBot
@@ -104,6 +116,7 @@ export function startGame(serverId: string, io: any): void {
 }
 
 export function move({ socket, cardId, draw }: { socket: Socket; cardId: string; draw: boolean }, io: any): void {
+    
     const { playerId, serverId } = getPlayer(socket.id);
     const server = getServer(serverId);
     const card = getCard(cardId);

@@ -68,7 +68,6 @@ export default class GameServer implements IGameServer {
         this.players.forEach((player, idx) => {
             player.cards = this.deck.slice(idx * NUM_CARDS, (idx + 1) * NUM_CARDS) as ICard[];
         });
-
         let firstCard;
         do {
             firstCard = this.deck.slice(NUM_CARDS * this.players.length, NUM_CARDS * this.players.length + 1)[0];
@@ -77,7 +76,6 @@ export default class GameServer implements IGameServer {
                 shuffle(this.deck);
             }
         } while (this.checkNoFirstCard(firstCard));
-
         this.drawingStk = this.deck.slice(this.players.length * NUM_CARDS + 1, this.deck.length) as ICard[];
         return this.move(false, firstCard);
     }
@@ -141,6 +139,7 @@ export default class GameServer implements IGameServer {
 
         moveEventObj.curPlayer = this.curPlayer;
         moveEventObj.nxtPlayer = nxtPlayer;
+
 
         if (card) {
             if (card.action === "draw2") this.sumDrawing += 2;
@@ -270,7 +269,7 @@ export default class GameServer implements IGameServer {
     }
 }
 
-export function canPlayCard(
+/*export function canPlayCard(
     oldCard: ICard,
     newCard: ICard,
     lastPlayerDrew?: boolean
@@ -295,4 +294,4 @@ export function canPlayCard(
     if (oldCard.action !== undefined && newCard.action !== undefined && oldCard.action === newCard.action) return true;
 
     return oldCard.digit !== undefined && oldCard.digit === newCard.digit;
-}
+}*/

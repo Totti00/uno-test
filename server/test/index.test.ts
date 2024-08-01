@@ -39,7 +39,6 @@ describe('Express Server', () => {
     mongoose.connection.once('open', () => {
       server = httpServer.listen(0, () => {
         port = (server.address() as any).port;
-        console.log(`Listening on http://localhost:${port}`);
         done();
       });
     });

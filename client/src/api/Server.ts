@@ -32,7 +32,6 @@ export class Server implements ServerInterface {
         this.player = {} as Player;
         this.player.name = localStorage.getItem("playerName") as string;
         this.player.color = localStorage.getItem("playerColor") as string;
-        console.log("color: " + this.player.color);
         return this.player;
     }
 

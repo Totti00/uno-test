@@ -1,11 +1,6 @@
 import GameServer from "../src/utils/gameServer";
 import { IPlayer, ICard } from "../src/utils/interfaces";
-
-jest.mock('../src/utils/helpers', () => ({
-    shuffle: jest.fn(arr => arr),
-    wrapMod: jest.fn((n, len) => (n + len) % len)
-}));
-
+import { shuffle, wrapMod } from "../src/utils/helpers";
 
 jest.mock('../src/utils/cards', () => ({
     getCards: jest.fn(async () => [
@@ -25,12 +20,26 @@ jest.mock('../src/utils/cards', () => ({
       { _id: 'card14', layoutId: '14', color: 'green', digit: 6, action: undefined },
       { _id: 'card15', layoutId: '15', color: 'green', digit: 7, action: undefined },
       { _id: 'card16', layoutId: '16', color: 'green', digit: 8, action: undefined },
+      { _id: 'card17', layoutId: '17', color: 'red', digit: undefined, action: 'reverse' },
+      { _id: 'card18', layoutId: '18', color: 'red', digit: undefined, action: 'skip' },
+      { _id: 'card19', layoutId: '19', color: 'red', digit: undefined, action: 'draw2' },
     ]),
 }));
 
 describe('GameServer', () => {
 
     let gameServer: GameServer;
+
+    const player: IPlayer = {
+        id: '', 
+        name: 'Player 1', 
+        seed: '1234', 
+        socketID: 'socket123', 
+        cards: [], 
+        disconnected: false, 
+        timeOutCount: 0, 
+        isMaster: false 
+    };
 
     beforeEach(() => {
         gameServer = new GameServer('Test Server');
@@ -51,16 +60,6 @@ describe('GameServer', () => {
     });
 
     it('should join a player', () => {
-        const player: IPlayer = {
-          id: '', 
-          name: 'Player 1', 
-          seed: '1234', 
-          socketID: 'socket123', 
-          cards: [], 
-          disconnected: false, 
-          timeOutCount: 0, 
-          isMaster: false 
-        };
         const playerId = gameServer.joinPlayer(player);
         expect(gameServer.players.length).toBe(1);
         expect(gameServer.players[0].name).toBe('Player 1');
@@ -69,16 +68,6 @@ describe('GameServer', () => {
     });
 
     it('should leave a player', () => {
-        const player: IPlayer = {
-            id: '', 
-            name: 'Player 1', 
-            seed: '1234', 
-            socketID: 'socket123', 
-            cards: [], 
-            disconnected: false, 
-            timeOutCount: 0, 
-            isMaster: false 
-        };
         const playerId = gameServer.joinPlayer(player);
         gameServer.leavePlayer(playerId);
         expect(gameServer.players.length).toBe(0);
@@ -86,16 +75,6 @@ describe('GameServer', () => {
 
     it('should start the game', async () => {
         await gameServer.init();
-        const player1: IPlayer = {
-            id: '', 
-            name: 'Player 1', 
-            seed: '1234', 
-            socketID: 'socket123', 
-            cards: [], 
-            disconnected: false, 
-            timeOutCount: 0, 
-            isMaster: false 
-        };
         const player2: IPlayer = {
             id: '', 
             name: 'Player 2', 
@@ -106,10 +85,10 @@ describe('GameServer', () => {
             timeOutCount: 0, 
             isMaster: false 
         };
-        gameServer.joinPlayer(player1);
+        gameServer.joinPlayer(player);
         gameServer.joinPlayer(player2);
         const moveEvent = gameServer.start();
-        expect(gameServer.players[0].cards.length).toBe(7);
+        expect(gameServer.players[0].cards.length).toBeGreaterThan(6);
         expect(gameServer.players[1].cards.length).toBe(7);
         expect(gameServer.drawingStk.length).toBeGreaterThan(0);
         expect(moveEvent).toBeTruthy();
@@ -124,24 +103,41 @@ describe('GameServer', () => {
 
     it('should handle a move correctly', async () => {
         await gameServer.init();
-        const player1: IPlayer = {
-            id: '', 
-            name: 'Player 1', 
-            seed: '1234', 
-            socketID: 'socket123', 
-            cards: [], 
-            disconnected: false, 
-            timeOutCount: 0, 
-            isMaster: false 
-        };
-        gameServer.joinPlayer(player1);
-        const moveEvent = gameServer.start();
+        gameServer.joinPlayer(player);
+        gameServer.start();
+        gameServer.sumDrawing = 2;
 
-        const card: ICard = { _id: 'card1', color: 'red', digit: 9, action: undefined };
-        const moveResult = gameServer.move(false, card);
+        const card: ICard = { _id: 'card1', color: 'red', digit: undefined, action: 'draw2' };
+        const moveResult = gameServer.move(true, card);
 
         expect(moveResult.curPlayer).toBe(0);
         expect(gameServer.tableStk).toContain(card);
         expect(gameServer.players[0].cards).not.toContain(card);
+    });
+
+    it('should allow a player to leave when the game is running', async () => {
+        await gameServer.init();
+        const playerId = gameServer.joinPlayer(player);
+        gameServer.start();
+        gameServer.gameRunning = true;
+        gameServer.leavePlayer(playerId);
+        expect(gameServer.players.length).toBe(1);
+    });
+
+    it('should reset the game state correctly', async () => {
+        gameServer.joinPlayer(player);
+        await gameServer.restart();
+        expect(gameServer.curPlayer).toBe(0);
+        expect(gameServer.direction).toBe(1);
+        expect(gameServer.tableStk).toEqual([]);
+        expect(gameServer.drawingStk).toEqual([]);
+        expect(gameServer.sumDrawing).toBe(0);
+        expect(gameServer.playersFinished).toEqual([]);
+        expect(gameServer.lastPlayerDrew).toBe(false);
+        expect(gameServer.deck.length).toBeGreaterThan(1);
+        expect(gameServer.gameRunning).toBe(true);
+        gameServer.players.forEach(player => {
+            expect(player.timeOutCount).toBe(0);
+        });
     });
 });

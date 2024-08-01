@@ -5,7 +5,7 @@ import {getPlayer} from "./src/utils/playersSockets";
 import {getAllServers, getServerPlayers, getServerByPlayerId, getServer} from "./src/utils/servers";
 
 export class ServerSocket {
-    public static instance: ServerSocket;
+    public static instance: ServerSocket | null = null;
     public io: Server;
 
     constructor(server: HttpServer) {
@@ -22,11 +22,16 @@ export class ServerSocket {
         this.io.on('connect', (socket) => {
             socket.on(
                 "create-server",
-                ({ serverName, player }, cb = () => {}) => {
+                async ({ serverName, player }, cb = () => {}) => {
                     try {
                         const io = this.io;
-                        const serverId = createServer({ serverName });
-                        joinServer({ serverId, io, player, socket, cb});
+                        const serverId = await createServer({ serverName });
+                        joinServer({ serverId, io, player, socket }, (error, playerId) => {
+                            if (error) {
+                                return cb({message: error.message});
+                            }
+                            cb(null, playerId);
+                        });
                     } catch (error) {
                         cb(error);
                         console.log(error);
@@ -39,11 +44,15 @@ export class ServerSocket {
                 ({ serverId, player }, cb = () => {}) => {
                     try {
                         const io = this.io;
-                        joinServer({ serverId, io, player, socket, cb });
+                        joinServer({ serverId, io, player, socket }, (error, playerId) => {
+                            if (error) {
+                                return cb({message: error.message});
+                            }
+                            cb(null, playerId);
+                        });
                     } catch (error) {
                         cb(error);
-                        console.log(error);
-                    }
+                    };
                 }
             );
 
@@ -52,7 +61,9 @@ export class ServerSocket {
                     const io = this.io;
                     const { serverId } = getPlayer(socket.id);
                     startGame(serverId, io);
+                    cb(null);
                 } catch (err) {
+                    console.log("Error in start-game event handler:", err);
                     cb(err);
                 }
             });
@@ -63,6 +74,7 @@ export class ServerSocket {
                     move({ socket, cardId, draw }, io);
                     cb(null);
                 } catch (error) {
+                    console.log("Error in move event handler:", error);
                     cb(error);
                     console.log(error);
                 }
@@ -158,6 +170,13 @@ export class ServerSocket {
                 }
             });
 
+        });
+        
+    }
+    public close(callback?: () => void) {
+        this.io.close(() => {
+            ServerSocket.instance = null;
+            if (callback) callback();
         });
     }
 }

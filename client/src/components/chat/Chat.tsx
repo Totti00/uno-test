@@ -44,7 +44,6 @@ export default function Chat() {
     }
     const handleClose = () => setOpen(false);
     const handleSendMessage = (text: string) => {
-        // console.log("Message sent: " + text);
         const message: Message = {
             player: me,
             text: text,
@@ -55,7 +54,6 @@ export default function Chat() {
 
     useEffect(() => {
         API.onChat(({ messages }) => {
-            // console.info("CHAT received message with color: " + messages[messages.length - 1].player.color);
             setMessages(messages);
         });
     });

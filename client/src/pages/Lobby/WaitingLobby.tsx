@@ -41,11 +41,6 @@ const WaitingLobby = () => {
         };
     },[]);
 
-    // if (location.pathname === "/waiting" && !inLobby)
-    //     console.info("Not in lobby: ", inLobby);
-    //     console.info("Location: ", location.pathname);
-    //     return <Navigate replace to="/home" />;
-
     const handleJoinServer = async () => {
         API.leaveServer();
         navigate("/home");

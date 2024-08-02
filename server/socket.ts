@@ -159,7 +159,6 @@ export class ServerSocket {
 
             socket.on("play-again", (_, cb = () => { }) => {
                 try {
-                    console.log("Player requested to play again");
                     const io = this.io;
                     const { serverId } = getPlayer(socket.id);
                     const server = getServer(serverId);
@@ -172,11 +171,5 @@ export class ServerSocket {
 
         });
         
-    }
-    public close(callback?: () => void) {
-        this.io.close(() => {
-            ServerSocket.instance = null;
-            if (callback) callback();
-        });
     }
 }

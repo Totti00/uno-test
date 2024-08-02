@@ -80,7 +80,6 @@ const Lobby = () => {
             <Grid item xs={12}>
                 <Table>
                     {servers.map((server, index) => {
-                        //console.info(server);
                         return (
                             <CTableRow
                                 key={index}

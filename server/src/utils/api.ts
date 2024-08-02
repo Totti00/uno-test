@@ -115,8 +115,7 @@ export function startGame(serverId: string, io: any): void {
     }
 }
 
-export function move({ socket, cardId, draw }: { socket: Socket; cardId: string; draw: boolean }, io: any): void {
-    
+export function move({ socket, cardId, draw }: { socket: Socket; cardId: string; draw: boolean }, io: any): void {    
     const { playerId, serverId } = getPlayer(socket.id);
     const server = getServer(serverId);
     const card = getCard(cardId);
@@ -183,7 +182,6 @@ export function moveSelectableColorCard(
     });
 
     if (finish) {
-        console.info("API.CJS game finished");
         server.gameRunning = false;
         io.to(serverId).emit("finished-game", playersFinishingOrder);
     } else {
@@ -194,6 +192,11 @@ export function moveSelectableColorCard(
 
 function handleTimeOut( {nxtPlayer, serverId} : {nxtPlayer: number; serverId: string}, io: any): void {
     const MAX_TIME_OUT = 3;
+    //i need to check if the server is running
+    if(!isThereServer(serverId)) {
+        console.log("Server not found");
+        return;
+    }
     const server = getServer(serverId);
 
     if((++server.players[nxtPlayer].timeOutCount) >= MAX_TIME_OUT){

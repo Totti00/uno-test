@@ -90,7 +90,9 @@ export default class GameServer implements IGameServer {
         this.lastPlayerDrew = false;
         this.deck = await getCards();
         this.gameRunning = true;
-        this.timer = null;
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
 
         this.players.forEach(player => {
             player.timeOutCount = 0;

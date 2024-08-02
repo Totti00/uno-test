@@ -54,16 +54,18 @@ const WaitingLobby = () => {
     return (
         <div style={{ margin: 30 }}>
             <Row justify="space-between">
+                {players.length < 4 && (
                     <Popconfirm
                         title="Leave lobby alert"
                         description="Are you sure to exit?"
                         onConfirm={handleJoinServer}
                         okText="Yes"
                         cancelText="No"
-                    >
+                        >
                         <Button icon={<LeftOutlined />} type="primary" >Back</Button>
                     </Popconfirm>
-                    <Chat/>
+                )}
+                <Chat/>
             </Row>
             <Row justify="center" style={{ marginTop: 0 }}>
                 <WhiteLobbyCard roomName={server} players={players} />

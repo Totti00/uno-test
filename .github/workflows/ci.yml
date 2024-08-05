@@ -19,7 +19,7 @@ jobs:
       - name: Set up Docker Compose for MongoDB
         working-directory: ./mongo
         run: |
-          docker-compose up -d
+          docker compose up -d
       - name: Run client tests
         run: |
           cd client
@@ -34,7 +34,7 @@ jobs:
         if: always()
         working-directory: ./mongo
         run: |
-          docker-compose down
+          docker compose down
       - name: SonarCloud Scan
         if: success()
         uses: SonarSource/sonarcloud-github-action@master

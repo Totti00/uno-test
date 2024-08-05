@@ -18,6 +18,8 @@ export default class GameServer implements IGameServer {
     lastPlayerDrew = false;
     playersFinished: number[] = [];
     messages: string[] = [];
+    lastPlayerUNO = false;
+    lastPlayer = 0;
     private timer: NodeJS.Timeout | null = null;
 
     constructor(serverName: string, /* numberOfPlayers = 4 */) {
@@ -37,6 +39,7 @@ export default class GameServer implements IGameServer {
         this.deck = await getCards();
         this.messages = [];
         this.timer = null;
+        this.lastPlayer = 0;
     }
 
     joinPlayer(player: IPlayer) {
@@ -90,6 +93,8 @@ export default class GameServer implements IGameServer {
         this.lastPlayerDrew = false;
         this.deck = await getCards();
         this.gameRunning = true;
+        this.lastPlayerUNO = false;
+        this.lastPlayer = 0;
         if (this.timer) {
             clearTimeout(this.timer);
         }
@@ -113,7 +118,7 @@ export default class GameServer implements IGameServer {
     }
 
     move(draw: boolean, card: ICard /* | null */) {
-        let moveEventObj: IMoveEvent = {nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: []};
+        let moveEventObj: IMoveEvent = {nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: [], oneCardLeft: false, lastPlayer: 0};
 
         //controllo che la carta può essere giocata sulla cima dello stack
         //if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew)) return false;
@@ -141,7 +146,9 @@ export default class GameServer implements IGameServer {
 
         moveEventObj.curPlayer = this.curPlayer;
         moveEventObj.nxtPlayer = nxtPlayer;
+        moveEventObj.lastPlayer = this.lastPlayer;
 
+        // console.log("lastPlayer: " + this.lastPlayer + " - curPlayer: " + this.curPlayer + " - nxtPlayer: " + nxtPlayer)
 
         if (card) {
             if (card.action === "draw2") this.sumDrawing += 2;
@@ -154,6 +161,9 @@ export default class GameServer implements IGameServer {
             this.players[this.curPlayer].cards = this.players[this.curPlayer].cards.filter((c) => c._id !== card._id);
             this.lastPlayerDrew = false;
 
+            // Check if player has only one card left
+            if(this.players[this.curPlayer].cards.length === 1) moveEventObj.oneCardLeft = true;
+
             // Check if game finished
             if (this.players[this.curPlayer].cards.length === 0) this.playersFinished.push(this.curPlayer);
             if (this.playersFinished.length === this.players.length - 1) {
@@ -162,6 +172,7 @@ export default class GameServer implements IGameServer {
                 //this.finishGame();
             }
         }
+        this.lastPlayer = this.curPlayer;
         this.curPlayer = nxtPlayer;
         return moveEventObj;
         // this.fireEvent("move", moveEventObj as IMoveEvent);
@@ -268,6 +279,19 @@ export default class GameServer implements IGameServer {
         this.timer = setTimeout(() => {
             handleTimeOut({ nxtPlayer, serverId: this.serverId }, io);
         }, (timeoutSeconds + 1) * 1000);
+    }
+
+    playerDraw2(playerIndex: number) {
+        if (this.drawingStk.length <= 2) {
+            this.drawingStk = shuffle(this.tableStk.slice(5, this.tableStk.length));
+            this.tableStk = this.tableStk.slice(0, 5);
+        }
+
+        let cardsToDraw = this.drawingStk.slice(0, 2);
+        this.players[playerIndex].cards = this.drawingStk.slice(0, 2).concat(this.players[playerIndex].cards);
+        this.drawingStk = this.drawingStk.slice(2, this.drawingStk.length);
+
+        return cardsToDraw;
     }
 }
 

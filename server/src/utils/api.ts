@@ -124,7 +124,27 @@ export function move({ socket, cardId, draw }: { socket: Socket; cardId: string;
     if (server.players[server.curPlayer].id !== playerId) throw new Error("Not Your Turn");
 
     // Make the move
-    const {nxtPlayer, cardsToDraw, finish, playersFinishingOrder} = server.move(draw, card);
+    const {nxtPlayer, cardsToDraw, finish, playersFinishingOrder, oneCardLeft, lastPlayer} = server.move(draw, card);
+
+    if(server.lastPlayerUNO){
+        const cardsToDrawLast = server.playerDraw2(lastPlayer);
+        const lastPlayerSocketID = server.players[lastPlayer].socketID;
+
+        io.to(lastPlayerSocketID).emit("draw-2-cards", {
+            lastPlayer,
+            cardsToDrawLast
+        });
+
+        server.players.forEach(player => {
+            if (player.socketID !== lastPlayerSocketID) {
+                io.to(player.socketID).emit("draw-2-cards", {
+                    lastPlayer
+                });
+            }
+        });
+
+        server.lastPlayerUNO = false;
+    }
 
     //broadcast to all OTHER players
     socket.broadcast.to(serverId).emit("move", {
@@ -133,6 +153,8 @@ export function move({ socket, cardId, draw }: { socket: Socket; cardId: string;
         draw: cardsToDraw?.length,
     });
 
+    socket.broadcast.to(serverId).emit("show-uno", false);
+
     //send to my player
     socket.emit("move", {
         nxtPlayer,
@@ -140,6 +162,11 @@ export function move({ socket, cardId, draw }: { socket: Socket; cardId: string;
         draw: cardsToDraw?.length,
         cardsToDraw,
     });
+
+    if(oneCardLeft) {
+        socket.emit("show-uno", true);
+        server.lastPlayerUNO = true;
+    }
 
     if (finish) {
         server.gameRunning = false;
@@ -162,7 +189,27 @@ export function moveSelectableColorCard(
     if (server.players[server.curPlayer].id !== playerId) throw new Error("Not Your Turn");
 
     // Make the move
-    const { nxtPlayer, cardsToDraw, finish, playersFinishingOrder } = server.move(draw, card);
+    const {nxtPlayer, cardsToDraw, finish, playersFinishingOrder, oneCardLeft, lastPlayer} = server.move(draw, card);
+
+    if(server.lastPlayerUNO){
+        const cardsToDrawLast = server.playerDraw2(lastPlayer);
+        const lastPlayerSocketID = server.players[lastPlayer].socketID;
+
+        io.to(lastPlayerSocketID).emit("draw-2-cards", {
+            lastPlayer,
+            cardsToDrawLast
+        });
+
+        server.players.forEach(player => {
+            if (player.socketID !== lastPlayerSocketID) {
+                io.to(player.socketID).emit("draw-2-cards", {
+                    lastPlayer
+                });
+            }
+        });
+
+        server.lastPlayerUNO = false;
+    }
 
     //broadcast to all OTHER players
     socket.broadcast.to(serverId).emit("move-selectable-color-card", {
@@ -172,6 +219,8 @@ export function moveSelectableColorCard(
         colorSelected,
     });
 
+    socket.broadcast.to(serverId).emit("show-uno", false);
+
     //send to my player
     socket.emit("move-selectable-color-card", {
         nxtPlayer,
@@ -180,6 +229,11 @@ export function moveSelectableColorCard(
         colorSelected,
         cardsToDraw,
     });
+
+    if(oneCardLeft) {
+        socket.emit("show-uno", true);
+        server.lastPlayerUNO = true;
+    }
 
     if (finish) {
         server.gameRunning = false;
@@ -218,7 +272,7 @@ export function chat({ socket, message }: { socket: Socket; message: string }): 
         messages,
     });
 
-    //broadcast to my player
+    //emit to my player
     socket.emit("chat", {
         messages,
     });
@@ -280,3 +334,10 @@ export function isPlayerMaster(playerId: string, serverId: string): boolean { //
        
 }
 
+export function disableUNO({socket, serverId}: {socket:Socket, serverId:string}): void { 
+    // console.log(">> Recived UNO from player");
+    const server = getServer(serverId);
+
+    server.lastPlayerUNO = false;
+    socket.emit("show-uno", false);
+}

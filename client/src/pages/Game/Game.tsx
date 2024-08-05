@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Player } from "../../utils/interfaces.ts";
 import { useAppSelector } from "../../hooks/hooks.ts";
 import API from "../../api/API.ts";
-import {moveCard, finalMovePlayer, stopGame, moveFirstCard} from "../../reducers.ts";
+import {moveCard, finalMovePlayer, stopGame, moveFirstCard, draw2Cards} from "../../reducers.ts";
 import TableStack from "./jsx/TableStack.jsx";
 import TopStack from "./jsx/TopStack.jsx";
 import PlayerStack from "./jsx/PlayerStack.jsx";
@@ -16,6 +16,7 @@ import { Navigate } from "react-router-dom";
 import Ranking from "./jsx/Ranking.tsx";
 import Chat from "../../components/chat/Chat.tsx";
 import { Modal, Row } from "antd";
+import UnoButton from "./jsx/UnoButton.jsx";
 //import {Navigate} from "react-router-dom";
 
 const Game = () => {
@@ -47,6 +48,10 @@ const Game = () => {
             dispatch(moveCard({ nextPlayer: nxtPlayer, card, draw, cardsToDraw }));
             setTimeout(() => dispatch(finalMovePlayer({color: colorSelected})), 500);
         });
+
+        API.onDraw2Cards(({lastPlayer, cardsToDrawLast}) => {
+            dispatch(draw2Cards({ lastPlayer, cardsToDraw:cardsToDrawLast }));
+        })
 
         API.onFinishGame((players: Player[]) => {
             setFinished(true);
@@ -109,6 +114,7 @@ const Game = () => {
                     <RightStack />
                     <PlayerStack />
                     <DrawingStack />
+                    <UnoButton />
                 </>
             )}
         </div>

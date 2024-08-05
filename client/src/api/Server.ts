@@ -131,6 +131,15 @@ export class Server implements ServerInterface {
         });
     }
 
+    UNO(): Promise<void> {
+        return new Promise((res, rej) => {
+            socket.emit("uno", null , (err: any) => {
+                if (err) return rej(err);
+                res();
+            });
+        });
+    }
+
     onFinishGame(cb: (playersOrdered: Player[]) => void): () => void {
         socket.on("finished-game", cb);
         return () => socket.off("finished-game", cb);
@@ -204,6 +213,16 @@ export class Server implements ServerInterface {
     onForceLeave(cb: () => void): () => void {
         socket.on("force-leave", cb);
         return () => socket.off("force-leave", cb);
+    }
+
+    onShowUNO(cb: (showButton: boolean) => void): () => void{
+        socket.on("show-uno", cb);
+        return () => socket.off("show-uno", cb)
+    }
+
+    onDraw2Cards(cb:(data:{lastPlayer:number; cardsToDrawLast?: Card[] }) => void): () => void {
+        socket.on("draw-2-cards", cb);
+        return () => socket.off("draw-2-cards", cb)
     }
 
 }

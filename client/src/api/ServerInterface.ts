@@ -16,6 +16,7 @@ export interface ServerInterface {
     chat(message: Message): Promise<void>;
     isPlayerMaster(): Promise<boolean>;
     playAgain(): Promise<void>;
+    UNO(): Promise<void>;
 
     onPlayersUpdated(cb: (players: Player[]) => void): () => void;
     onGameInit(
@@ -48,6 +49,8 @@ export interface ServerInterface {
     onResetTimer(cb: (moveTime: number) => void): () => void;
     onTimeOut(cb: () => void): () => void;
     onForceLeave(cb: () => void): () => void;
+    onShowUNO(cb: (showButton: boolean) => void): () => void;
+    onDraw2Cards(cb:(data:{lastPlayer:number; cardsToDrawLast?: Card[] }) => void): () => void;
 
     getPlayer(): Player;
     getChat(): Promise<Message[]>;

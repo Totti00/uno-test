@@ -70,6 +70,10 @@ export class _API implements ServerInterface {
         return this._server.playAgain();
     }
 
+    UNO(): Promise<void>{
+        return this._server.UNO();
+    }
+
     onFinishGame(cb: (playersOrdered: Player[]) => void): () => void {
         return this._server.onFinishGame(cb);
     }
@@ -108,6 +112,14 @@ export class _API implements ServerInterface {
 
     onForceLeave(cb: () => void): () => void {
         return this._server.onForceLeave(cb);
+    }
+
+    onShowUNO(cb: (showButton: boolean) => void): () => void{
+        return this._server.onShowUNO(cb);
+    }
+
+    onDraw2Cards(cb:(data:{lastPlayer:number; cardsToDrawLast?: Card[] }) => void): () => void {
+        return this._server.onDraw2Cards(cb);
     }
 }
 

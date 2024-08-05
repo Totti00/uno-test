@@ -256,6 +256,32 @@ export const gameSlice = createSlice({
             const { colorSelection } = action.payload;
             state.colorSelection = colorSelection;
         },
+        draw2Cards(state, action: PayloadAction<{
+            lastPlayer: number;
+            cardsToDraw?: Card[];
+        }>) {
+            let { lastPlayer, cardsToDraw = []} = action.payload;
+
+            lastPlayer = wrapMod(lastPlayer - state.orderOffset, state.players.length);
+            const lastPlayerID = state.players[lastPlayer].id;
+
+            state.players = state.players.map((p) => {
+                if (p.id === lastPlayerID) {
+                    let newCards = state.drawingStack.slice(0, 2);
+                    if (lastPlayerID === state.playerId && cardsToDraw) {
+                        newCards = newCards.map((c, idx) => ({
+                            ...c, ...cardsToDraw[idx], rotationY: 0,
+                        }));
+                    }
+                    return {
+                        ...p, cards: p.cards.concat(newCards),
+                    };
+                }
+                return p;
+            });
+            state.drawingStack = state.drawingStack.slice(2).concat(generateDrawingCards(2));
+
+        },
     },
 });
 
@@ -271,6 +297,7 @@ export const {
     setFirstCard,
     moveFirstCard,
     setColorSelection,
+    draw2Cards,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

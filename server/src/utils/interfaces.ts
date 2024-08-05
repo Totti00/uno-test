@@ -23,6 +23,8 @@ export interface IGameServer {
   lastPlayerDrew: boolean;
   playersFinished: number[];
   messages: string[];
+  lastPlayerUNO: boolean;
+  lastPlayer: number;
 
   init(): Promise<void>;
   joinPlayer(player: IPlayer): string;
@@ -35,6 +37,7 @@ export interface IGameServer {
   getNextPlayer(card: ICard): number;
   finishGame(): any;
   resetTimer(timeoutSeconds: number, nxtPlayer: number, handleTimeOut: ({ nxtPlayer, serverId }: { nxtPlayer: number; serverId: string; }, io: any) => void, io: any):any;
+  playerDraw2(playerIndex: number): ICard[];
 }
 
 export interface IMoveEvent {
@@ -45,6 +48,8 @@ export interface IMoveEvent {
   cardsToDraw?: ICard[];
   finish?: boolean;
   playersFinishingOrder?: IPlayer[];
+  oneCardLeft?: boolean;
+  lastPlayer: number;
 }
 
 export interface ICard {

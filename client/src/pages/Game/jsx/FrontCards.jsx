@@ -1,5 +1,5 @@
 import React from "react";
-import Card from "../../../components/jsx/Card.jsx";
+import Card from "../../../components/Card";
 
 const FrontCards = React.memo(function () {
   return (

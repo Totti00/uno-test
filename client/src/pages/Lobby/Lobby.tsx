@@ -1,16 +1,15 @@
-import { Row} from "antd";
-import {LeftOutlined} from "@ant-design/icons";
+import { Row } from "antd";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react"
 import Table from "../../components/Table";
-import Typography from "../../components/Typography";
+import Typography from "../../components/Typography"
 import Button from "../../components/Button";
 import Grid from "@mui/material/Grid";
-import API from "../../api/API.ts";
+import API from "../../api/API";
 import styled from "styled-components";
-import {setInLobby, setPlayerId} from "../../reducers.ts";
+import {setInLobby, setPlayerId} from "../../reducers";
 import {useDispatch} from "react-redux";
-import {GameServer} from "../../utils/interfaces.ts";
+import {GameServer} from "../../utils/interfaces";
 
 const CTableRow = styled.div`
   justify-content: space-around;
@@ -66,7 +65,7 @@ const Lobby = () => {
     return (
         <div style={{ margin: 20 }}>
             <Row justify="space-between" align="middle">
-                <Button icon={<LeftOutlined/>} type="primary" onClick={() => navigate(-1)}>Back</Button>
+                <Button buttonType="default" onClick={() => navigate(-1)}>Back</Button>
             </Row>
             {/*<Row justify="center" style={{ marginTop: 22 }}>
                 title={`Choose a room ____________. \n\nUsers Online: ${users.length}`}

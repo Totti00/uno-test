@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Paper from "../../components/jsx/Paper";
+import Paper from "../../components/Paper";
 import Grid from "@mui/material/Grid";
-import TextField from "../../components/jsx/TextField";
+import TextField from "../../components/TextField";
 import Button from "../../components/Button";
-import Typography from "../../components/Typography";
+import Typography from "../../components/Typography"
 
 const CreateUser = () => {
     const getLocalStorageName = () => {
@@ -48,7 +48,6 @@ const CreateUser = () => {
                         placeholder=""
                         value={playerName}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPlayerName(e.target.value)}
-                        pad="true"
                     />
                 </Grid>
 

@@ -1,7 +1,6 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
-import { Button as MuiButton } from "@mui/material";
-//import { useNavigate } from "react-router";
+import { Button as MuiButton, ButtonProps as MuiButtonProps } from "@mui/material";
 
 const Cbutton = styled(MuiButton)`
   &.MuiButton-root {
@@ -14,7 +13,7 @@ const Cbutton = styled(MuiButton)`
     color: white;
     transition: transform 0.1s ease-in-out;
     transition-timing-function: ease-out;
-    margin: 0;
+    margin-bottom: 20px;
     display: inline-flex;
     flex-direction: column;
 
@@ -36,16 +35,20 @@ const Cbutton = styled(MuiButton)`
     }
   }
 `;
-const Button = ({ children, /*href,*/ ...props }) => {
-  //const navigate = useNavigate();
 
-  const onClick = () => {
-    if (props.onClick) props.onClick();
-    //if (href && !props.disabled) navigate(href);
+interface ButtonProps extends Omit<MuiButtonProps, 'type'> {
+  children: ReactNode;
+  icon?: ReactNode;
+  buttonType?: "primary" | "default" | "dashed" | "link" | "text";
+}
+
+const Button: React.FC<ButtonProps> = ({ children, icon, buttonType, ...props }) => {
+  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (props.onClick) props.onClick(event);
   };
 
   return (
-    <Cbutton {...props} onClick={onClick}>
+    <Cbutton {...props} onClick={onClick} startIcon={icon} variant={buttonType === "primary" ? "contained" : "text"}>
       {children}
     </Cbutton>
   );

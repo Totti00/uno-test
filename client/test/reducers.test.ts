@@ -9,7 +9,8 @@ import gameReducer, {
     setFirstCard,
     moveFirstCard,
 } from '../src/reducers.ts';
-import { canPlayCard, Card, Player } from '../src/utils/interfaces.ts';
+import { Card, Player } from '../src/utils/interfaces.ts';
+import { canPlayCard } from '../src/utils/helpers.ts';
 import { isNullOrUndefined } from 'is-what';
 
 const initialState = {

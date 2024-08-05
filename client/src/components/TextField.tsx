@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React from "react";
+import React, { InputHTMLAttributes } from "react";
 
 const CtextField = styled.input`
   display: inline-block;
@@ -23,7 +23,10 @@ const CtextField = styled.input`
     outline-offset: 2px;
   }
 `;
-const TextField = (props) => {
+
+interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {}
+
+const TextField: React.FC<TextFieldProps> = (props) => {
   return <CtextField {...props} />;
 };
 

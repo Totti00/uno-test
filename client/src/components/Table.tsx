@@ -1,5 +1,6 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
+
 const CTableContainer = styled.div`
   min-height: 35vh;
   background-color: rgba(0, 0, 0, 0.8);
@@ -23,15 +24,18 @@ const CTableContainer = styled.div`
   ::-webkit-scrollbar-track-piece {
   }
 `;
+
 const CTableHead = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   padding: 20px;
 `;
+
 const CTableCell = styled.p`
   border-bottom: 1px solid rgb(2 15 108);
   color: #fff;
 `;
+
 const CTableBody = styled.div`
   display: grid;
   grid-template-columns: 1fr;
@@ -39,7 +43,11 @@ const CTableBody = styled.div`
   padding: 0 20px 20px;
 `;
 
-const Table = ({ children }) => {
+interface TableProps {
+  children: ReactNode;
+}
+
+const Table: React.FC<TableProps> = ({ children }) => {
   return (
     <CTableContainer>
       <CTableHead>

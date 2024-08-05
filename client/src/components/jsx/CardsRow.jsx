@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Card from "./Card.jsx";
+import Card from "../Card";
 
 const Root = styled.div`
   display: flex;

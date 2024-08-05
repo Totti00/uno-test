@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Card from "../../../components/jsx/Card.jsx";
+import Card from "../../../components/Card.tsx";
 import FrontCards from "./FrontCards.jsx";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";

@@ -13,6 +13,7 @@ module.exports = {
     "/node_modules/(?!some-module-to-transform|another-module)"
   ],
   moduleNameMapper: {
+    '\\.module\\.css$': 'identity-obj-proxy',
     '\\.css$': '<rootDir>/__mocks__/styleMock.js',
   },
 };

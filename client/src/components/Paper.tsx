@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid";
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import React from "react";
+import React, { ReactNode } from "react";
 
 const Paper = styled.div`
   background: var(--panel-bg);
@@ -22,10 +22,15 @@ const Paper = styled.div`
   }
 `;
 
-const APaper = ({ children, ...props }) => {
+interface APaperProps {
+  children: ReactNode;
+  [key: string]: any;
+}
+
+const APaper: React.FC<APaperProps> = ({ children, ...props }) => {
   return (
     <Grid
-      as={motion.div}
+      component={motion.div}
       initial={{ opacity: 0, x: 500 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -500 }}

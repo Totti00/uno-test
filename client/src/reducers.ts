@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {Card, Player, canPlayCard, finalCanPlayCard} from "./utils/interfaces.ts";
-import { wrapMod } from "./utils/utile.ts";
+import {Card, Player} from "./utils/interfaces.ts";
+import { canPlayCard, finalCanPlayCard } from "./utils/helpers.ts";
+import { wrapMod } from "./utils/helpers.ts";
 import { isNullOrUndefined } from 'is-what';
 
 interface StoreState {

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Card from "../../../components/jsx/Card.jsx";
+import Card from "../../../components/Card.tsx";
 import { useAppSelector } from "../../../hooks/hooks.ts";
 import {tableStackSelector} from "./MemorizedSelector.ts";
 

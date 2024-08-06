@@ -294,6 +294,7 @@ export default function Card({
       disableShadow={disableShadow}
       preserve3D={isPreserve3D}
       onClick={onClick}
+      role="button"
     >
       {showColorSelector && (
         <div className="color-selector">

@@ -1,13 +1,12 @@
-import styled from "styled-components";
 import { useEffect, useState, useRef } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks.ts";
-import { setColorSelection } from "../../../reducers.ts";
+import { useAppSelector } from "../../hooks/hooks";
+import { setColorSelection } from "../../reducers";
 import { useDispatch } from "react-redux";
-import API from "../../../api/API.ts";
-import {playerAndCurrPlayerStackSelector} from "./MemorizedSelector.ts";
+import API from "../../api/API";
+import { playerAndCurrPlayerStackSelector } from "./jsx/MemorizedSelector";
 
-const Timer = () => {
-    const divStyle = {
+const Timer: React.FC = () => {
+    const divStyle: React.CSSProperties = {
         position: 'absolute',
         top: '10px',
         left: '10px',
@@ -24,16 +23,15 @@ const Timer = () => {
     const dispatch = useDispatch();
 
     const { currentPlayer } = useAppSelector(playerAndCurrPlayerStackSelector);
-    const colorSelection = useAppSelector(state => state.game.colorSelection);
 
-    const [time, setTime] = useState(0);
-    const [showTimer, setShowTimer] = useState(false);
+    const [time, setTime] = useState<number>(0);
+    const [showTimer, setShowTimer] = useState<boolean>(false);
 
-    const listenersAdded = useRef(false);
+    const listenersAdded = useRef<boolean>(false);
 
     useEffect(() => {
         if (!listenersAdded.current) {
-            const handleResetTimer = (moveTime) => {
+            const handleResetTimer = (moveTime: number) => {
                 console.info("timer resetted with " + moveTime + " seconds");
                 setTime(moveTime);
                 setShowTimer(true);
@@ -42,7 +40,7 @@ const Timer = () => {
             const handleTimeOut = () => {
                 console.info("Time out! drawing card...");
                 dispatch(setColorSelection({ colorSelection: false }));
-                API.move(true);
+                API.move(true, "");
             };
 
             API.onResetTimer(handleResetTimer);
@@ -52,9 +50,9 @@ const Timer = () => {
         }
 
     }, [currentPlayer, dispatch]);
-  
+
     useEffect(() => {
-        if (time === 0) return; //can't go under 0, timeOut event managed by the server
+        if (time === 0) return; // can't go under 0, timeOut event managed by the server
 
         const timerId = setInterval(() => {
             setTime((prevTime) => prevTime - 1);
@@ -62,7 +60,7 @@ const Timer = () => {
 
         return () => clearInterval(timerId);
     }, [time]);
-  
+
     return (
         showTimer && (
             <div style={divStyle}>
@@ -71,6 +69,6 @@ const Timer = () => {
             </div>
         )
     );
-  };
-  
-  export default Timer;
+};
+
+export default Timer;

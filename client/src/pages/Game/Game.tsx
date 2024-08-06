@@ -1,23 +1,22 @@
 //import DrawingStack from "./jsx/DrawingStack.jsx";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Player } from "../../utils/interfaces.ts";
-import { useAppSelector } from "../../hooks/hooks.ts";
-import API from "../../api/API.ts";
-import {moveCard, finalMovePlayer, stopGame, moveFirstCard, draw2Cards} from "../../reducers.ts";
+import { Player } from "../../utils/interfaces";
+import { useAppSelector } from "../../hooks/hooks";
+import API from "../../api/API";
+import {moveCard, finalMovePlayer, stopGame, moveFirstCard, draw2Cards} from "../../reducers";
 import TableStack from "./jsx/TableStack.jsx";
 import TopStack from "./jsx/TopStack.jsx";
 import PlayerStack from "./jsx/PlayerStack.jsx";
 import DrawingStack from "./jsx/DrawingStack.jsx";
 import RightStack from "./jsx/RightStack.jsx";
 import LeftStack from "./jsx/LeftStack.jsx";
-import Timer from "./jsx/Timer.jsx";
+import Timer from "./Timer";
 import { Navigate } from "react-router-dom";
-import Ranking from "./jsx/Ranking.tsx";
-import Chat from "../../components/chat/Chat.tsx";
+import Ranking from "./Ranking";
+import Chat from "../../components/chat/Chat";
 import { Modal, Row } from "antd";
-import UnoButton from "./jsx/UnoButton.jsx";
-//import {Navigate} from "react-router-dom";
+import UnoButton from "./UnoButton"
 
 const Game = () => {
     const dispatch = useDispatch();

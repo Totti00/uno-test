@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import API from "../../../api/API.ts";
-import { Button } from "antd"
+import { useEffect, useState, CSSProperties } from "react";
+import API from "../../api/API";
+import { Button } from "antd";
 
-const UnoButton = () => {
-    const divStyle = {
+const UnoButton: React.FC = () => {
+    const divStyle: CSSProperties = {
         position: 'absolute',
         bottom: '10px',
         right: '10px',
@@ -14,19 +13,17 @@ const UnoButton = () => {
         borderRadius: '10px',
     };
 
-    const dispatch = useDispatch();
-
-    const [showUNO, setShowUNO] = useState(false);
+    const [showUNO, setShowUNO] = useState<boolean>(false);
 
     const handleUNO = () => {
         API.UNO();
     }
 
     useEffect(() => {
-        API.onShowUNO((showButton) => {
+        API.onShowUNO((showButton: boolean) => {
             setShowUNO(showButton);
         });
-    }, dispatch);
+    }, []);
   
     return (
         <div style={divStyle}>

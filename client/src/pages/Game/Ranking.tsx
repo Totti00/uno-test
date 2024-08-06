@@ -1,11 +1,11 @@
 import { Button, Row } from 'antd';
 import { useNavigate } from "react-router-dom";
-import { Player } from '../../../utils/interfaces.ts';
-import WhiteRankingCard from '../../../components/WhiteRankingCard.tsx';
+import { Player } from '../../utils/interfaces.ts';
+import WhiteRankingCard from '../../components/WhiteRankingCard.tsx';
 import React, { useEffect, useState } from "react";
-import {init, setFirstCard, initGame} from "../../../reducers.ts";
+import {init, setFirstCard, initGame} from "../../reducers.ts";
 import {useDispatch} from "react-redux";
-import API from '../../../api/API.ts';
+import API from '../../api/API.ts';
 
 interface RankingProps {
     playersOrder: Player[];

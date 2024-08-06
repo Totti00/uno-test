@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import Card from "../../../components/Card.tsx";
+import Card from "../../../components/Card";
 import FrontCards from "./FrontCards.jsx";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks.ts";
-import { ready, setColorSelection } from "../../../reducers.ts";
-import API from "../../../api/API.ts";
-import {drawingStackAndCurrentPlayerSelector} from "./MemorizedSelector.ts";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
+import { ready, setColorSelection } from "../../../reducers";
+import API from "../../../api/API";
+import {drawingStackAndCurrentPlayerSelector} from "./MemorizedSelector";
 
 const variants = {
   init: { x: 0, y: 0 },

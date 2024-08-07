@@ -18,8 +18,8 @@ const CreateUser = () => {
         else return randomColor();
     };
 
-    const [playerName, setPlayerName] = useState<string>(getLocalStorageName() || "");
-    const [playerColor] = useState<string>(getLocalStorageColor() || "");
+    const [playerName, setPlayerName] = useState<string>(getLocalStorageName() ?? "");
+    const [playerColor] = useState<string>(getLocalStorageColor() ?? "");
 
 
     useEffect(() => {

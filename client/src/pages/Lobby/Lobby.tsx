@@ -81,7 +81,7 @@ const Lobby = () => {
                     {servers.map((server, index) => {
                         return (
                             <CTableRow
-                                key={index}
+                                key={server.id}
                                 onClick={() => {
                                     setSelectedServer(index);
                                     setSelectOne(true);

@@ -1,4 +1,3 @@
-//import DrawingStack from "./jsx/DrawingStack.jsx";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Player } from "../../utils/interfaces";
@@ -64,7 +63,6 @@ const Game = () => {
                 API.leaveServer();
                 dispatch(stopGame());
             }, 5000);
-            //clearTimeout(timeoutReady);
         });
 
         API.onForceLeave(() => {

@@ -298,19 +298,43 @@ export default function Card({
     >
       {showColorSelector && (
         <div className="color-selector">
-          <div className="color-selector-item" onClick={() => handleColorSelection("red")}>
-            <div className="color-selector-item-inner" style={{ backgroundColor: "red" }}></div>
-          </div>
-          <div className="color-selector-item" onClick={() => handleColorSelection("blue")}>
-            <div className="color-selector-item-inner" style={{ backgroundColor: "blue" }}></div>
-          </div>
-          <div className="color-selector-item" onClick={() => handleColorSelection("green")}>
-            <div className="color-selector-item-inner" style={{ backgroundColor: "green" }}></div>
-          </div>
-          <div className="color-selector-item" onClick={() => handleColorSelection("yellow")}>
-            <div className="color-selector-item-inner" style={{ backgroundColor: "yellow" }}></div>
-          </div>
+          <div
+            className="color-selector-item"
+            onClick={() => handleColorSelection("red")}
+            onKeyDown={(e) => e.key === 'Enter' && handleColorSelection("red")}
+            tabIndex={0}
+            role="button"
+          >
+          <div className="color-selector-item-inner" style={{ backgroundColor: "red" }}></div>
         </div>
+        <div
+          className="color-selector-item"
+          onClick={() => handleColorSelection("blue")}
+          onKeyDown={(e) => e.key === 'Enter' && handleColorSelection("blue")}
+          tabIndex={0}
+          role="button"
+        >
+          <div className="color-selector-item-inner" style={{ backgroundColor: "blue" }}></div>
+        </div>
+        <div
+          className="color-selector-item"
+          onClick={() => handleColorSelection("green")}
+          onKeyDown={(e) => e.key === 'Enter' && handleColorSelection("green")}
+          tabIndex={0}
+          role="button"
+        >
+          <div className="color-selector-item-inner" style={{ backgroundColor: "green" }}></div>
+        </div>
+        <div
+          className="color-selector-item"
+          onClick={() => handleColorSelection("yellow")}
+          onKeyDown={(e) => e.key === 'Enter' && handleColorSelection("yellow")}
+          tabIndex={0}
+          role="button"
+        >
+          <div className="color-selector-item-inner" style={{ backgroundColor: "yellow" }}></div>
+        </div>
+      </div>
       )}
       <div className="front">{getFrontContent()}</div>
       <div className="back">

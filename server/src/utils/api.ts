@@ -286,21 +286,6 @@ export function leaveServer(socket: Socket, io: any): void {
             if (server.players.length === 0) deleteServer(serverId);
         }
     }
-    /*  try {
-        let connectedPlayers = 0;
-         for (const player of server.players) {
-             if (!player.disconnected) connectedPlayers++;
-         }
-         console.info("API.CJS leaveServer connectedPlayers", connectedPlayers);
-
-        socket.leave(serverId);
-        if (server.gameRunning) io.to(serverId).emit("player-left", playerId);
-        else io.to(serverId).emit("players-changed", server.players);
-
-        removePlayer(socket.id);
-    } catch (error) {
-        console.log(error);
-    } */
 }
 
 export function isPlayerMaster(playerId: string, serverId: string): boolean { //true if the player created the lobby

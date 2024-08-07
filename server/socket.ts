@@ -182,4 +182,11 @@ export class ServerSocket {
         });
         
     }
+
+    public static getInstance(server: HttpServer): ServerSocket {
+        if (this.instance === null) {
+          this.instance = new ServerSocket(server);
+        }
+        return this.instance;
+    }
 }

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Card, Player} from "./utils/interfaces.ts";
-import { canPlayCard, finalCanPlayCard } from "./utils/helpers.ts";
-import { wrapMod } from "./utils/helpers.ts";
+import { canPlayCard, finalCanPlayCard, wrapMod } from "./utils/helpers.ts";
 import { isNullOrUndefined } from 'is-what';
 
 interface StoreState {
@@ -187,7 +186,7 @@ export const gameSlice = createSlice({
         finalMovePlayer(state, action: PayloadAction<{
             color?: string;
         }>){
-            const color = action?.payload?.color || state.colorSelected;
+            const color = action?.payload?.color ?? state.colorSelected; //Ho messo ?? al posto di || perchè è un operatore safe
 
             if (state.colorSelected === "" ) {
                 state.colorSelected = color;

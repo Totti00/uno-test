@@ -6,7 +6,6 @@ import InputMessage from './InputMessage';
 import { useEffect, useState } from 'react';
 import API from '../../api/API';
 import { Message } from '../../utils/interfaces';
-// import { useState } from 'react';
 
 const styleDiv = {
     display: 'flex',

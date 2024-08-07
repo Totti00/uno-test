@@ -1,12 +1,11 @@
-// import React, { useEffect, useRef } from "react";
 import { useEffect, useRef } from "react";
 import styles from "../../style/Chat.module.css";
 import { Message, Player } from "../../utils/interfaces";
 
 
 interface MessagesProps {
-    messages: Message[];
-    me: Player;
+    readonly messages: Message[];
+    readonly me: Player;
 }
 
 export default function Messages({ messages, me }: MessagesProps) {
@@ -14,9 +13,7 @@ export default function Messages({ messages, me }: MessagesProps) {
 
     //automatically scroll down to the latest message whenever a new one pops in
     useEffect(() => {
-        if (bottomRef && bottomRef.current) {
-            bottomRef.current.scrollIntoView({ behavior: "smooth" });
-        }
+        bottomRef?.current?.scrollIntoView({ behavior: "smooth" });
     });
 
     return (

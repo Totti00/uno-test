@@ -5,11 +5,11 @@ import {getPlayer} from "./src/utils/playersSockets";
 import {getAllServers, getServerPlayers, getServerByPlayerId, getServer} from "./src/utils/servers";
 
 export class ServerSocket {
-    public static instance: ServerSocket | null = null;
+    private static _instance: ServerSocket | null = null;
     public io: Server;
 
-    constructor(server: HttpServer) {
-        ServerSocket.instance = this;
+    private constructor(server: HttpServer) {
+        //ServerSocket._instance = this;
         this.io = new Server(server, {
             serveClient: false,
             pingInterval: 10000,
@@ -183,10 +183,14 @@ export class ServerSocket {
         
     }
 
-    public static getInstance(server: HttpServer): ServerSocket {
-        if (this.instance === null) {
-          this.instance = new ServerSocket(server);
+    public static get instance(): ServerSocket | null {
+        return this._instance;
+    }
+
+    public static initialize(server: HttpServer): ServerSocket {
+        if (this._instance === null) {
+            this._instance = new ServerSocket(server);
         }
-        return this.instance;
+        return this._instance;
     }
 }

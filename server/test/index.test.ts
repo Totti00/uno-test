@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 //const PORT = 3000;
 const httpServer = http.createServer(app);
-new ServerSocket(httpServer);
+ServerSocket.initialize(httpServer);
 
 const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/unoProgetto";
 

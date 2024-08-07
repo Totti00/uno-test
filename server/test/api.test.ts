@@ -10,7 +10,6 @@ jest.mock('../src/utils/cards', () => ({
 
 describe("ServerSocket", () => {
     let httpServer: HttpServer;
-    let serverSocket: ServerSocket;
     let clientSocket: any;
 
     const player: IPlayer = {
@@ -26,7 +25,7 @@ describe("ServerSocket", () => {
 
     beforeAll((done) => {
         httpServer = new HttpServer();
-        serverSocket = new ServerSocket(httpServer);
+        ServerSocket.initialize(httpServer);
         httpServer.listen(() => {
             const port = (httpServer.address() as any).port;
             clientSocket = Client(`http://localhost:${port}`);
@@ -39,7 +38,6 @@ describe("ServerSocket", () => {
     afterAll((done) => {
         clientSocket.close();
         httpServer.close(done);
-        //serverSocket.close();
     });
 
     it('should handle create-server event', async () => {

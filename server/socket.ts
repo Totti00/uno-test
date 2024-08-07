@@ -9,7 +9,6 @@ export class ServerSocket {
     public io: Server;
 
     private constructor(server: HttpServer) {
-        //ServerSocket._instance = this;
         this.io = new Server(server, {
             serveClient: false,
             pingInterval: 10000,
@@ -39,7 +38,7 @@ export class ServerSocket {
                 }
             );
 
-            socket.on(
+            /*socket.on(
                 "join-server",
                 ({ serverId, player }, cb = () => {}) => {
                     const io = this.io;
@@ -54,7 +53,9 @@ export class ServerSocket {
                     .then(playerId => cb(null, playerId))
                     .catch(error => cb({ message: error.message }));
                 }
-            );
+            );*/
+
+            socket.on("join-server", handleJoinServer.bind(this, socket));
 
             socket.on("start-game", (_, cb = () => {}) => {
                 try {
@@ -180,6 +181,24 @@ export class ServerSocket {
             });
 
         });
+
+        function handleJoinServer(this: any, socket: any, { serverId, player }: { serverId: string, player: any }, cb: Function = () => {}) {
+            const io = this.io;
+            joinServerPromise({ serverId, io, player, socket })
+                .then(playerId => cb(null, playerId))
+                .catch(error => cb({ message: error.message }));
+        }
+
+        function joinServerPromise({ serverId, io, player, socket }: { serverId: string, io: any, player: any, socket: any }) {
+            return new Promise((resolve, reject) => {
+                joinServer({ serverId, io, player, socket }, (error: any, playerId: any) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                    resolve(playerId);
+                });
+            });
+        }
         
     }
 

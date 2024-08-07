@@ -100,18 +100,6 @@ export function startGame(serverId: string, io: any): void {
                 server.resetTimer(MOVE_TIME, nxtPlayer, handleTimeOut, io);
             }
         }
-
-        // if (
-        //     server.players[server.curPlayer].disconnected ||
-        //     server.players[server.curPlayer].isBot
-        // ) {
-        //     setTimeout(() => {
-        //         moveBot(server);
-        //     }, 1500);
-        // }
-        // server.onFinish((playersOrdered) => {
-        //     io.to(serverId).emit("finished-game", playersOrdered);
-        // });
     }
 }
 
@@ -335,7 +323,6 @@ export function isPlayerMaster(playerId: string, serverId: string): boolean { //
 }
 
 export function disableUNO({socket, serverId}: {socket:Socket, serverId:string}): void { 
-    // console.log(">> Recived UNO from player");
     const server = getServer(serverId);
 
     server.lastPlayerUNO = false;

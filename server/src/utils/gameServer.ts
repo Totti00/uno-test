@@ -24,7 +24,6 @@ export default class GameServer implements IGameServer {
 
     constructor(serverName: string, /* numberOfPlayers = 4 */) {
         this.serverName = serverName;
-        //this.numberOfPlayers = numberOfPlayers;
     }
 
     async init() {
@@ -53,7 +52,7 @@ export default class GameServer implements IGameServer {
             timeOutCount: 0,
             isMaster: isMaster,
         });
-        return playerId; //this.players.length.toString();
+        return playerId;
     }
 
     leavePlayer(playerId: string) {
@@ -169,7 +168,6 @@ export default class GameServer implements IGameServer {
             if (this.playersFinished.length === this.players.length - 1) {
                 moveEventObj.finish = true;
                 moveEventObj.playersFinishingOrder = this.finishGame();
-                //this.finishGame();
             }
         }
         this.lastPlayer = this.curPlayer;
@@ -294,30 +292,3 @@ export default class GameServer implements IGameServer {
         return cardsToDraw;
     }
 }
-
-/*export function canPlayCard(
-    oldCard: ICard,
-    newCard: ICard,
-    lastPlayerDrew?: boolean
-) {
-    const isOldDawingCard = oldCard?.action && oldCard.action.indexOf("draw") !== -1;
-    const haveToDraw = isOldDawingCard && !lastPlayerDrew;
-    const isNewDawingCard = newCard?.action && newCard.action.indexOf("draw") !== -1;
-
-    //No Card Played Yet
-    if (!oldCard) return true;
-
-    if (!haveToDraw && newCard.action === "wild") return true;
-
-    if (newCard.action === "draw4") return true;
-
-    if (oldCard.color === "black" && !haveToDraw) return true;
-
-    if (haveToDraw && isNewDawingCard) return true;
-
-    if (!haveToDraw && oldCard.color === newCard.color) return true;
-
-    if (oldCard.action !== undefined && newCard.action !== undefined && oldCard.action === newCard.action) return true;
-
-    return oldCard.digit !== undefined && oldCard.digit === newCard.digit;
-}*/

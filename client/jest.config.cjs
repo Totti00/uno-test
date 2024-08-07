@@ -16,4 +16,12 @@ module.exports = {
     '\\.module\\.css$': 'identity-obj-proxy',
     '\\.css$': '<rootDir>/__mocks__/styleMock.js',
   },
+  collectCoverage: true,
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}', // Includi tutti i file TypeScript nella cartella src
+    '!src/**/*.d.ts',    // Escludi i file di definizione TypeScript
+    '!src/**/index.ts'   // Escludi i file index.ts
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['json', 'lcov', 'text', 'clover'],
 };

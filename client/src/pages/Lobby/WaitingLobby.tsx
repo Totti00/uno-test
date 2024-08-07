@@ -21,25 +21,30 @@ const WaitingLobby = () => {
         if (!inLobby) return;
         let timeout: string | number | NodeJS.Timeout | null | undefined = null;
         let unsubInit: (() => void) | null = null;
-        (async () => {
+
+        const fetchServerPlayers = async () => {
             const serverPlayers = await API.getServerPlayers();
             setPlayers(serverPlayers);
             API.onPlayersUpdated((players) => setPlayers(players));
-            unsubInit = API.onGameInit(({ players, cards, card, nxtPlayer }) => {
-                dispatch(setFirstCard({ firstCard: card, firstPlayer: nxtPlayer }));
-                dispatch(init({ cards, players }));
-                timeout = setTimeout(() => navigate("/game"), 2000);
-            });
+            unsubInit = API.onGameInit(handleGameInit);
             const server = await API.getServerByPlayerId(serverPlayers[0].id);
             setServer(server);
-        })();
+        };
+
+        const handleGameInit = ({ players, cards, card, nxtPlayer }: { players: any, cards: any, card: any, nxtPlayer: any }) => {
+            dispatch(setFirstCard({ firstCard: card, firstPlayer: nxtPlayer }));
+            dispatch(init({ cards, players }));
+            timeout = setTimeout(() => navigate("/game"), 2000);
+        };
+
+        fetchServerPlayers();
         
         return () => {
             if (timeout) clearTimeout(timeout);
             if (unsubInit) unsubInit();
             dispatch(setInLobby(false));
         };
-    },[]);
+    },[inLobby, dispatch, navigate]);
 
     const handleJoinServer = async () => {
         API.leaveServer();

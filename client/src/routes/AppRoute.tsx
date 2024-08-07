@@ -1,4 +1,4 @@
-import {Routes, Route} from "react-router-dom";
+import {Routes, Route, useLocation} from "react-router-dom";
 import {Provider} from "react-redux";
 import {store} from "../store/store.ts";
 import {AnimatePresence} from "framer-motion";
@@ -14,7 +14,6 @@ import StartPage from "../pages/Start/startPage.tsx";
 import CreateUser from "../pages/CreateUser/create";
 import {useState} from "react";
 import styled from "styled-components";
-import { useLocation } from "react-router-dom";
 
 const Root = styled.div`
   min-height: 100vh;

@@ -10,14 +10,13 @@ global.Image = class {
   }
   // Mock src setter
   set src(_src) {
-    this._src = value;
+    this._src = _src;
     if (this.onload) {
       setTimeout(() => {
         this.onload();
       }, 0);
     }
   }
-  
   get src() {
     return this._src;
   }
@@ -41,3 +40,25 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 });
+
+
+
+/*
+  // Mock src setter
+  set src(_src) {
+    this._src = value;
+    if (this.onload) {
+      setTimeout(() => {
+        this.onload();
+      }, 0);
+    }
+  }
+  get src() {
+    return this._src;
+  }
+};
+
+if (typeof setImmediate === 'undefined') {
+  global.setImmediate = (fn) => setTimeout(fn, 0);
+}
+*/

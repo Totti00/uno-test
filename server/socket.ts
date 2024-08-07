@@ -38,23 +38,6 @@ export class ServerSocket {
                 }
             );
 
-            /*socket.on(
-                "join-server",
-                ({ serverId, player }, cb = () => {}) => {
-                    const io = this.io;
-                    new Promise((resolve, reject) => {
-                        joinServer({ serverId, io, player, socket }, (error, playerId) => {
-                            if (error) {
-                                return reject(error);
-                            }
-                            resolve(playerId);
-                        });
-                    })
-                    .then(playerId => cb(null, playerId))
-                    .catch(error => cb({ message: error.message }));
-                }
-            );*/
-
             socket.on("join-server", handleJoinServer.bind(this, socket));
 
             socket.on("start-game", (_, cb = () => {}) => {
@@ -193,7 +176,7 @@ export class ServerSocket {
             return new Promise((resolve, reject) => {
                 joinServer({ serverId, io, player, socket }, (error: any, playerId: any) => {
                     if (error) {
-                        return reject(error);
+                        return reject(error instanceof Error ? error : new Error(error));
                     }
                     resolve(playerId);
                 });

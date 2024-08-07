@@ -10,11 +10,16 @@ global.Image = class {
   }
   // Mock src setter
   set src(_src) {
-    setTimeout(() => {
-      if (this.onload) {
+    this._src = value;
+    if (this.onload) {
+      setTimeout(() => {
         this.onload();
-      }
-    }, 0);
+      }, 0);
+    }
+  }
+  
+  get src() {
+    return this._src;
   }
 };
 

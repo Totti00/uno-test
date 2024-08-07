@@ -11,7 +11,7 @@ export class Server implements ServerInterface {
                 "create-server",
                 { serverName, player: this.getPlayer() },
                 (err: any, playerId: string) => {
-                    if (err) return rej(err);
+                    if (err) return rej(err instanceof Error ? err : new Error(err));
                     res(playerId);
                 }
             );
@@ -38,7 +38,7 @@ export class Server implements ServerInterface {
     getServerPlayers(): Promise<Player[]> {
         return new Promise((res, rej) => {
             socket.emit("get-server-players", null, (err: any, players: Player[]) => {
-                if (err) return rej(err);
+                if (err) return rej(err instanceof Error ? err : new Error(err));
                 res(players);
             });
         });
@@ -47,7 +47,7 @@ export class Server implements ServerInterface {
     getChat(): Promise<Message[]> {
         return new Promise((res, rej) => {
             socket.emit("get-chat", null, (err: any, messages: Message[]) => {
-                if (err) return rej(err);
+                if (err) return rej(err instanceof Error ? err : new Error(err));
                 res(messages);
             });
         });
@@ -56,7 +56,7 @@ export class Server implements ServerInterface {
     getServers(): Promise<GameServer[]> {
         return new Promise((res, rej) => {
             socket.emit("get-servers", null, (err: any, servers: GameServer[]) => {
-                if (err) return rej(err);
+                if (err) return rej(err instanceof Error ? err : new Error(err));
                 res(servers);
             });
         });
@@ -65,7 +65,7 @@ export class Server implements ServerInterface {
     getServerByPlayerId(playerId: string): Promise<string> {
         return new Promise((res, rej) => {
             socket.emit("get-server", {playerId}, (err: any, serverName: string) => {
-                if (err) return rej(err);
+                if (err) return rej(err instanceof Error ? err : new Error(err));
                 res(serverName);
             });
         });
@@ -78,7 +78,7 @@ export class Server implements ServerInterface {
                 { serverId, player: this.getPlayer() },
                 (err: any, playerId: string) => {
                     if (err) {
-                        return rej(err);
+                        return rej(err instanceof Error ? err : new Error(err));
                     }
                     res(playerId);
                 }
@@ -89,7 +89,7 @@ export class Server implements ServerInterface {
     move(draw: boolean | null, cardId: string): Promise<void> {
         return new Promise((res, rej) => {
             socket.emit("move", { cardId, draw }, (err: any) => {
-                if (err) return rej(err);
+                if (err) return rej(err instanceof Error ? err : new Error(err));
                 res();
             });
         });
@@ -98,7 +98,7 @@ export class Server implements ServerInterface {
     moveSelectableColorCard(draw: boolean | null, cardId: string, colorSelected: string): Promise<void> {
         return new Promise((res, rej) => {
             socket.emit("move-selectable-color-card", { cardId, draw, colorSelected }, (err: any) => {
-                if (err) return rej(err);
+                if (err) return rej(err instanceof Error ? err : new Error(err));
                 res();
             });
         });
@@ -107,7 +107,7 @@ export class Server implements ServerInterface {
     chat(message: Message): Promise<void>{
         return new Promise((res, rej) => {
             socket.emit("chat", { message }, (err: any) => {
-                if (err) return rej(err);
+                if (err) return rej(err instanceof Error ? err : new Error(err));
                 res();
             });
         });
@@ -116,7 +116,7 @@ export class Server implements ServerInterface {
     isPlayerMaster(): Promise<boolean> {
         return new Promise((res, rej) => {
             socket.emit("is-player-master", null , (err: any, isMaster: boolean) => {
-                if (err) return rej(err);
+                if (err) return rej(err instanceof Error ? err : new Error(err));
                 res(isMaster);
             });
         });
@@ -125,7 +125,7 @@ export class Server implements ServerInterface {
     playAgain(): Promise<void> {
         return new Promise((res, rej) => {
             socket.emit("play-again", null , (err: any) => {
-                if (err) return rej(err);
+                if (err) return rej(err instanceof Error ? err : new Error(err));
                 res();
             });
         });
@@ -134,7 +134,7 @@ export class Server implements ServerInterface {
     UNO(): Promise<void> {
         return new Promise((res, rej) => {
             socket.emit("uno", null , (err: any) => {
-                if (err) return rej(err);
+                if (err) return rej(err instanceof Error ? err : new Error(err));
                 res();
             });
         });
@@ -160,8 +160,8 @@ export class Server implements ServerInterface {
         cb: (data: {
             nxtPlayer: number;
             card: Card;
-            draw?: number | undefined;
-            cardsToDraw?: Card[] | undefined;
+            draw: number | undefined;
+            cardsToDraw: Card[] | undefined;
         }) => void
     ): () => void {
         socket.on("move", cb);
@@ -172,9 +172,9 @@ export class Server implements ServerInterface {
         cb: (data: {
             nxtPlayer: number;
             card: Card;
-            draw?: number | undefined;
+            draw: number | undefined;
             colorSelected: string;
-            cardsToDraw?: Card[] | undefined;
+            cardsToDraw: Card[] | undefined;
         }) => void
     ): () => void {
         socket.on("move-selectable-color-card", cb);

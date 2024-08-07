@@ -2,7 +2,7 @@ import {ServerInterface} from "./ServerInterface.ts";
 import {Card, GameServer, Message, Player} from "../utils/interfaces.ts";
 import {Server} from "./Server";
 
-export class _API implements ServerInterface {
+export class AP implements ServerInterface {
     _server: ServerInterface;
     player?: Player;
 
@@ -123,6 +123,6 @@ export class _API implements ServerInterface {
     }
 }
 
-const API = new _API();
+const API = new AP();
 
 export default API;

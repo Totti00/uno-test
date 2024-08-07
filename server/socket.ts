@@ -42,17 +42,17 @@ export class ServerSocket {
             socket.on(
                 "join-server",
                 ({ serverId, player }, cb = () => {}) => {
-                    try {
-                        const io = this.io;
+                    const io = this.io;
+                    new Promise((resolve, reject) => {
                         joinServer({ serverId, io, player, socket }, (error, playerId) => {
                             if (error) {
-                                return cb({message: error.message});
+                                return reject(error);
                             }
-                            cb(null, playerId);
+                            resolve(playerId);
                         });
-                    } catch (error) {
-                        cb(error);
-                    };
+                    })
+                    .then(playerId => cb(null, playerId))
+                    .catch(error => cb({ message: error.message }));
                 }
             );
 

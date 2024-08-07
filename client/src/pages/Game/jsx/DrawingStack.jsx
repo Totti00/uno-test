@@ -4,7 +4,7 @@ import FrontCards from "./FrontCards.jsx";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-import { ready, setColorSelection } from "../../../reducers";
+import { ready } from "../../../reducers";
 import API from "../../../api/API";
 import {drawingStackAndCurrentPlayerSelector} from "./MemorizedSelector";
 
@@ -61,6 +61,10 @@ export default function DrawingStack() {
   const canHover = gameStarted && currentPlayer === 0 && !colorSelection;
   const highlight = canHover || !gameStarted;
 
+  let animationState;
+  if (gameStarted) animationState = canHover ? "idleCorner" : "idleCornerDisabled";
+  else animationState = "idleCenter";
+
   return (
     <Root
       as={motion.div}
@@ -70,13 +74,7 @@ export default function DrawingStack() {
       gameStarted={gameStarted}
       variants={variants}
       initial="init"
-      animate={
-        gameStarted
-          ? canHover
-            ? "idleCorner"
-            : "idleCornerDisabled"
-          : "idleCenter"
-      }
+      animate={animationState}
       whileHover={canHover ? "hover" : { scale: 1 }}
     >
       {drawingStack.map((card) => (

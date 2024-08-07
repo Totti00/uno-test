@@ -7,7 +7,7 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest', // Trasforma i file TypeScript
     '^.+\\.jsx?$': 'babel-jest' // Trasforma i file JavaScript e JSX
   },
-  testMatch: ['**/?(*.)+(spec|test).ts?(x)'],
+  testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'], // Cerca i file di test
   setupFilesAfterEnv: ['./jest.setup.js'], // Nota l'uso di setupFilesAfterEnv
   transformIgnorePatterns: [
     "/node_modules/(?!some-module-to-transform|another-module)"

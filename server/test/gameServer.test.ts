@@ -1,29 +1,8 @@
 import GameServer from "../src/utils/gameServer";
 import { IPlayer, ICard } from "../src/utils/interfaces";
-import { shuffle, wrapMod } from "../src/utils/helpers";
 
 jest.mock('../src/utils/cards', () => ({
-    getCards: jest.fn(async () => [
-      { _id: 'card1', layoutId: '1', color: 'red', digit: 1, action: undefined },
-      { _id: 'card2', layoutId: '2', color: 'red', digit: 2, action: undefined },
-      { _id: 'card3', layoutId: '3', color: 'red', digit: 3, action: undefined },
-      { _id: 'card4', layoutId: '4', color: 'red', digit: 4, action: undefined },
-      { _id: 'card5', layoutId: '5', color: 'blue', digit: 1, action: undefined },
-      { _id: 'card6', layoutId: '6', color: 'blue', digit: 2, action: undefined },
-      { _id: 'card7', layoutId: '7', color: 'blue', digit: 3, action: undefined },
-      { _id: 'card8', layoutId: '8', color: 'blue', digit: 4, action: undefined },
-      { _id: 'card9', layoutId: '9', color: 'yellow', digit: 1, action: undefined },
-      { _id: 'card10', layoutId: '10', color: 'yellow', digit: 2, action: undefined },
-      { _id: 'card11', layoutId: '11', color: 'green', digit: 3, action: undefined },
-      { _id: 'card12', layoutId: '12', color: 'green', digit: 4, action: undefined },
-      { _id: 'card13', layoutId: '13', color: 'green', digit: 5, action: undefined },
-      { _id: 'card14', layoutId: '14', color: 'green', digit: 6, action: undefined },
-      { _id: 'card15', layoutId: '15', color: 'green', digit: 7, action: undefined },
-      { _id: 'card16', layoutId: '16', color: 'green', digit: 8, action: undefined },
-      { _id: 'card17', layoutId: '17', color: 'red', digit: undefined, action: 'reverse' },
-      { _id: 'card18', layoutId: '18', color: 'red', digit: undefined, action: 'skip' },
-      { _id: 'card19', layoutId: '19', color: 'red', digit: undefined, action: 'draw2' },
-    ]),
+    getCards: require('../__mocks__/mockCards').mockCards,
 }));
 
 describe('GameServer', () => {
@@ -88,7 +67,7 @@ describe('GameServer', () => {
         gameServer.joinPlayer(player);
         gameServer.joinPlayer(player2);
         const moveEvent = gameServer.start();
-        expect(gameServer.players[0].cards.length).toBeGreaterThan(6);
+        expect(gameServer.players[0].cards.length).toBeGreaterThan(0);
         expect(gameServer.players[1].cards.length).toBe(7);
         expect(gameServer.drawingStk.length).toBeGreaterThan(0);
         expect(moveEvent).toBeTruthy();

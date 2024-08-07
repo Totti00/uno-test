@@ -1,6 +1,6 @@
 import { EventsObject } from "./EventsObject.ts";
 
-class _Loader extends EventsObject {
+class Loading extends EventsObject {
   imgs = [
     "assets/images/backside.png",
     "assets/images/uno-logo.png",
@@ -64,5 +64,5 @@ class _Loader extends EventsObject {
   }
 }
 
-const Loader = new _Loader();
+const Loader = new Loading();
 export default Loader;

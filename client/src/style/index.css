@@ -4,6 +4,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Roboto Mono", monospace !important;
 }
 
 :root {
@@ -48,11 +49,6 @@ body {
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  /* font-family: "Cabin", sans-serif !important; */
-  font-family: "Roboto Mono", monospace !important;
 }
 
 code {

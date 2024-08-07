@@ -123,22 +123,7 @@ export default class GameServer implements IGameServer {
         //if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew)) return false;
 
         if (draw) {
-            let drawCnt = 1;
-            if (this.sumDrawing) {
-                drawCnt = this.sumDrawing;
-                this.sumDrawing = 0;
-            }
-
-            moveEventObj.draw = drawCnt;
-            if (drawCnt + 1 > this.drawingStk.length) {
-                this.drawingStk = shuffle(this.tableStk.slice(5, this.tableStk.length));
-                this.tableStk = this.tableStk.slice(0, 5);
-            }
-
-            moveEventObj.cardsToDraw = this.drawingStk.slice(0, drawCnt);
-            this.players[this.curPlayer].cards = this.drawingStk.slice(0, drawCnt).concat(this.players[this.curPlayer].cards);
-            this.drawingStk = this.drawingStk.slice(drawCnt, this.drawingStk.length);
-            this.lastPlayerDrew = true;
+            this.handleDraw(moveEventObj);
         }
 
         let nxtPlayer = this.getNextPlayer(card);
@@ -147,33 +132,53 @@ export default class GameServer implements IGameServer {
         moveEventObj.nxtPlayer = nxtPlayer;
         moveEventObj.lastPlayer = this.lastPlayer;
 
-        // console.log("lastPlayer: " + this.lastPlayer + " - curPlayer: " + this.curPlayer + " - nxtPlayer: " + nxtPlayer)
-
         if (card) {
-            if (card.action === "draw2") this.sumDrawing += 2;
-            if (card.action === "draw4") this.sumDrawing += 4;
-
-            this.tableStk.unshift(card); //Inserisce la carta in cima allo stack
-            moveEventObj.card = card;
-
-            //rimuove dalla mano del giocatore, la carta appena giocata
-            this.players[this.curPlayer].cards = this.players[this.curPlayer].cards.filter((c) => c._id !== card._id);
-            this.lastPlayerDrew = false;
-
-            // Check if player has only one card left
-            if(this.players[this.curPlayer].cards.length === 1) moveEventObj.oneCardLeft = true;
-
-            // Check if game finished
-            if (this.players[this.curPlayer].cards.length === 0) this.playersFinished.push(this.curPlayer);
-            if (this.playersFinished.length === this.players.length - 1) {
-                moveEventObj.finish = true;
-                moveEventObj.playersFinishingOrder = this.finishGame();
-            }
+            this.handleCardPlay(card, moveEventObj);
         }
         this.lastPlayer = this.curPlayer;
         this.curPlayer = nxtPlayer;
         return moveEventObj;
-        // this.fireEvent("move", moveEventObj as IMoveEvent);
+    }
+
+    private handleDraw(moveEventObj: IMoveEvent): void {
+        let drawCnt = 1;
+        if (this.sumDrawing) {
+            drawCnt = this.sumDrawing;
+            this.sumDrawing = 0;
+        }
+    
+        moveEventObj.draw = drawCnt;
+        if (drawCnt + 1 > this.drawingStk.length) {
+            this.drawingStk = shuffle(this.tableStk.slice(5, this.tableStk.length));
+            this.tableStk = this.tableStk.slice(0, 5);
+        }
+    
+        moveEventObj.cardsToDraw = this.drawingStk.slice(0, drawCnt);
+        this.players[this.curPlayer].cards = this.drawingStk.slice(0, drawCnt).concat(this.players[this.curPlayer].cards);
+        this.drawingStk = this.drawingStk.slice(drawCnt, this.drawingStk.length);
+        this.lastPlayerDrew = true;
+    }
+
+    private handleCardPlay(card: ICard, moveEventObj: IMoveEvent): void {
+        if (card.action === "draw2") this.sumDrawing += 2;
+        if (card.action === "draw4") this.sumDrawing += 4;
+    
+        this.tableStk.unshift(card); // Inserisce la carta in cima allo stack
+        moveEventObj.card = card;
+    
+        // Rimuove dalla mano del giocatore la carta appena giocata
+        this.players[this.curPlayer].cards = this.players[this.curPlayer].cards.filter((c) => c._id !== card._id);
+        this.lastPlayerDrew = false;
+    
+        // Check if player has only one card left
+        if (this.players[this.curPlayer].cards.length === 1) moveEventObj.oneCardLeft = true;
+    
+        // Check if game finished
+        if (this.players[this.curPlayer].cards.length === 0) this.playersFinished.push(this.curPlayer);
+        if (this.playersFinished.length === this.players.length - 1) {
+            moveEventObj.finish = true;
+            moveEventObj.playersFinishingOrder = this.finishGame();
+        }
     }
 
     getNextPlayer(card: ICard) {
@@ -189,24 +194,24 @@ export default class GameServer implements IGameServer {
         return this.checkNextActivePlayers(nxtPlayer);
     }
 
-    handleThreeRemainingPlayers(card: ICard, nxtPlayer: number) {
+    private handleThreeRemainingPlayers(card: ICard, nxtPlayer: number) {
         if (card?.action === "skip") nxtPlayer = this.handleSkipAction(nxtPlayer);
         else nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
         return nxtPlayer;
     }
 
-    handleTwoRemainingPlayers(card: ICard, nxtPlayer: number) {
+    private handleTwoRemainingPlayers(card: ICard, nxtPlayer: number) {
         if (card?.action !== "skip" && card?.action !== "reverse") nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
         return nxtPlayer;
     }
 
-    handleOtherCases(card: ICard, nxtPlayer: number) {
+    private handleOtherCases(card: ICard, nxtPlayer: number) {
         if (card?.action === "skip") nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
         else nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
         return nxtPlayer;
     }
 
-    handleSkipAction(nxtPlayer: number) {
+    private handleSkipAction(nxtPlayer: number) {
         const playerMap: {
             [key: number]: () => number;
         } = {
@@ -230,9 +235,13 @@ export default class GameServer implements IGameServer {
             },
             2: () => {
                 if (this.direction === -1) {
-                    return nxtPlayer === 0 ? wrapMod(nxtPlayer + 3 * this.direction, this.players.length) :
-                        nxtPlayer === 3 ? wrapMod(nxtPlayer - this.direction, this.players.length) :
-                            wrapMod(nxtPlayer * this.direction, this.players.length);
+                    if (nxtPlayer === 0) {
+                        return wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+                    } else if (nxtPlayer === 3) {
+                        return wrapMod(nxtPlayer - this.direction, this.players.length);
+                    } else {
+                        return wrapMod(nxtPlayer * this.direction, this.players.length);
+                    }
                 } else {
                     return nxtPlayer === 3 ? wrapMod(nxtPlayer + 2 * this.direction, this.players.length) :
                         wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
@@ -240,9 +249,13 @@ export default class GameServer implements IGameServer {
             },
             3: () => {
                 if (this.direction === -1) {
-                    return nxtPlayer === 2 ? wrapMod(nxtPlayer + 2 * this.direction, this.players.length) :
-                        nxtPlayer === 0 ? wrapMod(nxtPlayer + 3 * this.direction, this.players.length) :
-                            wrapMod(nxtPlayer - this.direction, this.players.length);
+                    if (nxtPlayer === 2) {
+                        return wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
+                    } else if (nxtPlayer === 0) {
+                        return wrapMod(nxtPlayer + 3 * this.direction, this.players.length);
+                    } else {
+                        return wrapMod(nxtPlayer - this.direction, this.players.length);
+                    }
                 } else {
                     return wrapMod(nxtPlayer + 2 * this.direction, this.players.length - 1);
                 }
@@ -253,12 +266,12 @@ export default class GameServer implements IGameServer {
         return playerMap[playerIndex]();
     }
 
-    checkNextActivePlayers(nxtPlayer: number) {
+    private checkNextActivePlayers(nxtPlayer: number) {
         while (this.players[nxtPlayer].cards.length === 0) nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
         return nxtPlayer;
     }
 
-    checkReverse(card: ICard) {
+    private checkReverse(card: ICard) {
         if (card?.action === "reverse") this.direction *= -1;
     }
 

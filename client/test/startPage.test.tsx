@@ -10,7 +10,7 @@ const navigateMock = jest.fn();
 
 //Mock delle dipendenze
 jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom') as { [key: string]: any };
+  const originalModule = jest.requireActual('react-router-dom') as object;
   return {
     __esModule: true, // Questo è necessario per i moduli ES6
     ...originalModule,

@@ -24,21 +24,12 @@ const Title = styled.h3`
   font-weight: 500;
   letter-spacing: 0.05em;
 `
-
-/*const JoinButton = styled(Button)`
-  position: absolute;
-  bottom: 20px;
-  left: 0;
-  right: 0;
-  margin: 0 20px
-`*/
 interface WhiteLobbyCard {
     roomName: string,
-    players: Player[] | undefined,
-    join?: boolean
+    players: Player[] | undefined
 }
 
-const WhiteLobbyCard = ({ roomName, players/*, join = false */}: WhiteLobbyCard) => {
+const WhiteLobbyCard = ({ roomName, players}: WhiteLobbyCard) => {
     return (
             <Card>
                 <Front>
@@ -48,10 +39,6 @@ const WhiteLobbyCard = ({ roomName, players/*, join = false */}: WhiteLobbyCard)
                         dataSource={players?.map((player: Player) => player.name)}
                         renderItem={(item: string) => <List.Item style={{ textAlign: "center" }}>{item}</List.Item>}
                     />
-{/*                    {join &&
-                        <JoinButton type="primary" onClick={() => joinRoom(socket, roomName, navigate)}>
-                            Connect
-                        </JoinButton>}*/}
                 </Front>
             </Card >
     )

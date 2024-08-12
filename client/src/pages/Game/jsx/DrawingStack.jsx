@@ -44,7 +44,6 @@ export default function DrawingStack() {
   const { drawingStack, currentPlayer } = useAppSelector(drawingStackAndCurrentPlayerSelector);
   const colorSelection = useAppSelector(state => state.game.colorSelection);
   const alreadyDrawn = useAppSelector(state => state.game.alreadyDrawn);
-  const players = useAppSelector(state => state.game.players);
 
   const dispatch = useAppDispatch();
 

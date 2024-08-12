@@ -5,7 +5,7 @@ import {addPlayer, removePlayer, getPlayer, isTherePlayer} from "./playersSocket
 import { getCard } from "./cards";
 import { Socket } from "socket.io";
 
-const MOVE_TIME = 10; //time for each move in second
+const MOVE_TIME = 30; //time for each move in second
 
 export async function createServer({ serverName }: { serverName: string }): Promise<string> {
     if (serverName.trim().length < 2) throw new Error("Server Name too short");
@@ -103,18 +103,22 @@ export function startGame(serverId: string, io: any): void {
     }
 }
 
-export function move({ socket, cardId, draw }: { socket: Socket; cardId: string; draw: boolean }, io: any): void {    
+function handleMove(
+    { socket, cardId, draw, colorSelected }: { socket: Socket; cardId: string; draw: boolean; colorSelected?: string },
+    io: any,
+    server: any,
+    eventType: string
+): void {
     const { playerId, serverId } = getPlayer(socket.id);
-    const server = getServer(serverId);
     const card = getCard(cardId);
 
     // Check if its my turn
     if (server.players[server.curPlayer].id !== playerId) throw new Error("Not Your Turn");
 
     // Make the move
-    const {nxtPlayer, cardsToDraw, finish, playersFinishingOrder, oneCardLeft, lastPlayer, drawn} = server.move(draw, card);
+    const { nxtPlayer, cardsToDraw, finish, playersFinishingOrder, oneCardLeft, lastPlayer, drawn } = server.move(draw, card);
 
-    if(server.lastPlayerUNO){
+    if (server.lastPlayerUNO) {
         const cardsToDrawLast = server.playerDraw2(lastPlayer);
         const lastPlayerSocketID = server.players[lastPlayer].socketID;
 
@@ -123,7 +127,7 @@ export function move({ socket, cardId, draw }: { socket: Socket; cardId: string;
             cardsToDrawLast
         });
 
-        server.players.forEach(player => {
+        server.players.forEach((player: IPlayer) => {
             if (player.socketID !== lastPlayerSocketID) {
                 io.to(player.socketID).emit("draw-2-cards", {
                     lastPlayer
@@ -134,28 +138,35 @@ export function move({ socket, cardId, draw }: { socket: Socket; cardId: string;
         server.lastPlayerUNO = false;
     }
 
-    //broadcast to all OTHER players
-    socket.broadcast.to(serverId).emit("move", {
+    // Broadcast to all OTHER players
+    const broadcastPayload: any = {
         nxtPlayer,
         card,
         draw: cardsToDraw?.length,
-    });
+    };
+    if (colorSelected) {
+        broadcastPayload.colorSelected = colorSelected;
+    }
+    socket.broadcast.to(serverId).emit(eventType, broadcastPayload);
 
     socket.broadcast.to(serverId).emit("show-pass", false);
-
     socket.broadcast.to(serverId).emit("show-uno", false);
 
-    //send to my player
-    socket.emit("move", {
+    // Send to my player
+    const emitPayload: any = {
         nxtPlayer,
         card,
         draw: cardsToDraw?.length,
         cardsToDraw,
-    });
+    };
+    if (colorSelected) {
+        emitPayload.colorSelected = colorSelected;
+    }
+    socket.emit(eventType, emitPayload);
 
-    if(drawn) socket.emit("show-pass", true);
+    if (drawn) socket.emit("show-pass", true);
 
-    if(oneCardLeft) {
+    if (oneCardLeft) {
         socket.emit("show-uno", true);
         server.lastPlayerUNO = true;
     }
@@ -169,75 +180,19 @@ export function move({ socket, cardId, draw }: { socket: Socket; cardId: string;
     }
 }
 
+export function move({ socket, cardId, draw }: { socket: Socket; cardId: string; draw: boolean }, io: any): void {
+    const { serverId } = getPlayer(socket.id);
+    const server = getServer(serverId);
+    handleMove({ socket, cardId, draw }, io, server, "move");
+}
+
 export function moveSelectableColorCard(
     { socket, cardId, draw, colorSelected }: { socket: Socket; cardId: string; draw: boolean; colorSelected: string },
     io: any
 ): void {
-    const { playerId, serverId } = getPlayer(socket.id);
+    const { serverId } = getPlayer(socket.id);
     const server = getServer(serverId);
-    const card = getCard(cardId);
-
-    // Check if its my turn
-    if (server.players[server.curPlayer].id !== playerId) throw new Error("Not Your Turn");
-
-    // Make the move
-    const {nxtPlayer, cardsToDraw, finish, playersFinishingOrder, oneCardLeft, lastPlayer, drawn} = server.move(draw, card);
-
-    if(server.lastPlayerUNO){
-        const cardsToDrawLast = server.playerDraw2(lastPlayer);
-        const lastPlayerSocketID = server.players[lastPlayer].socketID;
-
-        io.to(lastPlayerSocketID).emit("draw-2-cards", {
-            lastPlayer,
-            cardsToDrawLast
-        });
-
-        server.players.forEach(player => {
-            if (player.socketID !== lastPlayerSocketID) {
-                io.to(player.socketID).emit("draw-2-cards", {
-                    lastPlayer
-                });
-            }
-        });
-
-        server.lastPlayerUNO = false;
-    }
-
-    //broadcast to all OTHER players
-    socket.broadcast.to(serverId).emit("move-selectable-color-card", {
-        nxtPlayer,
-        card,
-        draw: cardsToDraw?.length,
-        colorSelected,
-    });
-
-    socket.broadcast.to(serverId).emit("show-pass", false);
-
-    socket.broadcast.to(serverId).emit("show-uno", false);
-
-    //send to my player
-    socket.emit("move-selectable-color-card", {
-        nxtPlayer,
-        card,
-        draw: cardsToDraw?.length,
-        colorSelected,
-        cardsToDraw,
-    });
-
-    if(drawn) socket.emit("show-pass", true);
-
-    if(oneCardLeft) {
-        socket.emit("show-uno", true);
-        server.lastPlayerUNO = true;
-    }
-
-    if (finish) {
-        server.gameRunning = false;
-        io.to(serverId).emit("finished-game", playersFinishingOrder);
-    } else {
-        io.to(serverId).emit("reset-timer", MOVE_TIME);
-        server.resetTimer(MOVE_TIME, nxtPlayer, handleTimeOut, io);
-    }
+    handleMove({ socket, cardId, draw, colorSelected }, io, server, "move-selectable-color-card");
 }
 
 function handleTimeOut( {nxtPlayer, serverId} : {nxtPlayer: number; serverId: string}, io: any): void {

@@ -1,6 +1,6 @@
 import {Server} from "socket.io";
 import {Server as HttpServer} from "http";
-import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat, isPlayerMaster, initGame, disableUNO} from "./src/utils/api";
+import {createServer, joinServer, startGame, leaveServer, move, moveSelectableColorCard, chat, getChat, isPlayerMaster, initGame, disableUNO, disablePASS} from "./src/utils/api";
 import {getPlayer} from "./src/utils/playersSockets";
 import {getAllServers, getServerPlayers, getServerByPlayerId, getServer} from "./src/utils/servers";
 
@@ -157,6 +157,17 @@ export class ServerSocket {
                 try {
                     const { serverId } = getPlayer(socket.id);
                     disableUNO({socket, serverId});
+                } catch (error) {
+                    cb(error);
+                    console.log(error);
+                }
+            });
+
+            socket.on("pass", (_, cb = () => { }) => {
+                try {
+                    const io = this.io;
+                    const { serverId } = getPlayer(socket.id);
+                    disablePASS({socket, serverId}, io);
                 } catch (error) {
                     cb(error);
                     console.log(error);

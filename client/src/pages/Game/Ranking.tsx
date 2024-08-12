@@ -1,4 +1,4 @@
-import { Button, Row } from 'antd';
+import { Button, Modal, Row } from 'antd';
 import { useNavigate } from "react-router-dom";
 import { Player } from '../../utils/interfaces.ts';
 import WhiteRankingCard from '../../components/WhiteRankingCard.tsx';
@@ -17,6 +17,7 @@ const Ranking: React.FC<RankingProps> = ({ playersOrder, setFinished }) => {
     const dispatch = useDispatch();
 
     const [isMaster, setIsMaster] = useState(false);
+    const [showInitGameMessage, setShowInitGameMessage] = useState(false);
 
     useEffect(() => {
         let unsubInit: (() => void) | null = null;
@@ -34,6 +35,7 @@ const Ranking: React.FC<RankingProps> = ({ playersOrder, setFinished }) => {
             dispatch(init({ cards, players }));
             dispatch(initGame());
             setFinished(false);
+            setShowInitGameMessage(false);
         });
 
         return () => {
@@ -48,11 +50,15 @@ const Ranking: React.FC<RankingProps> = ({ playersOrder, setFinished }) => {
     };
 
     const handlePlayAgain = async () => {
+        setShowInitGameMessage(true);
         await API.playAgain();
     };
 
     return (
         <div style={{ margin: 30 }}>
+            <Modal open={showInitGameMessage} title="The game will start in a few seconds !"
+                footer={null} />
+                
             <Row justify="center" style={{ marginTop: 0 }}>
                 <WhiteRankingCard players={playersOrder} />
             </Row>

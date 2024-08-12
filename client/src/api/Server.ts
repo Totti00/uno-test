@@ -140,6 +140,15 @@ export class Server implements ServerInterface {
         });
     }
 
+    PASS(): Promise<void> {
+        return new Promise((res, rej) => {
+            socket.emit("pass", null , (err: any) => {
+                if (err) return rej(err instanceof Error ? err : new Error(err));
+                res();
+            });
+        });
+    }
+
     onFinishGame(cb: (playersOrdered: Player[]) => void): () => void {
         socket.on("finished-game", cb);
         return () => socket.off("finished-game", cb);
@@ -220,9 +229,19 @@ export class Server implements ServerInterface {
         return () => socket.off("show-uno", cb)
     }
 
+    onShowPassButton(cb: (showButton: boolean) => void): () => void {
+        socket.on("show-pass", cb);
+        return () => socket.off("show-pass", cb);
+    }
+
     onDraw2Cards(cb:(data:{lastPlayer:number; cardsToDrawLast?: Card[] }) => void): () => void {
         socket.on("draw-2-cards", cb);
         return () => socket.off("draw-2-cards", cb)
+    }
+
+    onFinalPlayerPass(cb: (nxtPlayer: number) => void): () => void {
+        socket.on("final-player-pass", cb);
+        return () => socket.off("final-player-pass", cb);
     }
 
 }

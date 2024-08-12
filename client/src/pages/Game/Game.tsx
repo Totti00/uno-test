@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Player } from "../../utils/interfaces";
 import { useAppSelector } from "../../hooks/hooks";
 import API from "../../api/API";
-import {moveCard, finalMovePlayer, stopGame, moveFirstCard, draw2Cards} from "../../reducers";
+import {moveCard, finalMovePlayer, stopGame, moveFirstCard, draw2Cards, finalPlayerPass} from "../../reducers";
 import TableStack from "./jsx/TableStack.jsx";
 import TopStack from "./jsx/TopStack.jsx";
 import PlayerStack from "./jsx/PlayerStack.jsx";
@@ -16,6 +16,7 @@ import Ranking from "./Ranking";
 import Chat from "../../components/chat/Chat";
 import { Modal, Row } from "antd";
 import UnoButton from "./UnoButton"
+import PassButton from "./PassButton";
 
 const Game = () => {
     const dispatch = useDispatch();
@@ -37,14 +38,18 @@ const Game = () => {
             API.emitReady();
         }, 2000);
 
+        API.onFinalPlayerPass((nxtPlayer: number) => {
+            dispatch(finalPlayerPass({nxtPlayer}));
+        });
+
         API.onMove(({ card, draw, cardsToDraw, nxtPlayer }) => {
             dispatch(moveCard({ nextPlayer: nxtPlayer, card, draw, cardsToDraw }));
-            setTimeout(() => dispatch(finalMovePlayer({color: ""})), 500);
+            setTimeout(() => dispatch(finalMovePlayer({color: "", draw})), 500);
         });
 
         API.onMoveSelectableColorCard(({ card, draw, cardsToDraw, colorSelected, nxtPlayer }) => {
             dispatch(moveCard({ nextPlayer: nxtPlayer, card, draw, cardsToDraw }));
-            setTimeout(() => dispatch(finalMovePlayer({color: colorSelected})), 500);
+            setTimeout(() => dispatch(finalMovePlayer({color: colorSelected, draw})), 500);
         });
 
         API.onDraw2Cards(({lastPlayer, cardsToDrawLast}) => {
@@ -112,6 +117,7 @@ const Game = () => {
                     <PlayerStack />
                     <DrawingStack />
                     <UnoButton />
+                    <PassButton />
                 </>
             )}
         </div>

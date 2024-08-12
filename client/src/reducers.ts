@@ -19,6 +19,8 @@ interface StoreState {
     firstPlayer: number;
     colorSelected: string;
     colorSelection: boolean;
+    alreadyDrawn: boolean;
+    tempNxtPlayer: number | undefined;
 }
 
 let cardLayoutIdIdx = 111;
@@ -144,6 +146,7 @@ export const gameSlice = createSlice({
                 });
                 state.drawingStack = state.drawingStack.slice(draw).concat(generateDrawingCards(draw));
                 state.lastPlayerDrawed = true;
+                state.alreadyDrawn = true;
             }
 
             if (card) {
@@ -180,14 +183,22 @@ export const gameSlice = createSlice({
                     return p;
                 });
                 state.lastPlayerDrawed = false;
+                state.alreadyDrawn = false; 
+                state.nextPlayer = nextPlayer;
+                state.tempNxtPlayer = undefined
             }
-            state.nextPlayer = nextPlayer;
+            state.tempNxtPlayer = nextPlayer;
+            
         },
+
         finalMovePlayer(state, action: PayloadAction<{
-            color?: string;
+            color?: string,
+            draw?: number;
         }>){
             const color = action?.payload?.color ?? state.colorSelected; //Ho messo ?? al posto di || perchè è un operatore safe
-
+            
+            let draw = action?.payload?.draw ?? 0;
+            
             if (state.colorSelected === "" ) {
                 state.colorSelected = color;
             }
@@ -201,7 +212,6 @@ export const gameSlice = createSlice({
                         cards: player.cards.map((card: Card) => {
                             return {
                                 ...card,
-                                //playable: myTurn && (state.colorSelected !== "" ? canPlayCardSelectableColor(state.colorSelected,state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed) : canPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed)),
                                 playable: myTurn && finalCanPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed, state.colorSelected),
                             };
                         }),
@@ -209,7 +219,9 @@ export const gameSlice = createSlice({
                 }
                 return player;
             });
-            state.currentPlayer = state.nextPlayer;
+            if (draw === 0 || draw == undefined) {
+                state.currentPlayer = state.nextPlayer;
+            }
         },
 
         setFirstCard(state, action: PayloadAction<{
@@ -220,6 +232,7 @@ export const gameSlice = createSlice({
             state.firstCard = firstCard;
             state.firstPlayer = firstPlayer;
         },
+
         moveFirstCard(state, action: PayloadAction<{
             nextPlayer: number;
             card: Card;
@@ -250,12 +263,14 @@ export const gameSlice = createSlice({
             state.lastPlayerDrawed = false;
             state.nextPlayer = nextPlayer;
         },
+
         setColorSelection(state, action: PayloadAction<{
             colorSelection: boolean;
         }>) {
             const { colorSelection } = action.payload;
             state.colorSelection = colorSelection;
         },
+
         draw2Cards(state, action: PayloadAction<{
             lastPlayer: number;
             cardsToDraw?: Card[];
@@ -282,6 +297,36 @@ export const gameSlice = createSlice({
             state.drawingStack = state.drawingStack.slice(2).concat(generateDrawingCards(2));
 
         },
+
+        finalPlayerPass(state, action: PayloadAction<{
+            nxtPlayer: number;
+        }>) {
+            let { nxtPlayer} = action.payload;
+
+            nxtPlayer = wrapMod(nxtPlayer - state.orderOffset, state.players.length);
+            
+            state.alreadyDrawn = false;
+            state.nextPlayer = nxtPlayer;
+
+            state.players = state.players.map((player) => {
+                if (player.id === state.playerId) {
+                    const myTurn = state.nextPlayer === 0;
+        
+                    return {
+                        ...player,
+                        cards: player.cards.map((card: Card) => {
+                            return {
+                                ...card,
+                                playable: myTurn && finalCanPlayCard(state.tableStack[state.tableStack.length - 1], card, state.lastPlayerDrawed, state.colorSelected),
+                            };
+                        }),
+                    };
+                }
+                return player;
+            });
+            state.currentPlayer = state.nextPlayer;
+        
+        },
     },
 });
 
@@ -298,6 +343,7 @@ export const {
     moveFirstCard,
     setColorSelection,
     draw2Cards,
+    finalPlayerPass,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

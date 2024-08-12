@@ -269,15 +269,6 @@ describe("ServerSocket", () => {
     }, 20000);
 
     it('should handle leaving a server', (done) => {
-        let doneCalled = false;
-
-        const safeDone = (err?: any) => {
-            if (!doneCalled) {
-                doneCalled = true;
-                done(err);
-            }
-        };
-
         clientSocket.emit("leave-server");
 
         setTimeout(() => {

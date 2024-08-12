@@ -41,6 +41,9 @@ const Timer: React.FC = () => {
                 console.info("Time out! drawing card...");
                 dispatch(setColorSelection({ colorSelection: false }));
                 API.move(true, "");
+                setTimeout(() => {
+                    API.PASS();
+                }, 500);
             };
 
             API.onResetTimer(handleResetTimer);

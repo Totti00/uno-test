@@ -43,12 +43,15 @@ const Root = styled.div`
 export default function DrawingStack() {
   const { drawingStack, currentPlayer } = useAppSelector(drawingStackAndCurrentPlayerSelector);
   const colorSelection = useAppSelector(state => state.game.colorSelection);
+  const alreadyDrawn = useAppSelector(state => state.game.alreadyDrawn);
+  const players = useAppSelector(state => state.game.players);
+
   const dispatch = useAppDispatch();
 
   const [gameStarted, setGameStarted] = useState(false);
 
   const handleClick = () => {
-    if (currentPlayer === 0 && !colorSelection) API.move(true);
+    if (currentPlayer === 0 && !colorSelection && !alreadyDrawn) API.move(true);
   };
 
   useEffect(() => {
@@ -58,7 +61,7 @@ export default function DrawingStack() {
     }, 2000);
   }, [dispatch]);
 
-  const canHover = gameStarted && currentPlayer === 0 && !colorSelection;
+  const canHover = gameStarted && currentPlayer === 0 && !colorSelection && !alreadyDrawn;
   const highlight = canHover || !gameStarted;
 
   let animationState;

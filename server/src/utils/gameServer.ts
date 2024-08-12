@@ -117,7 +117,7 @@ export default class GameServer implements IGameServer {
     }
 
     move(draw: boolean, card: ICard /* | null */) {
-        let moveEventObj: IMoveEvent = {nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: [], oneCardLeft: false, lastPlayer: 0};
+        let moveEventObj: IMoveEvent = {nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: [], oneCardLeft: false, lastPlayer: 0, drawn: false};
 
         //controllo che la carta può essere giocata sulla cima dello stack
         //if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew)) return false;
@@ -134,9 +134,10 @@ export default class GameServer implements IGameServer {
 
         if (card) {
             this.handleCardPlay(card, moveEventObj);
+            this.lastPlayer = this.curPlayer;
+            this.curPlayer = nxtPlayer;
         }
-        this.lastPlayer = this.curPlayer;
-        this.curPlayer = nxtPlayer;
+
         return moveEventObj;
     }
 
@@ -157,6 +158,7 @@ export default class GameServer implements IGameServer {
         this.players[this.curPlayer].cards = this.drawingStk.slice(0, drawCnt).concat(this.players[this.curPlayer].cards);
         this.drawingStk = this.drawingStk.slice(drawCnt, this.drawingStk.length);
         this.lastPlayerDrew = true;
+        moveEventObj.drawn = true;
     }
 
     private handleCardPlay(card: ICard, moveEventObj: IMoveEvent): void {
@@ -179,33 +181,34 @@ export default class GameServer implements IGameServer {
             moveEventObj.finish = true;
             moveEventObj.playersFinishingOrder = this.finishGame();
         }
+        moveEventObj.drawn = false;
     }
 
-    getNextPlayer(card: ICard) {
+    getNextPlayer(card?: ICard) {
         let nxtPlayer = this.tableStk[0] ? this.curPlayer : wrapMod(this.curPlayer + this.direction, this.players.length);
         let remainingPlayers = this.players.length - this.playersFinished.length;
 
         this.checkReverse(card);
 
-        if (remainingPlayers === 3) nxtPlayer = this.handleThreeRemainingPlayers(card, nxtPlayer);
-        else if (remainingPlayers === 2) nxtPlayer = this.handleTwoRemainingPlayers(card, nxtPlayer);
-        else nxtPlayer = this.handleOtherCases(card, nxtPlayer);
+        if (remainingPlayers === 3) nxtPlayer = this.handleThreeRemainingPlayers(nxtPlayer, card);
+        else if (remainingPlayers === 2) nxtPlayer = this.handleTwoRemainingPlayers(nxtPlayer, card);
+        else nxtPlayer = this.handleOtherCases(nxtPlayer, card);
 
         return this.checkNextActivePlayers(nxtPlayer);
     }
 
-    private handleThreeRemainingPlayers(card: ICard, nxtPlayer: number) {
+    private handleThreeRemainingPlayers(nxtPlayer: number, card?: ICard) {
         if (card?.action === "skip") nxtPlayer = this.handleSkipAction(nxtPlayer);
         else nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
         return nxtPlayer;
     }
 
-    private handleTwoRemainingPlayers(card: ICard, nxtPlayer: number) {
+    private handleTwoRemainingPlayers(nxtPlayer: number, card?: ICard) {
         if (card?.action !== "skip" && card?.action !== "reverse") nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
         return nxtPlayer;
     }
 
-    private handleOtherCases(card: ICard, nxtPlayer: number) {
+    private handleOtherCases(nxtPlayer: number, card?: ICard) {
         if (card?.action === "skip") nxtPlayer = wrapMod(nxtPlayer + 2 * this.direction, this.players.length);
         else nxtPlayer = wrapMod(nxtPlayer + this.direction, this.players.length);
         return nxtPlayer;
@@ -271,7 +274,7 @@ export default class GameServer implements IGameServer {
         return nxtPlayer;
     }
 
-    private checkReverse(card: ICard) {
+    private checkReverse(card?: ICard) {
         if (card?.action === "reverse") this.direction *= -1;
     }
 
@@ -303,5 +306,12 @@ export default class GameServer implements IGameServer {
         this.drawingStk = this.drawingStk.slice(2, this.drawingStk.length);
 
         return cardsToDraw;
+    }
+
+    pass() {
+        let nxtPlayer = this.getNextPlayer();
+        this.lastPlayer = this.curPlayer;
+        this.curPlayer = nxtPlayer;
+        return nxtPlayer;
     }
 }

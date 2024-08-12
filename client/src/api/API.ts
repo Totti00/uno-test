@@ -74,6 +74,10 @@ export class AP implements ServerInterface {
         return this._server.UNO();
     }
 
+    PASS(): Promise<void>{
+        return this._server.PASS();
+    }
+
     onFinishGame(cb: (playersOrdered: Player[]) => void): () => void {
         return this._server.onFinishGame(cb);
     }
@@ -116,6 +120,14 @@ export class AP implements ServerInterface {
 
     onShowUNO(cb: (showButton: boolean) => void): () => void{
         return this._server.onShowUNO(cb);
+    }
+
+    onShowPassButton(cb: (showButton: boolean) => void): () => void {
+        return this._server.onShowPassButton(cb);
+    }
+
+    onFinalPlayerPass(cb: (nxtPlayer: number) => void): () => void {
+        return this._server.onFinalPlayerPass(cb);
     }
 
     onDraw2Cards(cb:(data:{lastPlayer:number; cardsToDrawLast?: Card[] }) => void): () => void {

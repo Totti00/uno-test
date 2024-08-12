@@ -38,6 +38,7 @@ export interface IGameServer {
   finishGame(): any;
   resetTimer(timeoutSeconds: number, nxtPlayer: number, handleTimeOut: ({ nxtPlayer, serverId }: { nxtPlayer: number; serverId: string; }, io: any) => void, io: any):any;
   playerDraw2(playerIndex: number): ICard[];
+  pass(): any;
 }
 
 export interface IMoveEvent {
@@ -50,6 +51,7 @@ export interface IMoveEvent {
   playersFinishingOrder?: IPlayer[];
   oneCardLeft?: boolean;
   lastPlayer: number;
+  drawn?: boolean;
 }
 
 export interface ICard {

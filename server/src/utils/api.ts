@@ -149,7 +149,7 @@ function handleMove(
     }
     socket.broadcast.to(serverId).emit(eventType, broadcastPayload);
 
-    socket.broadcast.to(serverId).emit("show-pass", false);
+    io.to(serverId).emit("show-pass", false);
     socket.broadcast.to(serverId).emit("show-uno", false);
 
     // Send to my player

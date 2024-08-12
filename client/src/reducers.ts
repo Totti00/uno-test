@@ -20,7 +20,6 @@ interface StoreState {
     colorSelected: string;
     colorSelection: boolean;
     alreadyDrawn: boolean;
-    tempNxtPlayer: number | undefined;
 }
 
 let cardLayoutIdIdx = 111;
@@ -185,10 +184,7 @@ export const gameSlice = createSlice({
                 state.lastPlayerDrawed = false;
                 state.alreadyDrawn = false; 
                 state.nextPlayer = nextPlayer;
-                state.tempNxtPlayer = undefined
             }
-            state.tempNxtPlayer = nextPlayer;
-            
         },
 
         finalMovePlayer(state, action: PayloadAction<{
@@ -219,7 +215,7 @@ export const gameSlice = createSlice({
                 }
                 return player;
             });
-            if (draw === 0 || draw == undefined) {
+            if (draw === 0) {
                 state.currentPlayer = state.nextPlayer;
             }
         },

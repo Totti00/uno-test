@@ -30,8 +30,10 @@ const Game = () => {
     const firstCard = useAppSelector(state => state.game.firstCard);
     const firstPlayer = useAppSelector(state => state.game.firstPlayer);
 
-    dispatch(moveFirstCard({ nextPlayer: firstPlayer, card: firstCard }));
-    setTimeout(() => dispatch(finalMovePlayer({color: ""})), 500);
+    useEffect(() => {
+        dispatch(moveFirstCard({ nextPlayer: firstPlayer, card: firstCard }));
+        setTimeout(() => dispatch(finalMovePlayer({color: ""})), 500);
+    }, [dispatch, firstCard, firstPlayer]);
 
     useEffect(() => {
         const timeoutReady = setTimeout(() => {

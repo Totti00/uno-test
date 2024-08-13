@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Card from "../../../components/Card.tsx";
 import { useAppSelector } from "../../../hooks/hooks.ts";
 import {tableStackSelector} from "./MemorizedSelector.ts";
+import {v4 as uuidv4} from "uuid";
 
 const Root = styled.div`
   position: fixed;
@@ -24,7 +25,7 @@ export default function TableStack() {
   return (
     <Root>
       {tableStack.map((card) => (
-        <div className="card-container" key={card.layoutId}>
+        <div className="card-container" key={card.layoutId+"uno"}>
           <Card
             layoutId={card.layoutId}
             color={card.color}

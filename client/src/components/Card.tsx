@@ -262,14 +262,14 @@ export default function Card({
           />
         </>
       );
-    return (
+    return color ? (
       <>
         <Image src={`assets/images/front-${color}.png`} ratio={590 / 418} />
         <p className="value">{digit}</p>
         <p className="value-small value-tl">{digit}</p>
         <p className="value-small value-br">{digit}</p>
       </>
-    );
+    ) : null;
   };
 
   return (

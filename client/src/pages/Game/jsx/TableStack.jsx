@@ -2,7 +2,6 @@ import styled from "styled-components";
 import Card from "../../../components/Card.tsx";
 import { useAppSelector } from "../../../hooks/hooks.ts";
 import {tableStackSelector} from "./MemorizedSelector.ts";
-import {v4 as uuidv4} from "uuid";
 
 const Root = styled.div`
   position: fixed;

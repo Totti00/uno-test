@@ -43,23 +43,4 @@ describe('Create Lobby', () => {
         const inputElement = screen.getByPlaceholderText('Insert a lobby name');
         expect(inputElement).toBeInTheDocument();
     });
-
-    /*it('fire events onclick', async () => {
-        const { getByText } = await waitFor(() => lobbyRenderResult);
-
-        const inputElement = screen.getByPlaceholderText('Insert a lobby name');
-        fireEvent.change(inputElement, { target: { value: 'eeee' } });
-
-        // Verifica che il valore dell'input sia stato aggiornato correttamente
-        expect((inputElement as HTMLInputElement).value).toBe('eeee');
-
-        // Verifica che il pulsante "Create Lobby" sia presente
-        await waitFor(() => {
-            expect(getByText('Create Lobby')).toBeInTheDocument();
-        });
-
-        fireEvent.click(getByText('Create Lobby'));
-
-        await waitFor(() => expect(navigateMock).toHaveBeenCalledWith('/waiting'));
-    });*/
 });

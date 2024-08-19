@@ -7,36 +7,33 @@ export function wrapMod(n: number, len: number) {
 export function canPlayCard(
     oldCard: Card,
     newCard: Card,
-    lastPlayerDrew: boolean //True se l'ultimo giocatore ha pescato
+    lastPlayerDrew: boolean //True if the last player drew a card
 ) {
-    //restituisce true se oldCard è una carta draw2 o draw4 altrimenti false
+    //returns true if oldCard is a draw2 or draw4 card, otherwise false
     const isOldDrawingCard = oldCard?.action && oldCard.action.indexOf("draw") !== -1;
 
-    //Sarà true solo se il giocatore precedente ha giocato una carta draw e se il giocatore corrente non ha ancora pescato
+    //It will be true only if the previous player played a draw card and the current player has not yet drawn
     const haveToDraw = isOldDrawingCard && !lastPlayerDrew;
 
-    //restituisce true se newCard è una carta draw2 o draw4 altrimenti false
+    //returns true if newCard is a draw2 or draw4 card, otherwise false
     const isNewDrawingCard = newCard?.action && newCard.action.indexOf("draw") !== -1;
 
-    //Nessuna carta ancora giocata
-    //if (!oldCard) return true;
-
-    // Se non devo pescare, allora le carte black sono sempre giocabili
+    // If I don't have to draw, then black cards are always playable
     if (!haveToDraw && newCard.color === "black") return true;
 
-    // Se non devo pescare, e nel mazzo degli scarti c'è una carta black, allora tutte le carte sono giocabili
+    // If I don't have to draw, and there is a black card in the discard pile, then all cards are playable
     if (oldCard.color === "black" && !haveToDraw) return true;
 
-    // Se la carta precedente è una carta draw2 o draw4, e devo quindi pescare, non posso rispondere con draw2 o draw4
+    // If the previous card is a draw2 or draw4 card, and I have to draw, I cannot respond with a draw2 or draw4
     if (isOldDrawingCard && isNewDrawingCard && haveToDraw) return false;
 
-    // Una carta dello stesso colore di quella nel mazzo degli scarti, è giocabile se non devo pescare
+    // A card of the same color as the one in the discard pile is playable if I don't have to draw
     if (!haveToDraw && oldCard.color === newCard.color) return true;
 
-    // Se la carta in mano ha la stessa action di quella nel mazzo degli scarti, è giocabile
+    // If the card in hand has the same action as the one in the discard pile, it is playable
     if (oldCard.action !== undefined && newCard.action !== undefined && oldCard.action === newCard.action) return true;
 
-    // Se la carta in mano ha lo stesso numero di quella nel mazzo degli scarti, è giocabile. Altrimenti no
+    // If the card in hand has the same number as the one in the discard pile, it is playable. Otherwise, it is not.
     return oldCard.digit !== undefined && oldCard.digit === newCard.digit;
 
 }
@@ -45,13 +42,13 @@ export function canPlayCardSelectableColor(
     color: string,
     oldCard: Card,
     newCard: Card,
-    lastPlayerDrew: boolean //True se l'ultimo giocatore ha pescato
+    lastPlayerDrew: boolean //True if the last player drew a card
 ) {
 
-    //restituisce true se oldCard è una carta draw4 altrimenti false
+    // returns true if oldCard is a draw4 card, otherwise false
     const isOldDrawingFourCard = oldCard?.action && oldCard.action === "draw4";
 
-    //Sarà true solo se il giocatore precedente ha giocato una carta draw e se il giocatore corrente non ha ancora pescato
+    // It will be true only if the previous player played a draw card and the current player has not yet drawn
     const haveToDraw = isOldDrawingFourCard && !lastPlayerDrew;
 
     if (isOldDrawingFourCard && !haveToDraw && (newCard.color === color)) return true;
@@ -60,14 +57,14 @@ export function canPlayCardSelectableColor(
 
     if (isOldDrawingFourCard) return false;
 
-    // Se non devo pescare, allora le carte black sono sempre giocabili
+    // If I don't have to draw, then black cards are always playable
     return color === newCard.color;
 }
 
 export function finalCanPlayCard(
     oldCard: Card,
     newCard: Card,
-    lastPlayerDrew: boolean, //True se l'ultimo giocatore ha pescato
+    lastPlayerDrew: boolean, //True if the last player drew a card
     color?: string,
 ) {
     if (color) {

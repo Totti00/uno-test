@@ -3,27 +3,19 @@ import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
 import { ServerSocket } from '../socket';
-import session from 'express-session';
 import cors from 'cors';
 import { cardsRouter } from '../src/routes/cardsRouter';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Configurazione del server
 const app = express();
-//const PORT = 3000;
 const httpServer = http.createServer(app);
 ServerSocket.initialize(httpServer);
 
 const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/unoProgetto";
 
 app.use(cors());
-app.use(session({
-  secret: 'keyboard',
-  cookie: { maxAge: 3600000 },
-  resave: false,
-  saveUninitialized: false
-}));
+
 app.use(express.json());
 app.use(cardsRouter);
 app.use((req, res) => {

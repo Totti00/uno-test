@@ -191,7 +191,7 @@ export const gameSlice = createSlice({
             color?: string,
             draw?: number;
         }>){
-            const color = action?.payload?.color ?? state.colorSelected; //Ho messo ?? al posto di || perchè è un operatore safe
+            const color = action?.payload?.color ?? state.colorSelected; //I replaced || with ?? because it is a safer operator
             
             let draw = action?.payload?.draw ?? 0;
             
@@ -236,7 +236,7 @@ export const gameSlice = createSlice({
             let { nextPlayer} = action.payload;
             const { card} = action.payload;
 
-            //ricalcolo nextPlayer in relazione al curPlayer
+            //recalculate nextPlayer in relation to curPlayer
             nextPlayer = wrapMod(nextPlayer - state.orderOffset, state.players.length);
 
             if (card.action === "reverse") state.direction *= -1;

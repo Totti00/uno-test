@@ -47,7 +47,7 @@ export default class GameServer implements IGameServer {
 
         this.players.push({
             ...player,
-            id: playerId, //(this.players.length + 1).toString(),
+            id: playerId,
             cards: [],
             timeOutCount: 0,
             isMaster: isMaster,
@@ -119,9 +119,6 @@ export default class GameServer implements IGameServer {
     move(draw: boolean, card: ICard /* | null */) {
         let moveEventObj: IMoveEvent = {nxtPlayer: 0, curPlayer: 0, finish: false, playersFinishingOrder: [], oneCardLeft: false, lastPlayer: 0, drawn: false};
 
-        //controllo che la carta può essere giocata sulla cima dello stack
-        //if (card && !canPlayCard(this.tableStk[0], card, this.lastPlayerDrew)) return false;
-
         if (draw) {
             this.handleDraw(moveEventObj);
         }
@@ -165,10 +162,10 @@ export default class GameServer implements IGameServer {
         if (card.action === "draw2") this.sumDrawing += 2;
         if (card.action === "draw4") this.sumDrawing += 4;
     
-        this.tableStk.unshift(card); // Inserisce la carta in cima allo stack
+        this.tableStk.unshift(card); // Inserts the card on top of the stack
         moveEventObj.card = card;
     
-        // Rimuove dalla mano del giocatore la carta appena giocata
+        // Removes the just-played card from the player's hand
         this.players[this.curPlayer].cards = this.players[this.curPlayer].cards.filter((c) => c._id !== card._id);
         this.lastPlayerDrew = false;
     

@@ -12,7 +12,6 @@ describe('UnoButton Component', () => {
     });
 
     it('renders the button when showUNO is true', () => {
-        // Mock the API.onShowUNO to call the callback with true
         (API.onShowUNO as jest.Mock).mockImplementation((callback: (showButton: boolean) => void) => {
             callback(true);
         });
@@ -24,7 +23,6 @@ describe('UnoButton Component', () => {
     });
 
     it('does not render the button when showUNO is false', () => {
-        // Mock the API.onShowUNO to call the callback with false
         (API.onShowUNO as jest.Mock).mockImplementation((callback: (showButton: boolean) => void) => {
             callback(false);
         });
@@ -36,7 +34,6 @@ describe('UnoButton Component', () => {
     });
 
     it('calls API.UNO when the button is clicked', () => {
-        // Mock the API.onShowUNO to call the callback with true
         (API.onShowUNO as jest.Mock).mockImplementation((callback: (showButton: boolean) => void) => {
             callback(true);
         });

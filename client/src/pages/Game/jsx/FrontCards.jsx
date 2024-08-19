@@ -10,7 +10,7 @@ const FrontCards = React.memo(function () {
         .map((_, idx) => (
           <div
             className="card-container"
-            key={uuidv4()} //prima era key={idx}
+            key={uuidv4()} //it was key={idx} before
             style={{
               transform: `translate(${Math.random() * 20 - 10}px,${
                 Math.random() * 20 - 10

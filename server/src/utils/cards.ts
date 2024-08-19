@@ -7,7 +7,7 @@ const getCards = async function (): Promise<any> {
             throw new Error(`Errore nella richiesta: ${res.status} ${res.statusText}`);
         }
         cards = await res.json();
-        return cards; // Restituisci i dati solo quando sono disponibili
+        return cards; // Return the data only when it is available
     } catch (err) {
         console.log("Errore sconosciuto ", err);
     }

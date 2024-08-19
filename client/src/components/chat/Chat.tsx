@@ -46,7 +46,7 @@ export default function Chat() {
         const message: Message = {
             player: me,
             text: text,
-            id: "1", //sovrascritto lato server
+            id: "1", //overwritten on the server side
         };
         API.chat(message);
     }

@@ -27,10 +27,10 @@ const StyledRoot = styled(Root)`
   ${(props) => (props.shouldForwardProp ? props.shouldForwardProp : "")};
 `;
 
-//sto utilizzando la prop "as" in StyledRoot per specificare il tipo di elemento HTML da usare per il componente "styled-components"
-// e passo la prop "highlight" solo se è supportata da quell'elemento HTML specifico.
-//Quindi sto assegnando l'elemento HTML "div" a StyledRoot utilizzando la prop "as", e passo la prop "highlight" 
-//solo se "shouldForwardProp" è true.
+// I am using the "as" prop in StyledRoot to specify the type of HTML element to use for the "styled-components" component 
+// and passing the "highlight" prop only if it is supported by that specific HTML element. 
+// Therefore, I am assigning the HTML element "div" to StyledRoot using the "as" prop, and 
+// passing the "highlight" prop only if "shouldForwardProp" is true.
 export default function CardsColumn({ cards, highlight, shouldForwardProp}) {
     return (
         <StyledRoot as="div" style={{'--cardsCnt':cards.length}} {...(shouldForwardProp ? { highlight: highlight } : {})}>

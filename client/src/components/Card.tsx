@@ -8,17 +8,17 @@ import { setColorSelection } from "../reducers";
 import { useAppSelector } from "../hooks/hooks";
 
 interface CardProps {
-  id?: string;
-  color?: string;
-  digit?: number;
-  action?: string;
-  flip?: boolean;
-  rotationY?: number;
-  layoutId?: string;
-  selectable?: boolean;
-  playable?: boolean;
-  disableShadow?: boolean;
-  preserve3D?: boolean;
+  readonly id?: string;
+  readonly color?: string;
+  readonly digit?: number;
+  readonly action?: string;
+  readonly flip?: boolean;
+  readonly rotationY?: number;
+  readonly layoutId?: string;
+  readonly selectable?: boolean;
+  readonly playable?: boolean;
+  readonly disableShadow?: boolean;
+  readonly preserve3D?: boolean;
 }
 
 const Root = styled.div<{ color?: string; disableShadow?: boolean; preserve3D?: boolean; selectable?: boolean; playable?: boolean }>`
@@ -191,7 +191,7 @@ export default function Card({
   playable,
   disableShadow = false,
   preserve3D = true,
-}: CardProps) {
+}: Readonly<CardProps>) {
   const dispatch = useDispatch();
 
   const [showColorSelector, setShowColorSelector] = useState(false);

@@ -3,11 +3,11 @@ import Card from "./Card";
 import { Card as ICard } from "../utils/interfaces";
 
 interface CardsRowProps {
-  cards: ICard[];
-  cardProps?: {
+  readonly cards: ICard[];
+  readonly cardProps?: {
     selectable?: boolean;
   };
-  highlight?: boolean;
+  readonly highlight?: boolean;
 }
 
 const Root = styled.div<{ $highlight?: boolean; $cardsCnt: number }>`
@@ -35,7 +35,7 @@ const Root = styled.div<{ $highlight?: boolean; $cardsCnt: number }>`
   }
 `;
 
-export default function CardsRow({ cards, cardProps, highlight }: CardsRowProps) {
+export default function CardsRow({ cards, cardProps, highlight }: Readonly<CardsRowProps>) {
   return (
     <Root $highlight={highlight} $cardsCnt={cards.length}>
       {cards.map((card) => (

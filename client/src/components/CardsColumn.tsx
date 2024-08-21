@@ -39,14 +39,14 @@ const Root = styled.div.attrs<RootProps>((props) => ({
 `;
 
 interface CardsColumnProps {
-  cards: ICard[];
-  highlight?: boolean;
+  readonly cards: ICard[];
+  readonly highlight?: boolean;
 }
 
 export default function CardsColumn({
   cards,
   highlight = false,
-}: CardsColumnProps) {
+}: Readonly<CardsColumnProps>) {
   return (
     <Root
       as="div"

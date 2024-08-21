@@ -1,5 +1,5 @@
 import {createSelector} from "reselect";
-import {RootState} from "../../../store/store.ts";
+import {RootState} from "../../store/store.ts";
 
 /*
 Utile per ottimizzare il selettore, ho creato un selettore memorizzato che restituisce lo stesso riferimento quando i dati 

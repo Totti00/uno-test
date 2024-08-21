@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import { useAppSelector } from "../../hooks/hooks";
-import { setColorSelection } from "../../reducers";
+import { useAppSelector } from "../hooks/hooks";
+import { setColorSelection } from "../reducers";
 import { useDispatch } from "react-redux";
-import API from "../../api/API";
-import { playerAndCurrPlayerStackSelector } from "./jsx/MemorizedSelector";
+import API from "../api/API";
+import { playerAndCurrPlayerStackSelector } from "../pages/Game/MemorizedSelector";
 
 const Timer: React.FC = () => {
     const divStyle: React.CSSProperties = {

@@ -1,5 +1,5 @@
 import {ServerInterface} from "./ServerInterface.ts";
-import {Card, GameServer, Message, Player} from "../utils/interfaces.ts";
+import {Card, GameServer, Message, Player} from "../utils/interfaces";
 import { socket } from "./socket";
 
 export class Server implements ServerInterface {

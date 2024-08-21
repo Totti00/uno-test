@@ -3,6 +3,8 @@ import AppRoute from '../src/routes/AppRoute';
 import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 
+jest.mock('../src/components/FrontCards', () => () => <div>Mocked FrontCards</div>);
+
 describe('AppRoute', () => {
 
     it('renders route correctly', () => {

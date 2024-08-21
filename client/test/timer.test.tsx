@@ -1,6 +1,6 @@
 import { render, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Timer from '../src/pages/Game/Timer';
+import Timer from '../src/components/Timer';
 import API from "../src/api/API";
 import { useAppSelector } from "../src/hooks/hooks";
 import { setColorSelection } from "../src/reducers";

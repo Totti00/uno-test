@@ -1,23 +1,23 @@
 import styled from "styled-components";
-import Card from "../../../components/Card";
-import FrontCards from "./FrontCards.jsx";
+import Card from "../../components/Card";
+import FrontCards from "../../components/FrontCards";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-import { ready } from "../../../reducers";
-import API from "../../../api/API";
-import {drawingStackAndCurrentPlayerSelector} from "./MemorizedSelector";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { ready } from "../../reducers";
+import API from "../../api/API";
+import { drawingStackAndCurrentPlayerSelector } from "./MemorizedSelector";
+import { Card as ICard } from "../../utils/interfaces";
 
 const variants = {
   init: { x: 0, y: 0 },
   idleCenter: { x: "calc(50vw - 50%)", y: "calc(-1 * 50vh + 50% )" },
   idleCorner: { x: "10px", y: "70px" },
   idleCornerDisabled: { x: "10px", y: "80%", transition: { duration: 1 } },
-
   hover: { scale: 1.05, transition: { duration: 0.3 } },
 };
 
-const Root = styled.div`
+const Root = styled(motion.div)<{ canHover: boolean; highlight: boolean }>`
   --cardWidth: var(--cardWidthBigger);
 
   position: fixed;
@@ -42,15 +42,15 @@ const Root = styled.div`
 
 export default function DrawingStack() {
   const { drawingStack, currentPlayer } = useAppSelector(drawingStackAndCurrentPlayerSelector);
-  const colorSelection = useAppSelector(state => state.game.colorSelection);
-  const alreadyDrawn = useAppSelector(state => state.game.alreadyDrawn);
+  const colorSelection = useAppSelector((state) => state.game.colorSelection);
+  const alreadyDrawn = useAppSelector((state) => state.game.alreadyDrawn);
 
   const dispatch = useAppDispatch();
 
   const [gameStarted, setGameStarted] = useState(false);
 
   const handleClick = () => {
-    if (currentPlayer === 0 && !colorSelection && !alreadyDrawn) API.move(true);
+    if (currentPlayer === 0 && !colorSelection && !alreadyDrawn) API.move(true, "");
   };
 
   useEffect(() => {
@@ -69,24 +69,21 @@ export default function DrawingStack() {
 
   return (
     <Root
-      as={motion.div}
       onClick={handleClick}
       canHover={canHover}
       highlight={highlight}
-      gameStarted={gameStarted}
       variants={variants}
       initial="init"
       animate={animationState}
       whileHover={canHover ? "hover" : { scale: 1 }}
     >
-      {drawingStack.map((card) => (
+      {drawingStack.map((card: ICard) => (
         <div className="card-container" key={card.layoutId}>
           <Card
             layoutId={card.layoutId}
             color={card.color}
             digit={card.digit}
             action={card.action}
-            width={200}
             disableShadow={true}
           />
         </div>

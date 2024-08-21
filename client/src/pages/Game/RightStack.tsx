@@ -1,8 +1,9 @@
+import { useMemo } from "react";
 import styled from "styled-components";
-import { useAppSelector } from "../../../hooks/hooks.ts";
-import CardsColumn from "../../../components/jsx/CardsColumn.jsx";
-import {useMemo} from "react";
-import {playerAndCurrPlayerRightStackSelector} from "./MemorizedSelector.ts";
+import { useAppSelector } from "../../hooks/hooks";
+import CardsColumn from "../../components/CardsColumn";
+import { playerAndCurrPlayerRightStackSelector } from "./MemorizedSelector";
+import { Card } from "../../utils/interfaces";
 
 const Root = styled.div`
   position: fixed;
@@ -12,10 +13,9 @@ const Root = styled.div`
 `;
 
 export default function RightStack() {
-
   const { player, currentPlayer } = useAppSelector(playerAndCurrPlayerRightStackSelector);
-  const cards = useMemo(() => player?.cards || [], [player]);
-  
+  const cards: Card[] = useMemo(() => player?.cards || [], [player]);
+
   return (
     <Root>
       <CardsColumn cards={cards} highlight={currentPlayer === 3} />

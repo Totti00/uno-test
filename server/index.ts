@@ -11,8 +11,8 @@ const PORT = 3000;
 
 const httpServer = http.createServer(app);
 
-// Creazione dell'istanza di ServerSocket per mettere in ascolto la socket
-// La variabile serverSocketInstance non viene utilizzata direttamente, ma è necessaria per inizializzare il server socket
+// Creation of the ServerSocket instance to listen to the socket
+// The serverSocketInstance variable is not used directly, but it is necessary to initialize the server socket
 ServerSocket.initialize(httpServer);
 
 mongoose.connect("mongodb://localhost:27017/unoProgetto")

@@ -1,5 +1,5 @@
 import { useEffect, useState, CSSProperties } from "react";
-import API from "../../api/API";
+import API from "../api/API";
 import { Button } from "antd";
 
 const PassButton: React.FC = () => {

@@ -4,19 +4,19 @@ import { Player } from "../../utils/interfaces";
 import { useAppSelector } from "../../hooks/hooks";
 import API from "../../api/API";
 import {moveCard, finalMovePlayer, stopGame, moveFirstCard, draw2Cards, finalPlayerPass} from "../../reducers";
-import TableStack from "./jsx/TableStack.jsx";
-import TopStack from "./jsx/TopStack.jsx";
-import PlayerStack from "./jsx/PlayerStack.jsx";
-import DrawingStack from "./jsx/DrawingStack.jsx";
-import RightStack from "./jsx/RightStack.jsx";
-import LeftStack from "./jsx/LeftStack.jsx";
-import Timer from "./Timer";
+import TableStack from "./TableStack";
+import TopStack from "./TopStack";
+import PlayerStack from "./PlayerStack";
+import DrawingStack from "./DrawingStack";
+import RightStack from "./RightStack";
+import LeftStack from "./LeftStack";
+import Timer from "../../components/Timer";
 import { Navigate } from "react-router-dom";
 import Ranking from "./Ranking";
 import Chat from "../../components/chat/Chat";
 import { Modal, Row } from "antd";
-import UnoButton from "./UnoButton"
-import PassButton from "./PassButton";
+import UnoButton from "../../components/UnoButton"
+import PassButton from "../../components/PassButton";
 
 const Game = () => {
     const dispatch = useDispatch();

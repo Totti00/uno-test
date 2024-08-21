@@ -1,4 +1,4 @@
-import {Card, GameServer, Message, Player} from "../utils/interfaces.ts";
+import {Card, GameServer, Message, Player} from "../utils/interfaces";
 
 export interface ServerInterface {
     player?: Player;

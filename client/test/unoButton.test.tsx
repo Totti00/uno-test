@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import UnoButton from '../src/pages/Game/UnoButton';
+import UnoButton from '../src/components/UnoButton';
 import API from "../src/api/API";
 import '@testing-library/jest-dom';
 

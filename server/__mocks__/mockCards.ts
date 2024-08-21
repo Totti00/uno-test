@@ -34,7 +34,7 @@ export const mockCards = jest.fn(async () => {
     let cards: ICard[] = [];
     colors.forEach(color => {
         cards = cards.concat(generateCards(color, startId));
-        startId += 25; // 19 digit cards + 6 action cards
+        startId += 25;
     });
     cards = cards.concat(generateBlackCards(startId));
     return cards;

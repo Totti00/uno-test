@@ -1,5 +1,5 @@
-import {ServerInterface} from "./ServerInterface.ts";
-import {Card, GameServer, Message, Player} from "../utils/interfaces.ts";
+import {ServerInterface} from "./ServerInterface";
+import {Card, GameServer, Message, Player} from "../utils/interfaces";
 import {Server} from "./Server";
 
 export class AP implements ServerInterface {

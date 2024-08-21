@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { useAppSelector } from "../../../hooks/hooks.ts";
-import CardsColumn from "../../../components/jsx/CardsColumn.jsx";
-import {useMemo} from "react";
-import {playerAndCurrPlayerLeftStackSelector} from "./MemorizedSelector.ts";
+import { useAppSelector } from "../../hooks/hooks";
+import CardsColumn from "../../components/CardsColumn";
+import { useMemo } from "react";
+import { playerAndCurrPlayerLeftStackSelector } from "./MemorizedSelector";
+import { Card } from "../../utils/interfaces";
 
 const Root = styled.div`
   position: fixed;
@@ -13,7 +14,7 @@ const Root = styled.div`
 
 export default function LeftStack() {
   const { player, currentPlayer } = useAppSelector(playerAndCurrPlayerLeftStackSelector);
-  const cards = useMemo(() => player?.cards || [], [player]);
+  const cards: Card[] = useMemo(() => player?.cards || [], [player]);
 
   return (
     <Root>

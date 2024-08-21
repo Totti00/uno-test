@@ -2,12 +2,12 @@ import React from "react";
 import styled from "styled-components";
 
 interface RootProps {
-  ratio: number;
+  $ratio: number;
 }
 
 const Root = styled.div<RootProps>`
   position: relative;
-  padding-top: ${(props) => props.ratio * 100}%;
+  padding-top: ${(props) => props.$ratio * 100}%;
 
   img {
     position: absolute;
@@ -20,10 +20,6 @@ const Root = styled.div<RootProps>`
   }
 `;
 
-const shouldForwardProp = (prop: string) => !["ratio"].includes(prop);
-
-const StyledRoot = styled(Root).withConfig({ shouldForwardProp })``;
-
 interface ImageProps extends React.HTMLAttributes<HTMLDivElement> {
   src: string;
   alt?: string;
@@ -32,9 +28,9 @@ interface ImageProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Image: React.FC<ImageProps> = ({ src, alt = " ", ratio = 9 / 16, ...props }) => {
   return (
-    <StyledRoot ratio={ratio} {...props}>
+    <Root $ratio={ratio} {...props}>
       <img src={src} alt={alt} />
-    </StyledRoot>
+    </Root>
   );
 };
 

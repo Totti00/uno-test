@@ -1,13 +1,13 @@
 import React from "react";
-import Card from "../../../components/Card";
+import Card from "./Card";
 import { v4 as uuidv4 } from "uuid";
 
-const FrontCards = React.memo(function () {
+const FrontCards: React.FC = React.memo(function () {
   return (
     <>
       {Array(5)
         .fill(0)
-        .map((_, idx) => (
+        .map((_) => (
           <div
             className="card-container"
             key={uuidv4()} //it was key={idx} before

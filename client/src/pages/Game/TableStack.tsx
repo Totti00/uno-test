@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import Card from "../../../components/Card.tsx";
-import { useAppSelector } from "../../../hooks/hooks.ts";
-import {tableStackSelector} from "./MemorizedSelector.ts";
+import Card from "../../components/Card";
+import { useAppSelector } from "../../hooks/hooks";
+import { tableStackSelector } from "./MemorizedSelector";
+import { Card as ICard } from "../../utils/interfaces";
 
 const Root = styled.div`
   position: fixed;
@@ -19,18 +20,17 @@ const Root = styled.div`
 `;
 
 export default function TableStack() {
-  const {tableStack} = useAppSelector(tableStackSelector);
+  const { tableStack } = useAppSelector(tableStackSelector);
 
   return (
     <Root>
-      {tableStack.map((card) => (
-        <div className="card-container" key={card.layoutId+"uno"}>
+      {tableStack.map((card: ICard) => (
+        <div className="card-container" key={card.layoutId + "uno"}>
           <Card
             layoutId={card.layoutId}
             color={card.color}
             digit={card.digit}
             action={card.action}
-            width={200}
             flip={card.flip}
             rotationY={card.rotationY}
           />

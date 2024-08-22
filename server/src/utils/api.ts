@@ -10,7 +10,7 @@ const MOVE_TIME = 30; //time for each move in second
 export async function createServer({ serverName }: { serverName: string }): Promise<string> {
     if (serverName.trim().length < 2) throw new Error("Server Name too short");
     const server = new GameServer(serverName);
-    const serverId = server.serverId;
+    const serverId = server.lobbyId;
     setServer(server);
     await server.init();
     return serverId;

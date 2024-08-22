@@ -15,7 +15,6 @@ describe('GameServer', () => {
         seed: '1234', 
         socketID: 'socket123', 
         cards: [], 
-        disconnected: false, 
         timeOutCount: 0, 
         isMaster: false 
     };
@@ -60,7 +59,6 @@ describe('GameServer', () => {
             seed: '5678', 
             socketID: 'socket456', 
             cards: [], 
-            disconnected: false, 
             timeOutCount: 0, 
             isMaster: false 
         };

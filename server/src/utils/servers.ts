@@ -3,7 +3,7 @@ import { IPlayer, IGameServer } from "./interfaces";
 const servers: { [key: string]: IGameServer } = {};
 
 const setServer = (server: IGameServer): void => {
-    servers[server.serverId] = server;
+    servers[server.lobbyId] = server;
 };
 
 const getServer = (id: string): IGameServer => {
@@ -24,7 +24,7 @@ const getServerByPlayerId = (playerId: string): string => {
     for (const serverId in servers) {
         const server = servers[serverId];
         const player = server.players.find((player) => player.id === playerId);
-        if (player) return server.serverName;
+        if (player) return server.lobbyName;
     }
     throw new Error("Server doesn't exist");
 };
@@ -33,8 +33,8 @@ const getAllServers = (): { id: string; name: string; cntPlayers: string }[] =>
     Object.values(servers)
         .filter((server) => !server.gameRunning)
         .map((server) => ({
-            id: server.serverId,
-            name: server.serverName,
+            id: server.lobbyId,
+            name: server.lobbyName,
             cntPlayers: `${server.players.length}/4`,
         }));
 

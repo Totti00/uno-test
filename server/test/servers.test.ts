@@ -44,7 +44,7 @@ describe('Server Manager', () => {
 
     afterEach((done) => {
         jest.clearAllMocks();
-        deleteServer(mockServer.serverId);
+        deleteServer(mockServer.lobbyId);
         mongoose.disconnect();
         server.close(done);
     });
@@ -52,7 +52,7 @@ describe('Server Manager', () => {
     it('should set and get server correctly', async () => {
         await mockServer.init();
         setServer(mockServer);
-        const server = getServer(mockServer.serverId);
+        const server = getServer(mockServer.lobbyId);
         expect(server).toEqual(mockServer);
     });
 
@@ -63,14 +63,14 @@ describe('Server Manager', () => {
     it('should check if server exists', async () => {
         await mockServer.init();
         setServer(mockServer);
-        expect(isThereServer(mockServer.serverId)).toBe(true);
+        expect(isThereServer(mockServer.lobbyId)).toBe(true);
         expect(isThereServer('non-existent-id')).toBe(false);
     });
 
     it('should get server players correctly', async () => {
         await mockServer.init();
         setServer(mockServer);
-        const players = getServerPlayers(mockServer.serverId);
+        const players = getServerPlayers(mockServer.lobbyId);
         expect(players).toHaveLength(0); // Assumiamo che il server appena creato non abbia giocatori
     });
 
@@ -88,7 +88,6 @@ describe('Server Manager', () => {
             seed: 'seed1',
             socketID: 'socket1',
             cards: [],
-            disconnected: false,
             timeOutCount: 0,
             isMaster: true,
         });
@@ -104,14 +103,14 @@ describe('Server Manager', () => {
         setServer(mockServer);
         const allServers = getAllServers();
         expect(allServers).toHaveLength(1);
-        expect(allServers[0].id).toBe(mockServer.serverId);
+        expect(allServers[0].id).toBe(mockServer.lobbyId);
         expect(allServers[0].name).toBe(mockServerName);
         expect(allServers[0].cntPlayers).toBe('0/4');
     });
 
     it('should delete server correctly', () => {
         setServer(mockServer);
-        deleteServer(mockServer.serverId);
-        expect(() => getServer(mockServer.serverId)).toThrow("Server doesn't exist");
+        deleteServer(mockServer.lobbyId);
+        expect(() => getServer(mockServer.lobbyId)).toThrow("Server doesn't exist");
     });
 });

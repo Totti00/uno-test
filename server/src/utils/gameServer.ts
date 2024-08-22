@@ -5,8 +5,8 @@ import {nanoid} from "nanoid";
 import {v4 as uuidv4} from "uuid";
 
 export default class GameServer implements IGameServer {
-    serverId = nanoid();
-    serverName;
+    lobbyId = nanoid();
+    lobbyName;
     players: IPlayer[] = [];
     curPlayer = 0;
     direction: 1 | -1 = 1;
@@ -23,7 +23,7 @@ export default class GameServer implements IGameServer {
     private timer: NodeJS.Timeout | null = null;
 
     constructor(serverName: string, /* numberOfPlayers = 4 */) {
-        this.serverName = serverName;
+        this.lobbyName = serverName;
     }
 
     async init() {
@@ -59,7 +59,6 @@ export default class GameServer implements IGameServer {
         if (!this.gameRunning) this.players = this.players.filter((p) => p.id !== playerId);
         else {
             const player = this.players.find((p) => p.id === playerId);
-            if (player !== undefined) player.disconnected = true;
         }
     }
 
@@ -288,7 +287,7 @@ export default class GameServer implements IGameServer {
 
         // Set a new timer
         this.timer = setTimeout(() => {
-            handleTimeOut({ nxtPlayer, serverId: this.serverId }, io);
+            handleTimeOut({ nxtPlayer, serverId: this.lobbyId }, io);
         }, (timeoutSeconds + 1) * 1000);
     }
 

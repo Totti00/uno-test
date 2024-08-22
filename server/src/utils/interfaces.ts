@@ -4,14 +4,13 @@ export interface IPlayer {
   seed: string;
   socketID: string;
   cards: ICard[];
-  disconnected: boolean;
   timeOutCount: number;
   isMaster: boolean;
 }
 
 export interface IGameServer {
-  serverId: string;
-  serverName: string;
+  lobbyId: string;
+  lobbyName: string;
   players: IPlayer[];
   curPlayer: number;
   direction: 1 | -1;
@@ -33,7 +32,7 @@ export interface IGameServer {
   restart(): Promise<void>;
   chat(message: string): any;
   getChat(): any;
-  move(draw: boolean, card: ICard /* | null */): IMoveEvent;
+  move(draw: boolean, card: ICard): IMoveEvent;
   getNextPlayer(card: ICard): number;
   finishGame(): any;
   resetTimer(timeoutSeconds: number, nxtPlayer: number, handleTimeOut: ({ nxtPlayer, serverId }: { nxtPlayer: number; serverId: string; }, io: any) => void, io: any):any;

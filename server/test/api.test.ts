@@ -18,7 +18,6 @@ describe("ServerSocket", () => {
         seed: '1234', 
         socketID: 'socket123', 
         cards: [], 
-        disconnected: false, 
         timeOutCount: 0, 
         isMaster: true 
     };
@@ -112,7 +111,7 @@ describe("ServerSocket", () => {
      
     it('should handle join-server event with player name too short', async () => {
         let server: string;
-        const play: IPlayer = { id: '', name: 'P', seed: '1234', socketID: 'socket123', cards: [], disconnected: false, timeOutCount: 0, isMaster: false };
+        const play: IPlayer = { id: '', name: 'P', seed: '1234', socketID: 'socket123', cards: [], timeOutCount: 0, isMaster: false };
 
         try{
             const result: any = await new Promise((res, rej) => {
@@ -153,8 +152,8 @@ describe("ServerSocket", () => {
         let playersId: (string | any[])[] = [];
 
         const players: IPlayer[] = [
-            { id: '', name: 'Player 2', seed: '1234', socketID: 'socket1', cards: [], disconnected: false, timeOutCount: 0, isMaster: false },
-            { id: '', name: 'Player 3', seed: '5678', socketID: 'socket2', cards: [], disconnected: false, timeOutCount: 0, isMaster: false }
+            { id: '', name: 'Player 2', seed: '1234', socketID: 'socket1', cards: [], timeOutCount: 0, isMaster: false },
+            { id: '', name: 'Player 3', seed: '5678', socketID: 'socket2', cards: [], timeOutCount: 0, isMaster: false }
         ];
 
         try{
@@ -198,7 +197,7 @@ describe("ServerSocket", () => {
     }, 20000);
 
     it('should handle the full looby', async () => {
-        const pla: IPlayer = { id: '', name: 'Player 4', seed: '1246', socketID: 'socket3', cards: [], disconnected: false, timeOutCount: 0, isMaster: false };
+        const pla: IPlayer = { id: '', name: 'Player 4', seed: '1246', socketID: 'socket3', cards: [], timeOutCount: 0, isMaster: false };
         let servers: string;
 
         try{

@@ -108,43 +108,6 @@ describe("ServerSocket", () => {
             throw error;
         }
     });
-     
-    it('should handle join-server event with player name too short', async () => {
-        let server: string;
-        const play: IPlayer = { id: '', name: 'P', seed: '1234', socketID: 'socket123', cards: [], timeOutCount: 0, isMaster: false };
-
-        try{
-            const result: any = await new Promise((res, rej) => {
-                clientSocket.emit("get-servers", null, (err: any, servers: GameServer[]) => {
-                    if (err) return rej(err);
-                    res(servers);
-                });
-            });
-            expect(result).toBeDefined();
-            expect(result.length).toBeGreaterThan(0);
-            server = result[0].id;
-        }catch(error){
-            console.log("Error in get-servers event:", error);
-            throw error;
-        }
-        
-        try {
-            await new Promise((resolve, reject) => {
-                clientSocket.emit("join-server", { serverId: server, player: play }, (error: {message: string}, playerId: string) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(playerId);
-                    }
-                });
-            });
-            // Se arriviamo qui, il test deve fallire perché ci aspettavamo un errore
-            throw new Error('Expected join-server to throw an error, but it did not.');
-        } catch (error: any) {
-            expect(error).toBeDefined();
-            expect(error.message).toBe("Player Name too short");
-        }
-    });
 
     it('should handle join-server event', async () => {
         const serverName = "Test Server";

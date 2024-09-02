@@ -33,10 +33,6 @@ export async function joinServer({
         const error = new Error("Server Doesn't Exist");
         return cb(error);
     }
-    if (player.name.trim().length <= 1) {
-        const error = new Error("Player Name too short");
-        return cb(error);
-    }
     if (server.players.length >= 4) {
         const error = new Error("Server is Already full");
         return cb(error);

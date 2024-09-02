@@ -19,20 +19,6 @@ const Root = styled.div<{ $highlight?: boolean; $cardsCnt: number }>`
 
   --cardsCnt: ${(props) => props.$cardsCnt};
   --containerMaxWidth: 55vw;
-
-  .card-container {
-    &:not(:last-of-type) {
-      margin-right: calc(
-        -1 * max(
-          calc(
-            (var(--cardWidth) * var(--cardsCnt) - var(--containerMaxWidth)) /
-              (var(--cardsCnt) - 1)
-          ),
-          calc(var(--cardWidth) / 3)
-        )
-      );
-    }
-  }
 `;
 
 export default function CardsRow({ cards, cardProps, highlight }: Readonly<CardsRowProps>) {

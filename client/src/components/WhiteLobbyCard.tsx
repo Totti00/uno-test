@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import {Player} from "../utils/interfaces.ts";
 
 const Card = styled.div`
-  height: 25em;
   width: 18.75em;
   position: relative;
   font-family: "Poppins", sans-serif;

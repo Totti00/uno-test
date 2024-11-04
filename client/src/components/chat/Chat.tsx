@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Messages from "./Messages"
 import InputMessage from './InputMessage';
-import { useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import API from '../../api/API';
 import { Message } from '../../utils/interfaces';
 
@@ -14,6 +14,23 @@ const styleDiv = {
 
 const styleButton = {
     marginLeft: 'auto',
+};
+
+const styleButtonWrapper: CSSProperties = {
+    position: 'relative',
+    marginLeft: 'auto',
+};
+
+const styleRedCircle: CSSProperties = {
+    position: 'absolute',
+    top: '-5px',
+    right: '-5px',
+    width: '15px',
+    height: '15px',
+    borderRadius: '50%',
+    backgroundColor: 'red',
+    border: '2px solid #cc0000',
+    display: 'block',
 };
 
 const style = {
@@ -32,16 +49,23 @@ const style = {
 export default function Chat() {
     const [open, setOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
+    const [notification, setNotification] = useState(false);
+
     const me = API.getPlayer();
+
 
     const handleOpen = () => {
         (async () => {
             const chatHistory = await API.getChat();
             setMessages(chatHistory);
         })();
+        setNotification(false);
         setOpen(true);
     }
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setNotification(false);
+        setOpen(false);
+    }
     const handleSendMessage = (text: string) => {
         const message: Message = {
             player: me,
@@ -53,13 +77,18 @@ export default function Chat() {
 
     useEffect(() => {
         API.onChat(({ messages }) => {
+            console.log("open: " + open)
+            setNotification(true);
             setMessages(messages);
         });
     });
 
     return (
         <div style={styleDiv}>
-            <Button style={styleButton} onClick={handleOpen}>Chat</Button>
+            <div style={styleButtonWrapper}>
+                <Button style={styleButton} onClick={handleOpen}>Chat</Button>
+                {!open && notification && <div style={styleRedCircle} />}
+            </div>
             <Modal
                 open={open}
                 onClose={handleClose}

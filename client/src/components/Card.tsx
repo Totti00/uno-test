@@ -114,13 +114,13 @@ const Root = styled.div<{ color?: string; disableShadow?: boolean; preserve3D?: 
 			font-family: sans-serif !important;
 
 			&.value-tl {
-				top: 14px;
-				left: 22px;
+				top: 5%;
+				left: 12%;
 			}
 
 			&.value-br {
-				bottom: 14px;
-				right: 22px;
+				bottom: 5%;
+				right: 12%;
 				transform: scale(-1);
 			}
 
@@ -150,13 +150,13 @@ const Root = styled.div<{ color?: string; disableShadow?: boolean; preserve3D?: 
 			width: 20%;
 
 			&.icon-tl {
-				top: 25px;
-				left: 20px;
+				top: 10%;
+				left: 12%;
 			}
 
 			&.icon-br {
-				bottom: 25px;
-				right: 20px;
+				bottom: 10%;
+				right: 12%;
 				transform: scale(-1);
 			}
 

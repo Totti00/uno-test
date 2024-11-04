@@ -22,9 +22,15 @@ const Root = styled.div<{ $highlight?: boolean; $cardsCnt: number }>`
 `;
 
 export default function CardsRow({ cards, cardProps, highlight }: Readonly<CardsRowProps>) {
+
+  const sortedCards = [...cards].sort((a, b) => {
+    // Convert _id to numbers for comparison
+    return Number(a._id) - Number(b._id);
+  });
+
   return (
     <Root $highlight={highlight} $cardsCnt={cards.length}>
-      {cards.map((card) => (
+      {sortedCards.map((card) => (
         <div className="card-container" key={card.layoutId}>
           <Card
             id={card._id}

@@ -1,6 +1,16 @@
 import {Button, Row } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import API from "../../api/API";
+import styled from "styled-components";
+
+const LogoImage = styled.img`
+    width: 35%;
+    max-width: 300px; // Optional max width for larger screens
+
+    @media (max-width: 600px) {
+        width: 60%; // Smaller width for mobile screens
+    }
+`;
 
 const Home = () => {
     const navigate = useNavigate();
@@ -17,8 +27,11 @@ const Home = () => {
 
     return (
         <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            <Row justify="center" style={{ width: "100%", marginTop: "-17vh" }}>  {/* Adjust marginTop to translate upwards */}
+            {/*<Row justify="center" style={{ width: "100%", marginTop: "-17vh" }}>   Adjust marginTop to translate upwards
                 <img src="assets/images/uno-logo.png" alt="UNO Logo" style={{ width: "35%" }}/>
+            </Row>*/}
+            <Row justify="center" style={{ width: "100%", marginTop: "-17vh" }}>  {/* Adjust marginTop to translate upwards */}
+                <LogoImage src="assets/images/uno-logo.png" alt="UNO Logo" />
             </Row>
             <Row
                 align="middle"

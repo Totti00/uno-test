@@ -24,6 +24,11 @@ const Root = styled.div`
 
     .text {
         text-shadow: 1px 3px 16px black;
+        font-size: 2rem; /* Font size for desktop */
+
+        @media (max-width: 600px) {
+            font-size: 1.5rem; /* Smaller font size for mobile */
+        }
     }
 `;
 

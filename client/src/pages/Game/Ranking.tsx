@@ -63,7 +63,7 @@ const Ranking: React.FC<RankingProps> = ({ playersOrder, setFinished }) => {
                 <WhiteRankingCard players={playersOrder} />
             </Row>
             
-            <Row align="middle" gutter={[0, 16]} justify="space-between" style={{ position: "absolute", bottom: "18%", width: "50%", textAlign: "center", left: 0, right: 0, marginLeft: "auto", marginRight: "auto" }}
+            <Row align="middle" gutter={[0, 16]} justify="space-between" style={{ position: "absolute", bottom: "5%", width: "50%", textAlign: "center", left: 0, right: 0, marginLeft: "auto", marginRight: "auto" }}
             >
                 {isMaster && (<Button style={{ width: 150, height: 50, fontSize: 18 }} size="large" onClick={handlePlayAgain}> 
                     Play again

@@ -1,37 +1,70 @@
 import { Row } from "antd";
-import {useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react"
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Table from "../../components/Table";
-import Typography from "../../components/Typography"
+import Typography from "../../components/Typography";
 import Button from "../../components/Button";
 import Grid from "@mui/material/Grid";
 import API from "../../api/API";
 import styled from "styled-components";
-import {setInLobby, setPlayerId} from "../../reducers";
-import {useDispatch} from "react-redux";
-import {GameServer} from "../../utils/interfaces";
+import { setInLobby, setPlayerId } from "../../reducers";
+import { useDispatch } from "react-redux";
+import { GameServer } from "../../utils/interfaces";
 
 const CTableRow = styled.div`
-  justify-content: space-around;
-  align-items: center;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  border-radius: 2rem;
-  height: 45px;
-  &:hover {
-    cursor: pointer;
-  }
+    justify-content: space-around;
+    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-radius: 2rem;
+    height: 45px;
+    &:hover {
+        cursor: pointer;
+    }
 `;
+
 const CTableCell = styled.p`
-  height: 30px;
-  width: calc(100% / 3);
+    height: 30px;
+    width: calc(100% / 3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+
+const JoinButtonContainer = styled(Grid)`
+    margin: 60px;
+    display: flex;
+    justify-content: center;
+
+    @media (max-width: 600px) {
+        margin: 40px; /* Margine più piccolo su mobile */
+    }
+
+    .join-button {
+        margin-top: 60px !important; /* Usa !important per forzare la priorità */
+    }
+`;
+
+// Stile per la griglia delle lobby
+const StyledLobbyGrid = styled(Grid)`
+    margin-bottom: 40px; /* Distanza tra la griglia e il pulsante */
+`;
+
+// Stile per il pulsante "Join Game"
+const StyledButtonContainer = styled(Grid)`
   display: flex;
   justify-content: center;
-  align-items: center;
+  margin-top: 60px; /* Margine maggiore per il distacco */
+  
+  @media (max-width: 600px) {
+    margin-top: 40px; /* Margine più piccolo su mobile */
+      
+  }
 `;
 
 const Lobby = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [selectedServer, setSelectedServer] = useState<number | null>(null);
@@ -52,8 +85,7 @@ const Lobby = () => {
     }, []);
 
     const handleJoinServer = async () => {
-        if (selectedServer !== null && selectedServer !== undefined) {
-
+        if (selectedServer !== null) {
             const serverId = servers[selectedServer].id;
             const playerId = await API.joinServer(serverId);
             dispatch(setPlayerId(playerId));
@@ -67,52 +99,42 @@ const Lobby = () => {
             <Row justify="space-between" align="middle">
                 <Button buttonType="default" onClick={() => navigate(-1)}>Back</Button>
             </Row>
-            {/*<Row justify="center" style={{ marginTop: 22 }}>
-                title={`Choose a room ____________. \n\nUsers Online: ${users.length}`}
-            </Row>*/}
-            {/*<Row justify={"center"} style={{ marginTop: 22 }} gutter={[32, 32]}>*/}
-            {/*    {Object.keys(rooms).map((roomName, index) =>*/}
-            {/*        <WhiteLobbyCard join roomName={roomName} players={rooms[roomName]} key={index} />*/}
-            {/*    )}*/}
-            {/*</Row>*/}
 
-            <Grid item xs={12}>
+            {/* Griglia delle lobby */}
+            <StyledLobbyGrid item xs={12}>
                 <Table>
-                    {servers.map((server, index) => {
-                        return (
-                            <CTableRow
-                                key={server.id}
-                                onClick={() => {
-                                    setSelectedServer(index);
-                                    setSelectOne(true);
-                                }}
-                                style={
-                                    index === selectedServer
-                                        ? {
-                                            backgroundColor: "rgba(0,0,0,.5)",
-                                            borderRadius: "1rem",
-                                        }
-                                        : {}
-                                }
-                            >
-                                <>
-                                    <CTableCell>{server.name}</CTableCell>
-                                    <CTableCell>{server.cntPlayers}</CTableCell>
-                                </>
-                            </CTableRow>
-                        );
-                    })}
+                    {servers.map((server, index) => (
+                        <CTableRow
+                            key={server.id}
+                            onClick={() => {
+                                setSelectedServer(index);
+                                setSelectOne(true);
+                            }}
+                            style={
+                                index === selectedServer
+                                    ? { backgroundColor: "rgba(0,0,0,.5)", borderRadius: "1rem" }
+                                    : {}
+                            }
+                        >
+                            <>
+                                <CTableCell>{server.name}</CTableCell>
+                                <CTableCell>{server.cntPlayers}</CTableCell>
+                            </>
+                        </CTableRow>
+                    ))}
                 </Table>
-            </Grid>
-            <Grid item xs={12}>
-                {((selectOne) ? (
-                    <Button onClick={handleJoinServer}>
+            </StyledLobbyGrid>
+
+            {/* Pulsante Join Game */}
+            <JoinButtonContainer item xs={12}>
+                {selectOne && (
+                    <Button onClick={handleJoinServer} className="join-button">
                         <Typography>Join Game</Typography>
                     </Button>
-                ): (<> </>))}
-            </Grid>
+                )}
+            </JoinButtonContainer>
         </div>
-    )
+    );
 }
 
-export default Lobby
+export default Lobby;

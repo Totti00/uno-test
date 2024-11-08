@@ -18,6 +18,7 @@ const Timer: React.FC = () => {
         fontSize: 'larger',
         textAlign: 'center',
         borderRadius: '10px',
+        zIndex: 9999,
     };
 
     const dispatch = useDispatch();

@@ -67,7 +67,7 @@ const WaitingLobby = () => {
                 )}
                 <Chat/>
             </Row>
-            <Row justify="center" style={{ marginTop: 0 }}>
+            <Row justify="center" style={{ padding: "20px", marginTop: window.innerWidth < 600 ? "32px" : "16px" }}>
                 <WhiteLobbyCard roomName={server} players={players} />
             </Row>
             {/*<Row justify="center" style={{ marginTop: 22 }}>*/}

@@ -7,7 +7,7 @@ const Card = styled.div`
   width: 18.75em;
   position: relative;
   font-family: "Poppins", sans-serif;
-  border: 1px solid #000;
+  //border: 1px solid #000;
   border-radius: 0.6em;
 `
 const Front = styled.div`

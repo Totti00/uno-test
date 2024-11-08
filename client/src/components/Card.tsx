@@ -57,6 +57,7 @@ const Root = styled.div<{ color?: string; disableShadow?: boolean; preserve3D?: 
     }
 
     padding-top: 141%;
+	margin-top: 25px;
     border-radius: calc(var(--cardWidth) / 10);
     box-shadow: ${(props) => (!props.disableShadow ? "0 0 10px #292727" : "none")};
     position: relative;

@@ -10,6 +10,7 @@ import { Message } from '../../utils/interfaces';
 const styleDiv = {
     display: 'flex',
     justifyContent: 'space-between',
+    zIndex:9999,
 };
 
 const styleButton = {

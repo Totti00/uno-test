@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../hooks/hooks";
-import CardsRow from "../../components/CardsRow";
+import CardsRowPlayer from "../../components/CardsRowPlayer.tsx";
 import { playerAndCurrPlayerStackSelector } from "./MemorizedSelector";
 import { Card } from "../../utils/interfaces";
 
@@ -19,7 +19,7 @@ export default function PlayerStack() {
 
   return (
     <Root>
-      <CardsRow
+      <CardsRowPlayer
         cards={cards}
         highlight={currentPlayer === 0}
         cardProps={{ selectable: true }}

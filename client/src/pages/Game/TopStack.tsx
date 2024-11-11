@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../hooks/hooks";
-import CardsRow from "../../components/CardsRow";
+import CardsRow from "../../components/CardsRow.tsx";
 import { playerAndCurrPlayerTopStackSelector } from "./MemorizedSelector";
 import { Card } from "../../utils/interfaces";
 

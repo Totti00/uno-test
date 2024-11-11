@@ -52,16 +52,16 @@ const StyledLobbyGrid = styled(Grid)`
 `;
 
 // Stile per il pulsante "Join Game"
-const StyledButtonContainer = styled(Grid)`
+/*const StyledButtonContainer = styled(Grid)`
   display: flex;
   justify-content: center;
-  margin-top: 60px; /* Margine maggiore per il distacco */
+  margin-top: 60px; /!* Margine maggiore per il distacco *!/
   
   @media (max-width: 600px) {
-    margin-top: 40px; /* Margine più piccolo su mobile */
+    margin-top: 40px; /!* Margine più piccolo su mobile *!/
       
   }
-`;
+`;*/
 
 const Lobby = () => {
     const navigate = useNavigate();

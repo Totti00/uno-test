@@ -18,17 +18,20 @@ export default function Messages({ messages, me }: MessagesProps) {
 
     return (
         <ul className={styles.messagesList}>
-            {messages.map((m) => (
-                MessageCard(m, me)
+            {messages.map((m, index) => (
+                <MessageCard key={`${m.id}-${index}`} {...m} me={me} />
             ))}
             <div ref={bottomRef}></div>
         </ul>
     );
 }
 
-function MessageCard({ player, text, id }: Message, me: Player) {
-    const username = player.name;
+interface MessageCardProps extends Message {
+    me: Player;
+}
 
+function MessageCard({ player, text, id, me }: MessageCardProps) {
+    const username = player.name;
     const messageFromMe = player.name === me.name;
     const className = messageFromMe ? `${styles.messagesMessage} ${styles.currentMember}` : styles.messagesMessage;
 

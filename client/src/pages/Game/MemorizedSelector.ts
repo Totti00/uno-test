@@ -10,34 +10,13 @@ causare re-renders non necessari nei componenti che utilizzano questo selettore.
 const gameSelector = (state: RootState) => state.game;
 
 export const playerAndCurrPlayerStackSelector = createSelector(
-    [gameSelector],
-    (game) => ({
-        player: game.players[0],
-        currentPlayer: game.currentPlayer,
-    })
-);
-
-export const playerAndCurrPlayerLeftStackSelector = createSelector(
-    [gameSelector],
-    (game) => ({
-        player: game.players[1],
-        currentPlayer: game.currentPlayer,
-    })
-);
-
-export const playerAndCurrPlayerTopStackSelector = createSelector(
-    [gameSelector],
-    (game) => ({
-        player: game.players[2],
-        currentPlayer: game.currentPlayer,
-    })
-);
-
-export const playerAndCurrPlayerRightStackSelector = createSelector(
-    [gameSelector],
-    (game) => ({
-        player: game.players[3],
-        currentPlayer: game.currentPlayer,
+    [
+        (state: RootState) => state.game.players,
+        (state: RootState) => state.game.currentPlayer,
+    ],
+    (players, currentPlayer) => ({
+        players,
+        currentPlayer,
     })
 );
 

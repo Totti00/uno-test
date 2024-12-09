@@ -14,7 +14,8 @@ const Root = styled.div`
 `;
 
 export default function PlayerStack() {
-  const { player, currentPlayer } = useAppSelector(playerAndCurrPlayerStackSelector);
+  const { players, currentPlayer } = useAppSelector(playerAndCurrPlayerStackSelector);
+  const player = players[0];
   const cards: Card[] = useMemo(() => player?.cards || [], [player]);
 
   return (
